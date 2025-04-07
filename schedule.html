@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>课表 - 课堂助手</title>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/sidebar.css">
   <!-- 使用图标库 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <!-- 添加 Remix Icon 库，用于侧边栏图标 -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
   <style>
     /* 课表页面特定样式 */
     .page-header {
@@ -325,28 +328,90 @@
   </style>
 </head>
 <body>
-  <!-- 导航栏 -->
-  <nav class="navbar">
-    <div class="container navbar-container">
-      <a href="index.html" class="logo">
-        <i class="fas fa-book-reader"></i>
-        课堂助手
-      </a>
-      <button class="nav-toggle" aria-label="切换导航菜单">
-        <i class="fas fa-bars"></i>
-      </button>
-      <ul class="nav-links">
-        <li><a href="index.html">首页</a></li>
-        <li><a href="schedule.html" class="active">课表</a></li>
-        <li><a href="countdown.html">考试倒计时</a></li>
-        <li><a href="profile.html">个人资料</a></li>
-        <li><a href="settings.html">设置</a></li>
-      </ul>
+  <!-- 侧边栏导航 -->
+  <aside class="sidebar">
+    <!-- 按钮组 -->
+    <div class="sidebar-btn">
+      <div class="sidebar-btn-item"></div>
+      <div class="sidebar-btn-item"></div>
+      <div class="sidebar-btn-item"></div>
     </div>
-  </nav>
+
+    <!-- 用户资料 -->
+    <div class="sidebar-profile">
+      <div class="sidebar-profile-img">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" />
+      </div>
+      <div class="sidebar-profile-text">
+        <p>欢迎使用</p>
+        <h2>课堂助手</h2>
+      </div>
+    </div>
+
+    <div class="sidebar-line"></div>
+
+    <!-- 主菜单 -->
+    <div class="sidebar-title">
+      <p>主菜单</p>
+    </div>
+    
+    <div class="sidebar-menu">
+      <div class="sidebar-item" data-href="index.html">
+        <div class="sidebar-light"></div>
+        <div class="sidebar-icon-left"><i class="ri-home-line"></i></div>
+        <div class="sidebar-text">首页</div>
+        <div class="sidebar-icon-right"><i class="ri-dashboard-line"></i></div>
+      </div>
+      
+      <div class="sidebar-item active" data-href="schedule.html">
+        <div class="sidebar-light"></div>
+        <div class="sidebar-icon-left"><i class="ri-calendar-line"></i></div>
+        <div class="sidebar-text">课表</div>
+        <div class="sidebar-icon-right"><i class="ri-arrow-right-s-line"></i></div>
+      </div>
+      
+      <div class="sidebar-item" data-href="countdown.html">
+        <div class="sidebar-light"></div>
+        <div class="sidebar-icon-left"><i class="ri-time-line"></i></div>
+        <div class="sidebar-text">考试倒计时</div>
+        <div class="sidebar-icon-right"><i class="ri-arrow-right-s-line"></i></div>
+      </div>
+    </div>
+
+    <div class="sidebar-line"></div>
+    
+    <!-- 个人中心 -->
+    <div class="sidebar-title">
+      <p>个人中心</p>
+    </div>
+    
+    <div class="sidebar-menu">
+      <div class="sidebar-item" data-href="profile.html">
+        <div class="sidebar-light"></div>
+        <div class="sidebar-icon-left"><i class="ri-user-line"></i></div>
+        <div class="sidebar-text">个人资料</div>
+        <div class="sidebar-icon-right"><i class="ri-arrow-right-s-line"></i></div>
+      </div>
+      
+      <div class="sidebar-item" data-href="settings.html">
+        <div class="sidebar-light"></div>
+        <div class="sidebar-icon-left"><i class="ri-settings-3-line"></i></div>
+        <div class="sidebar-text">设置</div>
+        <div class="sidebar-icon-right"><i class="ri-settings-3-line"></i></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 移动端菜单切换按钮 -->
+  <div class="sidebar-toggle">
+    <i class="ri-menu-line"></i>
+  </div>
+  
+  <!-- 移动端遮罩层 -->
+  <div class="sidebar-overlay"></div>
 
   <!-- 主要内容 -->
-  <div class="container py-4">
+  <div class="container py-4 sidebar-active">
     <!-- 页面标题和描述 -->
     <div class="page-header">
       <div class="container">
@@ -894,6 +959,7 @@
   </footer>
 
   <script src="js/main.js"></script>
+  <script src="js/sidebar.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // 添加课程弹窗

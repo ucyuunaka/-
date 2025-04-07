@@ -1,0 +1,110 @@
+/**
+ * 课堂助手 - 侧边栏导航功能
+ * 处理侧边栏的交互效果，包括点击切换页面、响应式显示隐藏等
+ */
+
+// 文档加载完成后执行
+document.addEventListener('DOMContentLoaded', function() {
+  // 初始化侧边栏
+  initSidebar();
+});
+
+/**
+ * 初始化侧边栏功能
+ */
+function initSidebar() {
+  // 获取当前页面路径，用于高亮当前页对应的菜单项
+  const currentPath = window.location.pathname;
+  const pageName = currentPath.split('/').pop();
+  
+  // 初始化菜单项高亮
+  highlightCurrentMenuItem(pageName);
+  
+  // 为所有菜单项添加点击事件
+  const menuItems = document.querySelectorAll('.sidebar-item');
+  menuItems.forEach(item => {
+    item.addEventListener('click', function() {
+      // 获取链接地址
+      const link = this.getAttribute('data-href');
+      if (link) {
+        // 页面跳转
+        window.location.href = link;
+      }
+    });
+  });
+  
+  // 移动端侧边栏切换
+  const sidebarToggle = document.querySelector('.sidebar-toggle');
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.querySelector('.sidebar-overlay');
+  
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', function() {
+      toggleSidebar();
+    });
+  }
+  
+  if (overlay) {
+    overlay.addEventListener('click', function() {
+      toggleSidebar(false);
+    });
+  }
+  
+  // 窗口大小改变时处理
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      toggleSidebar(false);
+    }
+  });
+}
+
+/**
+ * 高亮当前页面对应的菜单项
+ * @param {string} pageName - 当前页面文件名
+ */
+function highlightCurrentMenuItem(pageName) {
+  // 默认高亮首页
+  let itemToHighlight = 'index.html';
+  
+  // 如果有特定的页面名
+  if (pageName && pageName !== '') {
+    itemToHighlight = pageName;
+  }
+  
+  // 寻找并高亮对应的菜单项
+  const menuItems = document.querySelectorAll('.sidebar-item');
+  menuItems.forEach(item => {
+    const itemLink = item.getAttribute('data-href');
+    
+    // 移除所有高亮
+    item.classList.remove('active');
+    
+    // 如果匹配当前页面，添加高亮
+    if (itemLink && itemLink.includes(itemToHighlight)) {
+      item.classList.add('active');
+    }
+  });
+}
+
+/**
+ * 移动端切换侧边栏显示/隐藏
+ * @param {boolean|null} show - 是否显示，null表示切换状态
+ */
+function toggleSidebar(show = null) {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.querySelector('.sidebar-overlay');
+  
+  if (!sidebar) return;
+  
+  // 确定最终状态
+  const shouldShow = show === null ? !sidebar.classList.contains('active') : show;
+  
+  // 更新侧边栏和遮罩层状态
+  if (shouldShow) {
+    sidebar.classList.add('active');
+    if (overlay) overlay.classList.add('active');
+  } else {
+    sidebar.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
+  }
+}
