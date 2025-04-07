@@ -7,6 +7,9 @@
 document.addEventListener('DOMContentLoaded', function() {
   // 初始化侧边栏
   initSidebar();
+  
+  // 监听主题变化事件
+  listenForThemeChanges();
 });
 
 /**
@@ -55,6 +58,21 @@ function initSidebar() {
     if (window.innerWidth > 768) {
       toggleSidebar(false);
     }
+  });
+}
+
+/**
+ * 监听主题变化事件
+ * 当网站主题发生变化时，确保侧边栏也随之适配
+ */
+function listenForThemeChanges() {
+  // 监听主题变化自定义事件
+  window.addEventListener('themeChanged', function(e) {
+    // 侧边栏不需要特殊处理，因为我们使用了 [data-theme="dark"] 选择器
+    // CSS 会自动应用相应的样式
+    
+    // 可以在这里添加额外的侧边栏主题相关处理
+    console.log('主题已变更为: ' + e.detail.theme);
   });
 }
 

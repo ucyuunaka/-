@@ -7,7 +7,7 @@
 .sidebar {
     width: 110px;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.85); 
+    background: #f5f7fa; /* 亮色模式背景 */
     border-radius: 0 20px 20px 0;
     overflow: hidden;
     transition: 0.4s ease-in-out;
@@ -16,6 +16,11 @@
     top: 0;
     left: 0;
     z-index: 1000;
+}
+
+/* 深色模式样式 */
+[data-theme="dark"] .sidebar {
+    background: #0d1117;
 }
 
 .sidebar:hover {
@@ -63,8 +68,13 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    border: 4px solid rgba(255, 255, 255, 0.3);
+    border: 4px solid rgba(0, 0, 0, 0.1); /* 亮色边框 */
     overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .sidebar-profile-img {
+    border: 4px solid rgba(255, 255, 255, 0.3); /* 深色边框 */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -87,21 +97,25 @@
 
 .sidebar-profile-text p {
     padding-top: 5px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
 }
 
 .sidebar-profile-text h2 {
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-color);
 }
 
 /* 分隔线 */
 .sidebar-line {
     width: 60px;
     height: 1px;
-    background: rgba(245, 253, 255, 0.5);
+    background: var(--border-color);
     margin: 20px 25px;
     transition: 0.5s;
+}
+
+[data-theme="dark"] .sidebar-line {
+    background: rgba(245, 253, 255, 0.5);
 }
 
 .sidebar:hover .sidebar-line {
@@ -117,6 +131,10 @@
 
 .sidebar-title p {
     font-size: 14px;
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .sidebar-title p {
     color: rgba(255, 255, 255, 0.6);
 }
 
@@ -137,7 +155,12 @@
 }
 
 .sidebar-item:hover, .sidebar-item.active {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.05); /* 亮色模式悬停背景 */
+}
+
+[data-theme="dark"] .sidebar-item:hover, 
+[data-theme="dark"] .sidebar-item.active {
+    background-color: rgba(255, 255, 255, 0.15); /* 深色模式悬停背景 */
 }
 
 .sidebar-item.active .sidebar-light {
@@ -168,6 +191,10 @@
     position: relative;
     left: -20px;
     opacity: 0;
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .sidebar-text {
     color: rgba(255, 255, 255, 0.8);
 }
 
@@ -210,12 +237,20 @@
 /* 图标样式 */
 .sidebar-icon-left i {
     font-size: 22px;
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .sidebar-icon-left i {
     color: rgba(255, 255, 255, 0.7);
 }
 
 .sidebar-icon-right i {
     font-size: 18px;
-    color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+[data-theme="dark"] .sidebar-icon-right i {
+    color: var(--primary-color);
 }
 
 /* 主内容区域调整 */
