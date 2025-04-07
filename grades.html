@@ -385,8 +385,12 @@
           <h2 class="section-title">成绩趋势</h2>
           <div class="tab-container">
             <div class="tab-buttons">
-              <button class="tab-button active" data-tab="tab-trend">学期趋势</button>
-              <button class="tab-button" data-tab="tab-subject">科目分布</button>
+              <button class="tab-button active" data-tab="tab-trend">
+                学期趋势
+              </button>
+              <button class="tab-button" data-tab="tab-subject">
+                科目分布
+              </button>
               <button class="tab-button" data-tab="tab-comp">成绩对比</button>
             </div>
             <div class="tab-content active" id="tab-trend">
@@ -422,7 +426,7 @@
           </div>
 
           <!-- 成绩添加表单，默认隐藏 -->
-          <div class="grades-card" id="addGradeForm" style="display: none;">
+          <div class="grades-card" id="addGradeForm" style="display: none">
             <h3>添加新成绩</h3>
             <form id="gradeForm">
               <div class="grade-form">
@@ -527,8 +531,10 @@
                   placeholder="可以添加关于这次考试的备注..."
                 ></textarea>
               </div>
-              <div style="text-align: right; margin-top: 1rem;">
-                <button type="button" class="btn btn-outline" id="cancelAddBtn">取消</button>
+              <div style="text-align: right; margin-top: 1rem">
+                <button type="button" class="btn btn-outline" id="cancelAddBtn">
+                  取消
+                </button>
                 <button type="submit" class="btn btn-primary">保存成绩</button>
               </div>
             </form>
@@ -558,8 +564,12 @@
                   <td>5</td>
                   <td>2025-01-15</td>
                   <td>
-                    <button class="btn-icon"><i class="fas fa-edit"></i></button>
-                    <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                    <button class="btn-icon">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon text-danger">
+                      <i class="fas fa-trash"></i>
+                    </button>
                   </td>
                 </tr>
                 <tr>
@@ -570,8 +580,12 @@
                   <td>4</td>
                   <td>2025-01-10</td>
                   <td>
-                    <button class="btn-icon"><i class="fas fa-edit"></i></button>
-                    <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                    <button class="btn-icon">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon text-danger">
+                      <i class="fas fa-trash"></i>
+                    </button>
                   </td>
                 </tr>
                 <tr>
@@ -582,8 +596,12 @@
                   <td>4</td>
                   <td>2024-11-05</td>
                   <td>
-                    <button class="btn-icon"><i class="fas fa-edit"></i></button>
-                    <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                    <button class="btn-icon">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon text-danger">
+                      <i class="fas fa-trash"></i>
+                    </button>
                   </td>
                 </tr>
                 <tr>
@@ -594,8 +612,12 @@
                   <td>3</td>
                   <td>2025-01-18</td>
                   <td>
-                    <button class="btn-icon"><i class="fas fa-edit"></i></button>
-                    <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                    <button class="btn-icon">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon text-danger">
+                      <i class="fas fa-trash"></i>
+                    </button>
                   </td>
                 </tr>
                 <tr>
@@ -606,8 +628,12 @@
                   <td>3</td>
                   <td>2024-06-20</td>
                   <td>
-                    <button class="btn-icon"><i class="fas fa-edit"></i></button>
-                    <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                    <button class="btn-icon">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon text-danger">
+                      <i class="fas fa-trash"></i>
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -620,9 +646,15 @@
           <h2 class="section-title">GPA计算器</h2>
           <div class="grades-card">
             <p>根据成绩自动计算GPA，支持不同计算方法。</p>
-            <div style="margin: 1.5rem 0;">
-              <label for="gpaSystem" style="margin-right: 1rem;">GPA计算标准:</label>
-              <select id="gpaSystem" class="form-control" style="width: auto; display: inline-block;">
+            <div style="margin: 1.5rem 0">
+              <label for="gpaSystem" style="margin-right: 1rem"
+                >GPA计算标准:</label
+              >
+              <select
+                id="gpaSystem"
+                class="form-control"
+                style="width: auto; display: inline-block"
+              >
                 <option value="4.0">4.0制（通用）</option>
                 <option value="4.3">4.3制（部分高校）</option>
                 <option value="5.0">5.0制</option>
@@ -724,71 +756,82 @@
       document.addEventListener("DOMContentLoaded", function () {
         // 初始化表单日期为当天
         document.getElementById("examDate").valueAsDate = new Date();
-        
+
         // 为标签切换添加事件监听
         const tabButtons = document.querySelectorAll(".tab-button");
-        tabButtons.forEach(button => {
-          button.addEventListener("click", function() {
+        tabButtons.forEach((button) => {
+          button.addEventListener("click", function () {
             // 移除所有活动状态
-            document.querySelectorAll(".tab-button").forEach(btn => {
+            document.querySelectorAll(".tab-button").forEach((btn) => {
               btn.classList.remove("active");
             });
-            document.querySelectorAll(".tab-content").forEach(content => {
+            document.querySelectorAll(".tab-content").forEach((content) => {
               content.classList.remove("active");
             });
-            
+
             // 添加当前选中状态
             this.classList.add("active");
             const tabId = this.getAttribute("data-tab");
             document.getElementById(tabId).classList.add("active");
           });
         });
-        
+
         // 添加成绩表单显示/隐藏
         const addGradeBtn = document.getElementById("addGradeBtn");
         const addGradeForm = document.getElementById("addGradeForm");
         const cancelAddBtn = document.getElementById("cancelAddBtn");
-        
-        addGradeBtn.addEventListener("click", function() {
+
+        addGradeBtn.addEventListener("click", function () {
           addGradeForm.style.display = "block";
           this.style.display = "none";
         });
-        
-        cancelAddBtn.addEventListener("click", function() {
+
+        cancelAddBtn.addEventListener("click", function () {
           addGradeForm.style.display = "none";
           addGradeBtn.style.display = "inline-block";
         });
-        
+
         // 成绩表单提交
-        document.getElementById("gradeForm").addEventListener("submit", function(e) {
-          e.preventDefault();
-          
-          // 在这里可以添加成绩数据处理和保存逻辑
-          // 这里只是示例，实际应用中可能需要与后端交互
-          
-          // 模拟添加成绩到表格
-          const subject = document.getElementById("subject").options[document.getElementById("subject").selectedIndex].text;
-          const examType = document.getElementById("examType").options[document.getElementById("examType").selectedIndex].text;
-          const semester = document.getElementById("semester").options[document.getElementById("semester").selectedIndex].text;
-          const score = document.getElementById("score").value;
-          const credit = document.getElementById("credit").value;
-          const examDate = document.getElementById("examDate").value;
-          
-          // 创建新行
-          const newRow = document.createElement("tr");
-          
-          // 设置评分样式
-          let scoreClass = "score-poor";
-          if (score >= 90) {
-            scoreClass = "score-excellent";
-          } else if (score >= 80) {
-            scoreClass = "score-good";
-          } else if (score >= 60) {
-            scoreClass = "score-average";
-          }
-          
-          // 添加行内容
-          newRow.innerHTML = `
+        document
+          .getElementById("gradeForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            // 在这里可以添加成绩数据处理和保存逻辑
+            // 这里只是示例，实际应用中可能需要与后端交互
+
+            // 模拟添加成绩到表格
+            const subject =
+              document.getElementById("subject").options[
+                document.getElementById("subject").selectedIndex
+              ].text;
+            const examType =
+              document.getElementById("examType").options[
+                document.getElementById("examType").selectedIndex
+              ].text;
+            const semester =
+              document.getElementById("semester").options[
+                document.getElementById("semester").selectedIndex
+              ].text;
+            const score = document.getElementById("score").value;
+            const credit = document.getElementById("credit").value;
+            const examDate = document.getElementById("examDate").value;
+
+            // 创建新行
+            const newRow = document.createElement("tr");
+
+            // 设置评分样式
+            let scoreClass = "score-poor";
+            if (score >= 90) {
+              scoreClass = "score-excellent";
+            } else if (score >= 80) {
+              scoreClass = "score-good";
+            } else if (score >= 60) {
+              scoreClass = "score-average";
+            }
+
+            // 添加行内容
+            newRow.innerHTML = `
             <td>${subject}</td>
             <td>${examType}</td>
             <td>${semester}</td>
@@ -800,101 +843,109 @@
               <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
             </td>
           `;
-          
-          // 插入表格
-          document.getElementById("gradesTableBody").prepend(newRow);
-          
-          // 重置表单和UI状态
-          this.reset();
-          document.getElementById("examDate").valueAsDate = new Date();
-          addGradeForm.style.display = "none";
-          addGradeBtn.style.display = "inline-block";
-          
-          // 重新计算统计信息和更新图表
-          updateStatistics();
-          renderCharts();
-        });
-        
+
+            // 插入表格
+            document.getElementById("gradesTableBody").prepend(newRow);
+
+            // 重置表单和UI状态
+            this.reset();
+            document.getElementById("examDate").valueAsDate = new Date();
+            addGradeForm.style.display = "none";
+            addGradeBtn.style.display = "inline-block";
+
+            // 重新计算统计信息和更新图表
+            updateStatistics();
+            renderCharts();
+          });
+
         // 初始化图表
         renderCharts();
-        
+
         // 绘制所有图表
         function renderCharts() {
           renderTrendChart();
           renderSubjectChart();
           renderCompareChart();
         }
-        
+
         // 趋势图表
         function renderTrendChart() {
-          const ctx = document.getElementById('trendChart').getContext('2d');
-          
+          const ctx = document.getElementById("trendChart").getContext("2d");
+
           // 假设的历史数据
           const data = {
-            labels: ['2023-1', '2023-2', '2024-1', '2024-2'],
+            labels: ["2023-1", "2023-2", "2024-1", "2024-2"],
             datasets: [
               {
-                label: 'GPA趋势',
+                label: "GPA趋势",
                 data: [3.4, 3.6, 3.8, 3.9],
-                borderColor: '#4285F4',
-                backgroundColor: 'rgba(66, 133, 244, 0.1)',
+                borderColor: "#4285F4",
+                backgroundColor: "rgba(66, 133, 244, 0.1)",
                 borderWidth: 2,
                 fill: true,
-                tension: 0.4
+                tension: 0.4,
               },
               {
-                label: '平均分',
+                label: "平均分",
                 data: [83, 87, 90, 92],
-                borderColor: '#0F9D58',
-                backgroundColor: 'rgba(15, 157, 88, 0.1)',
+                borderColor: "#0F9D58",
+                backgroundColor: "rgba(15, 157, 88, 0.1)",
                 borderWidth: 2,
                 fill: true,
-                tension: 0.4
-              }
-            ]
+                tension: 0.4,
+              },
+            ],
           };
-          
+
           new Chart(ctx, {
-            type: 'line',
+            type: "line",
             data: data,
             options: {
               responsive: true,
               maintainAspectRatio: false,
               scales: {
                 y: {
-                  beginAtZero: false
-                }
+                  beginAtZero: false,
+                },
               },
               plugins: {
                 legend: {
-                  position: 'top',
-                }
-              }
-            }
+                  position: "top",
+                },
+              },
+            },
           });
         }
-        
+
         // 科目分布图
         function renderSubjectChart() {
-          const ctx = document.getElementById('subjectChart').getContext('2d');
-          
+          const ctx = document.getElementById("subjectChart").getContext("2d");
+
           const data = {
-            labels: ['高等数学', '程序设计', '大学物理', '大学英语', '数据库原理'],
-            datasets: [{
-              data: [92, 98, 78, 88, 95],
-              backgroundColor: [
-                'rgba(66, 133, 244, 0.7)',
-                'rgba(15, 157, 88, 0.7)',
-                'rgba(244, 160, 0, 0.7)',
-                'rgba(219, 68, 55, 0.7)',
-                'rgba(162, 63, 173, 0.7)'
-              ],
-              borderWidth: 1
-            }]
+            labels: [
+              "高等数学",
+              "程序设计",
+              "大学物理",
+              "大学英语",
+              "数据库原理",
+            ],
+            datasets: [
+              {
+                data: [92, 98, 78, 88, 95],
+                backgroundColor: [
+                  "rgba(66, 133, 244, 0.7)",
+                  "rgba(15, 157, 88, 0.7)",
+                  "rgba(244, 160, 0, 0.7)",
+                  "rgba(219, 68, 55, 0.7)",
+                  "rgba(162, 63, 173, 0.7)",
+                ],
+                borderWidth: 1,
+              },
+            ],
           };
-          
+
           new Chart(ctx, {
-            type: 'radar',
+            type: "radar",
             data: data,
             options: {
               responsive: true,
@@ -904,36 +955,42 @@
                   beginAtZero: true,
                   max: 100,
                   ticks: {
-                    stepSize: 20
-                  }
-                }
-              }
-            }
+                    stepSize: 20,
+                  },
+                },
+              },
+            },
           });
         }
-        
+
         // 比较图表
         function renderCompareChart() {
-          const ctx = document.getElementById('compareChart').getContext('2d');
-          
+          const ctx = document.getElementById("compareChart").getContext("2d");
+
           const data = {
-            labels: ['高等数学', '程序设计', '大学物理', '大学英语', '数据库原理'],
+            labels: [
+              "高等数学",
+              "程序设计",
+              "大学物理",
+              "大学英语",
+              "数据库原理",
+            ],
             datasets: [
               {
-                label: '你的分数',
+                label: "你的分数",
                 data: [92, 98, 78, 88, 95],
-                backgroundColor: 'rgba(66, 133, 244, 0.7)'
+                backgroundColor: "rgba(66, 133, 244, 0.7)",
               },
               {
-                label: '班级平均',
+                label: "班级平均",
                 data: [86, 85, 83, 90, 87],
-                backgroundColor: 'rgba(244, 160, 0, 0.7)'
-              }
-            ]
+                backgroundColor: "rgba(244, 160, 0, 0.7)",
+              },
+            ],
           };
-          
+
           new Chart(ctx, {
-            type: 'bar',
+            type: "bar",
             data: data,
             options: {
               responsive: true,
@@ -941,32 +998,39 @@
               scales: {
                 y: {
                   beginAtZero: true,
-                  max: 100
-                }
+                  max: 100,
+                },
               },
               plugins: {
                 legend: {
-                  position: 'top',
-                }
-              }
-            }
+                  position: "top",
+                },
+              },
+            },
           });
         }
-        
+
         // 更新统计信息
         function updateStatistics() {
           // 在实际应用中，这里应该重新计算GPA和平均分
           // 这里只是简单示例，实际应用中可能需要更复杂的计算逻辑
-          document.getElementById('total-courses').textContent = 
-            document.getElementById('gradesTableBody').getElementsByTagName('tr').length;
+          document.getElementById("total-courses").textContent = document
+            .getElementById("gradesTableBody")
+            .getElementsByTagName("tr").length;
         }
-        
+
         // 更改GPA计算系统时更新显示
-        document.getElementById('gpaSystem').addEventListener('change', function() {
-          // 在实际应用中，这里应该根据所选系统重新计算并显示GPA
-          // 这里只是示例
-          alert('已切换到' + this.options[this.selectedIndex].text + '计算方式，将重新计算GPA');
-        });
+        document
+          .getElementById("gpaSystem")
+          .addEventListener("change", function () {
+            // 在实际应用中，这里应该根据所选系统重新计算并显示GPA
+            // 这里只是示例
+            alert(
+              "已切换到" +
+                this.options[this.selectedIndex].text +
+                "计算方式，将重新计算GPA"
+            );
+          });
       });
     </script>
   </body>
