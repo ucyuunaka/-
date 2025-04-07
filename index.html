@@ -6,6 +6,8 @@
     <title>课堂助手 - 你的学习管理伙伴</title>
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/sidebar.css" />
+    <!-- 添加滚动动画样式 -->
+    <link rel="stylesheet" href="css/scrollAnimation.css" />
     <!-- 使用图标库 -->
     <link
       rel="stylesheet"
@@ -336,11 +338,13 @@
       <section class="hero-section">
         <div class="container">
           <div class="hero-content">
-            <h1 class="hero-title">让你的学习生活更高效有序</h1>
-            <p class="hero-text">
+            <h1 class="hero-title animate-on-scroll fade-up">
+              让你的学习生活更高效有序
+            </h1>
+            <p class="hero-text animate-on-scroll fade-up delay-100">
               课堂助手帮你管理课程安排、记录学习进度、提醒考试日期，让你专注于学习本身。
             </p>
-            <div class="hero-buttons">
+            <div class="hero-buttons animate-on-scroll fade-up delay-200">
               <a href="schedule.html" class="btn">查看我的课表</a>
               <a
                 href="countdown.html"
@@ -361,10 +365,10 @@
       <!-- 特色功能区域 -->
       <section class="features-section">
         <div class="container">
-          <h2 class="section-title">核心功能</h2>
+          <h2 class="section-title animate-on-scroll fade-up">核心功能</h2>
           <div class="features-grid">
             <!-- 课表特性 -->
-            <div class="feature-card">
+            <div class="feature-card animate-on-scroll fade-up">
               <div class="feature-icon">
                 <i class="fas fa-calendar-alt"></i>
               </div>
@@ -378,7 +382,7 @@
             </div>
 
             <!-- 成绩管理特性 -->
-            <div class="feature-card">
+            <div class="feature-card animate-on-scroll fade-up delay-100">
               <div class="feature-icon">
                 <i class="fas fa-chart-line"></i>
               </div>
@@ -392,7 +396,7 @@
             </div>
 
             <!-- 倒计时特性 -->
-            <div class="feature-card">
+            <div class="feature-card animate-on-scroll fade-up delay-200">
               <div class="feature-icon">
                 <i class="fas fa-hourglass-half"></i>
               </div>
@@ -406,7 +410,7 @@
             </div>
 
             <!-- 个性化特性 -->
-            <div class="feature-card">
+            <div class="feature-card animate-on-scroll fade-up">
               <div class="feature-icon">
                 <i class="fas fa-user-graduate"></i>
               </div>
@@ -420,7 +424,7 @@
             </div>
 
             <!-- 设置特性 -->
-            <div class="feature-card">
+            <div class="feature-card animate-on-scroll fade-up delay-100">
               <div class="feature-icon">
                 <i class="fas fa-cog"></i>
               </div>
@@ -440,15 +444,15 @@
       <section class="stats-section">
         <div class="container">
           <div class="stats-grid">
-            <div class="stat-item">
+            <div class="stat-item animate-on-scroll zoom-in">
               <div class="stat-number">3000+</div>
               <div class="stat-label">活跃用户</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item animate-on-scroll zoom-in delay-100">
               <div class="stat-number">12,000+</div>
               <div class="stat-label">课程管理</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item animate-on-scroll zoom-in delay-200">
               <div class="stat-number">98%</div>
               <div class="stat-label">用户满意度</div>
             </div>
@@ -459,11 +463,15 @@
       <!-- 呼吁行动区域 -->
       <section class="cta-section">
         <div class="container">
-          <h2 class="cta-title">开始使用课堂助手</h2>
-          <p class="cta-text">
+          <h2 class="cta-title animate-on-scroll fade-up">开始使用课堂助手</h2>
+          <p class="cta-text animate-on-scroll fade-up delay-100">
             无需注册，立即开始管理你的学习，只需选择你想使用的功能，即可体验课堂助手带来的便利。
           </p>
-          <a href="schedule.html" class="btn">开始使用</a>
+          <a
+            href="schedule.html"
+            class="btn animate-on-scroll fade-up delay-200"
+            >开始使用</a
+          >
         </div>
       </section>
     </main>
@@ -503,8 +511,16 @@
 
     <script src="js/main.js"></script>
     <script src="js/sidebar.js"></script>
+    <!-- 添加滚动动画脚本 -->
+    <script src="js/scrollAnimation.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        // 初始化滚动动画
+        initScrollAnimation(".animate-on-scroll", {
+          threshold: 0.1,
+          once: true,
+        });
+
         // 滚动动画效果
         const animateStatistics = () => {
           const stats = document.querySelectorAll(".stat-number");
