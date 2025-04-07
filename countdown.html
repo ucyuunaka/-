@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>考试倒计时 - 课堂助手</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- 使用图标库 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      /* 考试倒计时页面特定样式 */
+      .countdown-list {
+        margin-top: 2rem;
+      }
+
+      .countdown-item {
+        background-color: var(--background-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .countdown-main {
+        flex: 2;
+        min-width: 300px;
+      }
+
+      .countdown-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: var(--text-color);
+      }
+
+      .countdown-details {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      .countdown-details div {
+        margin-bottom: 0.5rem;
+      }
+
+      .countdown-detail-label {
+        font-weight: 500;
+        margin-right: 0.5rem;
+      }
+
+      .countdown-actions {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .countdown-display {
+        flex: 1;
+        min-width: 250px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--primary-light);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+      }
+
+      .countdown-label {
+        font-weight: 500;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .countdown-timer {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .countdown-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 60px;
+      }
+
+      .countdown-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        background-color: var(--background-color);
+        border-radius: var(--border-radius-sm);
+        padding: 0.5rem;
+        min-width: 60px;
+        text-align: center;
+      }
+
+      .countdown-unit-label {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-top: 0.25rem;
+      }
+
+      .progress-bar {
+        height: 8px;
+        background-color: var(--background-secondary);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 1rem;
+        width: 100%;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background-color: var(--primary-color);
+        border-radius: 4px;
+        transition: width 0.3s;
+      }
+
+      /* 添加考试弹框样式 */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: var(--background-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-lg);
+        width: 90%;
+        max-width: 500px;
+        padding: 2rem;
+        position: relative;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--text-secondary);
+      }
+
+      .urgent {
+        border-left: 4px solid var(--danger-color);
+      }
+
+      .upcoming {
+        border-left: 4px solid var(--warning-color);
+      }
+
+      .distant {
+        border-left: 4px solid var(--success-color);
+      }
+
+      .status-badge {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: white;
+        border-bottom-left-radius: var(--border-radius-sm);
+      }
+
+      .status-urgent {
+        background-color: var(--danger-color);
+      }
+
+      .status-upcoming {
+        background-color: var(--warning-color);
+      }
+
+      .status-distant {
+        background-color: var(--success-color);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background-color: var(--background-secondary);
+        border-radius: var(--border-radius);
+        margin-top: 2rem;
+      }
+
+      .empty-icon {
+        font-size: 4rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        opacity: 0.5;
+      }
+
+      /* 过滤和排序控件 */
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin: 1.5rem 0;
+        align-items: center;
+      }
+
+      .filter-group {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .filter-label {
+        font-weight: 500;
+        color: var(--text-secondary);
+      }
+
+      .search-box {
+        flex-grow: 1;
+        position: relative;
+      }
+
+      .search-box input {
+        width: 100%;
+        padding-left: 2.5rem;
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+      <div class="container navbar-container">
+        <a href="index.html" class="logo">
+          <i class="fas fa-book-reader"></i>
+          课堂助手
+        </a>
+        <button class="nav-toggle" aria-label="切换导航菜单">
+          <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-links">
+          <li><a href="index.html">首页</a></li>
+          <li><a href="schedule.html">课表</a></li>
+          <li><a href="countdown.html" class="active">考试倒计时</a></li>
+          <li><a href="profile.html">个人资料</a></li>
+          <li><a href="settings.html">设置</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container py-4">
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h1 class="mb-3">考试倒计时</h1>
+        <button class="btn" id="add-exam-btn">
+          <i class="fas fa-plus"></i> 添加考试
+        </button>
+      </div>
+
+      <!-- 筛选和排序 -->
+      <div class="filters">
+        <div class="search-box">
+          <i class="fas fa-search search-icon"></i>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="搜索考试..."
+            id="search-input"
+          />
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">排序：</span>
+          <select class="form-control" id="sort-select">
+            <option value="date-asc">日期升序</option>
+            <option value="date-desc" selected>日期降序</option>
+            <option value="name-asc">名称升序</option>
+            <option value="name-desc">名称降序</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">状态：</span>
+          <select class="form-control" id="filter-select">
+            <option value="all" selected>全部</option>
+            <option value="urgent">紧急 (7天内)</option>
+            <option value="upcoming">即将到来 (30天内)</option>
+            <option value="distant">较远 (30天以上)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 考试倒计时列表 -->
+      <div class="countdown-list" id="countdown-list">
+        <!-- 紧急考试 -->
+        <div class="countdown-item urgent">
+          <div class="status-badge status-urgent">紧急</div>
+          <div class="countdown-main">
+            <h3 class="countdown-title">数据结构期末考试</h3>
+            <div class="countdown-details">
+              <div>
+                <span class="countdown-detail-label">科目：</span>数据结构与算法
+              </div>
+              <div>
+                <span class="countdown-detail-label">时间：</span>2025年4月12日
+                09:00
+              </div>
+              <div>
+                <span class="countdown-detail-label">地点：</span>教学楼B-303
+              </div>
+              <div>
+                <span class="countdown-detail-label">备注：</span
+                >考试范围为教材第1-10章，开卷考试
+              </div>
+            </div>
+            <div class="countdown-actions">
+              <button class="btn btn-outline" onclick="editExam(1)">
+                <i class="fas fa-edit"></i> 编辑
+              </button>
+              <button
+                class="btn btn-outline"
+                style="color: var(--danger-color)"
+                onclick="deleteExam(1)"
+              >
+                <i class="fas fa-trash"></i> 删除
+              </button>
+            </div>
+          </div>
+          <div class="countdown-display">
+            <div class="countdown-label">距离考试还剩</div>
+            <div class="countdown-timer">
+              <div class="countdown-unit">
+                <div class="countdown-value" id="days-1">5</div>
+                <div class="countdown-unit-label">天</div>
+              </div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="hours-1">08</div>
+                <div class="countdown-unit-label">时</div>
+              </div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="minutes-1">42</div>
+                <div class="countdown-unit-label">分</div>
+              </div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="seconds-1">12</div>
+                <div class="countdown-unit-label">秒</div>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 80%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 即将到来的考试 -->
+        <div class="countdown-item upcoming">
+          <div class="status-badge status-upcoming">即将到来</div>
+          <div class="countdown-main">
+            <h3 class="countdown-title">计算机网络期中考试</h3>
+            <div class="countdown-details">
+              <div>
+                <span class="countdown-detail-label">科目：</span>计算机网络
+              </div>
+              <div>
+                <span class="countdown-detail-label">时间：</span>2025年4月22日
+                14:00
+              </div>
+              <div>
+                <span class="countdown-detail-label">地点：</span>实验楼C-210
+              </div>
+              <div>
+                <span class="countdown-detail-label">备注：</span
+                >考试内容为TCP/IP协议和网络安全，闭卷考试
+              </div>
+            </div>
+            <div class="countdown-actions">
+              <button class="btn btn-outline" onclick="editExam(2)">
+                <i class="fas fa-edit"></i> 编辑
+              </button>
+              <button
+                class="btn btn-outline"
+                style="color: var(--danger-color)"
+                onclick="deleteExam(2)"
+              >
+                <i class="fas fa-trash"></i> 删除
+              </button>
+            </div>
+          </div>
+          <div class="countdown-display">
+            <div class="countdown-label">距离考试还剩</div>
+            <div class="countdown-timer">
+              <div class="countdown-unit">
+                <div class="countdown-value" id="days-2">15</div>
+                <div class="countdown-unit-label">天</div>
+              </div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="hours-2">06</div>
+                <div class="countdown-unit-label">时</div>
+              </div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="minutes-2">30</div>
+                <div class="countdown-unit-label">分</div>
+              </div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="seconds-2">42</div>
+                <div class="countdown-unit-label">秒</div>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 50%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 较远的考试 -->
+        <div class="countdown-item distant">
+          <div class="status-badge status-distant">较远</div>
+          <div class="countdown-main">
+            <h3 class="countdown-title">操作系统期末考试</h3>
+            <div class="countdown-details">
+              <div>
+                <span class="countdown-detail-label">科目：</span>操作系统原理
+              </div>
+              <div>
+                <span class="countdown-detail-label">时间：</span>2025年5月15日
+                10:00
+              </div>
+              <div>
+                <span class="countdown-detail-label">地点：</span>教学楼A-501
+              </div>
+              <div>
+                <span class="countdown-detail-label">备注：</span
+                >考试范围全书，需重点复习进程管理和内存管理
+              </div>
+            </div>
+            <div class="countdown-actions">
+              <button class="btn btn-outline" onclick="editExam(3)">
+                <i class="fas fa-edit"></i> 编辑
+              </button>
+              <button
+                class="btn btn-outline"
+                style="color: var(--danger-color)"
+                onclick="deleteExam(3)"
+              >
+                <i class="fas fa-trash"></i> 删除
+              </button>
+            </div>
+          </div>
+          <div class="countdown-display">
+            <div class="countdown-label">距离考试还剩</div>
+            <div class="countdown-timer">
+              <div class="countdown-unit">
+                <div class="countdown-value" id="days-3">38</div>
+                <div class="countdown-unit-label">天</div>
+              </div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="hours-3">12</div>
+                <div class="countdown-unit-label">时</div>
+              </div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="minutes-3">25</div>
+                <div class="countdown-unit-label">分</div>
+              </div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="seconds-3">08</div>
+                <div class="countdown-unit-label">秒</div>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 20%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 无考试时显示的空状态 -->
+        <div class="empty-state" id="empty-state" style="display: none">
+          <div class="empty-icon">
+            <i class="fas fa-calendar-xmark"></i>
+          </div>
+          <h3>暂无考试数据</h3>
+          <p>点击"添加考试"按钮创建你的第一个考试倒计时</p>
+          <button class="btn mt-3" id="add-exam-empty">
+            <i class="fas fa-plus"></i> 添加考试
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 添加/编辑考试弹框 -->
+    <div class="modal" id="exam-modal">
+      <div class="modal-content">
+        <div class="modal-close" id="close-exam-modal">×</div>
+        <h2 class="mb-3" id="modal-title">添加考试</h2>
+        <form id="exam-form">
+          <div class="form-group">
+            <label class="form-label" for="exam-name">考试名称</label>
+            <input
+              type="text"
+              class="form-control"
+              id="exam-name"
+              required
+              placeholder="例如：高等数学期末考试"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="exam-subject">科目</label>
+            <input
+              type="text"
+              class="form-control"
+              id="exam-subject"
+              placeholder="例如：高等数学"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="exam-date">考试日期</label>
+            <input type="date" class="form-control" id="exam-date" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="exam-time">考试时间</label>
+            <input type="time" class="form-control" id="exam-time" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="exam-location">考试地点</label>
+            <input
+              type="text"
+              class="form-control"
+              id="exam-location"
+              placeholder="例如：教学楼A-301"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="exam-notes">备注</label>
+            <textarea
+              class="form-control"
+              id="exam-notes"
+              rows="3"
+              placeholder="例如：考试范围、注意事项等"
+            ></textarea>
+          </div>
+          <input type="hidden" id="exam-id" value="" />
+          <div class="text-center mt-4">
+            <button type="submit" class="btn">保存</button>
+            <button
+              type="button"
+              class="btn btn-outline"
+              style="margin-left: 0.5rem"
+              id="cancel-exam"
+            >
+              取消
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-column">
+            <h3 class="footer-title">课堂助手</h3>
+            <p>你的学习管理伙伴，让学习更加高效有序。</p>
+          </div>
+          <div class="footer-column">
+            <h3 class="footer-title">快速链接</h3>
+            <ul class="footer-links">
+              <li><a href="index.html">首页</a></li>
+              <li><a href="schedule.html">课表</a></li>
+              <li><a href="countdown.html">考试倒计时</a></li>
+              <li><a href="profile.html">个人资料</a></li>
+              <li><a href="settings.html">设置</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3 class="footer-title">联系我们</h3>
+            <ul class="footer-links">
+              <li><i class="fas fa-envelope"></i> contact@classhelper.com</li>
+              <li><i class="fas fa-phone"></i> +86 123 4567 8901</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 课堂助手 版权所有</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 模拟考试数据
+        const exams = [
+          {
+            id: 1,
+            name: "数据结构期末考试",
+            subject: "数据结构与算法",
+            date: "2025-04-12T09:00:00",
+            location: "教学楼B-303",
+            notes: "考试范围为教材第1-10章，开卷考试",
+            status: "urgent",
+          },
+          {
+            id: 2,
+            name: "计算机网络期中考试",
+            subject: "计算机网络",
+            date: "2025-04-22T14:00:00",
+            location: "实验楼C-210",
+            notes: "考试内容为TCP/IP协议和网络安全，闭卷考试",
+            status: "upcoming",
+          },
+          {
+            id: 3,
+            name: "操作系统期末考试",
+            subject: "操作系统原理",
+            date: "2025-05-15T10:00:00",
+            location: "教学楼A-501",
+            notes: "考试范围全书，需重点复习进程管理和内存管理",
+            status: "distant",
+          },
+        ];
+
+        // 模态框相关元素
+        const examModal = document.getElementById("exam-modal");
+        const closeExamModal = document.getElementById("close-exam-modal");
+        const cancelExamBtn = document.getElementById("cancel-exam");
+        const examForm = document.getElementById("exam-form");
+        const modalTitle = document.getElementById("modal-title");
+        const examIdInput = document.getElementById("exam-id");
+
+        // 添加考试按钮
+        const addExamBtn = document.getElementById("add-exam-btn");
+        const addExamEmptyBtn = document.getElementById("add-exam-empty");
+
+        // 打开模态框 - 添加新考试
+        function openAddExamModal() {
+          modalTitle.textContent = "添加考试";
+          examIdInput.value = "";
+          examForm.reset();
+
+          // 默认设置为当前日期 + 7天
+          const defaultDate = new Date();
+          defaultDate.setDate(defaultDate.getDate() + 7);
+
+          const year = defaultDate.getFullYear();
+          const month = String(defaultDate.getMonth() + 1).padStart(2, "0");
+          const day = String(defaultDate.getDate()).padStart(2, "0");
+
+          document.getElementById(
+            "exam-date"
+          ).value = `${year}-${month}-${day}`;
+          document.getElementById("exam-time").value = "09:00";
+
+          examModal.style.display = "flex";
+        }
+
+        addExamBtn.addEventListener("click", openAddExamModal);
+        addExamEmptyBtn.addEventListener("click", openAddExamModal);
+
+        // 关闭模态框
+        function closeExamModal() {
+          examModal.style.display = "none";
+        }
+
+        closeExamModal.addEventListener("click", closeExamModal);
+        cancelExamBtn.addEventListener("click", closeExamModal);
+
+        // 点击外部关闭模态框
+        window.addEventListener("click", function (event) {
+          if (event.target === examModal) {
+            closeExamModal();
+          }
+        });
+
+        // 编辑考试
+        window.editExam = function (examId) {
+          const exam = exams.find((e) => e.id === examId);
+          if (!exam) return;
+
+          modalTitle.textContent = "编辑考试";
+          examIdInput.value = exam.id;
+
+          // 填充表单
+          document.getElementById("exam-name").value = exam.name;
+          document.getElementById("exam-subject").value = exam.subject;
+
+          const examDate = new Date(exam.date);
+          const year = examDate.getFullYear();
+          const month = String(examDate.getMonth() + 1).padStart(2, "0");
+          const day = String(examDate.getDate()).padStart(2, "0");
+          const hours = String(examDate.getHours()).padStart(2, "0");
+          const minutes = String(examDate.getMinutes()).padStart(2, "0");
+
+          document.getElementById(
+            "exam-date"
+          ).value = `${year}-${month}-${day}`;
+          document.getElementById("exam-time").value = `${hours}:${minutes}`;
+          document.getElementById("exam-location").value = exam.location;
+          document.getElementById("exam-notes").value = exam.notes;
+
+          examModal.style.display = "flex";
+        };
+
+        // 删除考试
+        window.deleteExam = function (examId) {
+          if (confirm("确定要删除这个考试吗？")) {
+            const index = exams.findIndex((e) => e.id === examId);
+            if (index !== -1) {
+              exams.splice(index, 1);
+              alert("考试已成功删除");
+
+              // 在实际应用中，这里会重新渲染考试列表
+              // 检查是否需要显示空状态
+              if (exams.length === 0) {
+                document.getElementById("countdown-list").style.display =
+                  "none";
+                document.getElementById("empty-state").style.display = "block";
+              }
+            }
+          }
+        };
+
+        // 表单提交处理
+        examForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const examId = examIdInput.value;
+          const examName = document.getElementById("exam-name").value;
+          const examSubject = document.getElementById("exam-subject").value;
+          const examDate = document.getElementById("exam-date").value;
+          const examTime = document.getElementById("exam-time").value;
+          const examLocation = document.getElementById("exam-location").value;
+          const examNotes = document.getElementById("exam-notes").value;
+
+          // 创建日期对象
+          const examDateTime = new Date(`${examDate}T${examTime}`);
+
+          // 确定状态
+          let status;
+          const now = new Date();
+          const diffDays = Math.ceil(
+            (examDateTime - now) / (1000 * 60 * 60 * 24)
+          );
+
+          if (diffDays <= 7) {
+            status = "urgent";
+          } else if (diffDays <= 30) {
+            status = "upcoming";
+          } else {
+            status = "distant";
+          }
+
+          // 创建新考试对象
+          const newExam = {
+            name: examName,
+            subject: examSubject,
+            date: examDateTime.toISOString(),
+            location: examLocation,
+            notes: examNotes,
+            status: status,
+          };
+
+          if (examId) {
+            // 更新已有考试
+            const index = exams.findIndex((e) => e.id === parseInt(examId));
+            if (index !== -1) {
+              newExam.id = parseInt(examId);
+              exams[index] = newExam;
+              alert("考试信息已更新");
+            }
+          } else {
+            // 添加新考试
+            newExam.id =
+              exams.length > 0 ? Math.max(...exams.map((e) => e.id)) + 1 : 1;
+            exams.push(newExam);
+            alert("考试已成功添加");
+
+            // 如果之前是空状态，更新显示
+            document.getElementById("countdown-list").style.display = "block";
+            document.getElementById("empty-state").style.display = "none";
+          }
+
+          // 关闭模态框
+          closeExamModal();
+        });
+
+        // 实时更新倒计时
+        function updateCountdowns() {
+          exams.forEach((exam) => {
+            const examDate = new Date(exam.date);
+            const now = new Date();
+
+            // 计算剩余时间
+            let diff = examDate - now;
+
+            // 如果时间已过，设置为0
+            if (diff < 0) diff = 0;
+
+            // 计算天、时、分、秒
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor(
+              (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+            );
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            // 更新DOM
+            const daysEl = document.getElementById(`days-${exam.id}`);
+            const hoursEl = document.getElementById(`hours-${exam.id}`);
+            const minutesEl = document.getElementById(`minutes-${exam.id}`);
+            const secondsEl = document.getElementById(`seconds-${exam.id}`);
+
+            if (daysEl) daysEl.textContent = days;
+            if (hoursEl)
+              hoursEl.textContent = hours.toString().padStart(2, "0");
+            if (minutesEl)
+              minutesEl.textContent = minutes.toString().padStart(2, "0");
+            if (secondsEl)
+              secondsEl.textContent = seconds.toString().padStart(2, "0");
+          });
+        }
+
+        // 初始更新倒计时
+        updateCountdowns();
+
+        // 每秒更新倒计时
+        setInterval(updateCountdowns, 1000);
+
+        // 筛选和搜索功能
+        const searchInput = document.getElementById("search-input");
+        const sortSelect = document.getElementById("sort-select");
+        const filterSelect = document.getElementById("filter-select");
+
+        // 简单搜索实现
+        searchInput.addEventListener("input", function () {
+          const searchTerm = this.value.toLowerCase();
+
+          // 简单实现，实际应用中会根据筛选重新渲染列表
+          alert(`搜索: ${searchTerm}`);
+        });
+
+        // 排序选择
+        sortSelect.addEventListener("change", function () {
+          const sortValue = this.value;
+
+          // 简单实现，实际应用中会根据排序重新渲染列表
+          alert(`排序方式: ${sortValue}`);
+        });
+
+        // 状态筛选
+        filterSelect.addEventListener("change", function () {
+          const filterValue = this.value;
+
+          // 简单实现，实际应用中会根据筛选重新渲染列表
+          alert(`筛选状态: ${filterValue}`);
+        });
+      });
+    </script>
+  </body>
+</html>

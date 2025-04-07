@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>个人资料 - 课堂助手</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- 使用图标库 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      /* 个人资料页面特定样式 */
+      .profile-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+      }
+
+      .profile-sidebar {
+        flex: 1;
+        min-width: 250px;
+        max-width: 350px;
+      }
+
+      .profile-content {
+        flex: 2;
+        min-width: 300px;
+      }
+
+      .avatar-container {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto 1.5rem;
+        position: relative;
+      }
+
+      .avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--primary-color);
+      }
+
+      .avatar-upload {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 40px;
+        height: 40px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        transition: background-color 0.2s;
+      }
+
+      .avatar-upload:hover {
+        background-color: #0581e0;
+      }
+
+      .user-info {
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .user-name {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+      }
+
+      .user-role {
+        color: var(--text-secondary);
+      }
+
+      .stats-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background-color: var(--background-secondary);
+        border-radius: var(--border-radius);
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .profile-card {
+        background-color: var(--background-color);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+
+      .file-input {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+      <div class="container navbar-container">
+        <a href="index.html" class="logo">
+          <i class="fas fa-book-reader"></i>
+          课堂助手
+        </a>
+        <button class="nav-toggle" aria-label="切换导航菜单">
+          <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-links">
+          <li><a href="index.html">首页</a></li>
+          <li><a href="schedule.html">课表</a></li>
+          <li><a href="countdown.html">考试倒计时</a></li>
+          <li><a href="profile.html" class="active">个人资料</a></li>
+          <li><a href="settings.html">设置</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container py-4">
+      <h1 class="mb-4">个人资料</h1>
+
+      <div class="profile-container">
+        <!-- 左侧信息栏 -->
+        <div class="profile-sidebar">
+          <div class="profile-card">
+            <div class="avatar-container">
+              <img
+                src="https://via.placeholder.com/200x200?text=头像"
+                alt="用户头像"
+                class="avatar"
+                id="user-avatar"
+              />
+              <label for="avatar-input" class="avatar-upload" title="上传头像">
+                <i class="fas fa-camera"></i>
+              </label>
+              <input
+                type="file"
+                id="avatar-input"
+                class="file-input"
+                accept="image/*"
+              />
+            </div>
+
+            <div class="user-info">
+              <h2 class="user-name">张三</h2>
+              <p class="user-role">学生</p>
+            </div>
+
+            <div class="stats-container">
+              <div class="stat-item">
+                <div class="stat-value">12</div>
+                <div class="stat-label">已完成课程</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">5</div>
+                <div class="stat-label">待考试程</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">89%</div>
+                <div class="stat-label">平均出勤率</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">18</div>
+                <div class="stat-label">学习天数</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧内容区 -->
+        <div class="profile-content">
+          <!-- 基本信息 -->
+          <div class="profile-card">
+            <div class="card-header">
+              <h3 class="card-title">基本信息</h3>
+              <button class="btn btn-outline" id="edit-basic-info">
+                <i class="fas fa-pen"></i> 编辑
+              </button>
+            </div>
+
+            <form id="basic-info-form">
+              <div class="form-group">
+                <label class="form-label" for="full-name">姓名</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="full-name"
+                  value="张三"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="student-id">学号</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="student-id"
+                  value="2025001"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="email">邮箱</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  value="zhangsan@example.com"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="phone">手机号</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="phone"
+                  value="138****1234"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="major">专业</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="major"
+                  value="计算机科学与技术"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="class">班级</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="class"
+                  value="2025级1班"
+                  disabled
+                />
+              </div>
+
+              <div
+                class="form-group"
+                style="display: none"
+                id="save-basic-info-btn-group"
+              >
+                <button type="button" class="btn" id="save-basic-info">
+                  保存
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline"
+                  style="margin-left: 0.5rem"
+                  id="cancel-basic-info"
+                >
+                  取消
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- 教育经历 -->
+          <div class="profile-card">
+            <div class="card-header">
+              <h3 class="card-title">教育经历</h3>
+              <button class="btn btn-outline" id="edit-education">
+                <i class="fas fa-pen"></i> 编辑
+              </button>
+            </div>
+
+            <form id="education-form">
+              <div class="form-group">
+                <label class="form-label" for="school">学校</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="school"
+                  value="示例大学"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="degree">学位</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="degree"
+                  value="本科"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="enrollment-year">入学年份</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="enrollment-year"
+                  value="2025"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="graduation-year">毕业年份</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="graduation-year"
+                  value="2029"
+                  disabled
+                />
+              </div>
+
+              <div
+                class="form-group"
+                style="display: none"
+                id="save-education-btn-group"
+              >
+                <button type="button" class="btn" id="save-education">
+                  保存
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline"
+                  style="margin-left: 0.5rem"
+                  id="cancel-education"
+                >
+                  取消
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- 账号安全 -->
+          <div class="profile-card">
+            <div class="card-header">
+              <h3 class="card-title">账号安全</h3>
+            </div>
+
+            <div style="margin-bottom: 1rem">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                <div>
+                  <div style="font-weight: 500">修改密码</div>
+                  <div style="color: var(--text-secondary); font-size: 0.9rem">
+                    定期更改密码以保障账号安全
+                  </div>
+                </div>
+                <button class="btn btn-outline" id="change-password-btn">
+                  修改
+                </button>
+              </div>
+
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                "
+              >
+                <div>
+                  <div style="font-weight: 500">绑定手机</div>
+                  <div style="color: var(--text-secondary); font-size: 0.9rem">
+                    已绑定手机: 138****1234
+                  </div>
+                </div>
+                <button class="btn btn-outline" id="change-phone-btn">
+                  更换
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-column">
+            <h3 class="footer-title">课堂助手</h3>
+            <p>你的学习管理伙伴，让学习更加高效有序。</p>
+          </div>
+          <div class="footer-column">
+            <h3 class="footer-title">快速链接</h3>
+            <ul class="footer-links">
+              <li><a href="index.html">首页</a></li>
+              <li><a href="schedule.html">课表</a></li>
+              <li><a href="countdown.html">考试倒计时</a></li>
+              <li><a href="profile.html">个人资料</a></li>
+              <li><a href="settings.html">设置</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3 class="footer-title">联系我们</h3>
+            <ul class="footer-links">
+              <li><i class="fas fa-envelope"></i> contact@classhelper.com</li>
+              <li><i class="fas fa-phone"></i> +86 123 4567 8901</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 课堂助手 版权所有</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- 修改密码浮动面板 -->
+    <div class="modal" id="password-modal">
+      <div class="modal-content">
+        <div class="modal-close" id="close-password-modal">×</div>
+        <h2 class="mb-3">修改密码</h2>
+        <form id="password-form">
+          <div class="form-group">
+            <label class="form-label" for="current-password">当前密码</label>
+            <input
+              type="password"
+              class="form-control"
+              id="current-password"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-password">新密码</label>
+            <input
+              type="password"
+              class="form-control"
+              id="new-password"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="confirm-password">确认新密码</label>
+            <input
+              type="password"
+              class="form-control"
+              id="confirm-password"
+              required
+            />
+          </div>
+          <div class="text-center mt-4">
+            <button type="submit" class="btn">确认修改</button>
+            <button
+              type="button"
+              class="btn btn-outline"
+              style="margin-left: 0.5rem"
+              id="cancel-password"
+            >
+              取消
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 基本信息编辑
+        const editBasicInfoBtn = document.getElementById("edit-basic-info");
+        const saveBasicInfoBtn = document.getElementById("save-basic-info");
+        const cancelBasicInfoBtn = document.getElementById("cancel-basic-info");
+        const saveBasicInfoBtnGroup = document.getElementById(
+          "save-basic-info-btn-group"
+        );
+        const basicInfoInputs = document.querySelectorAll(
+          "#basic-info-form input"
+        );
+
+        // 保存原始值，用于取消时恢复
+        const originalBasicInfoValues = {};
+
+        editBasicInfoBtn.addEventListener("click", function () {
+          // 启用输入框
+          basicInfoInputs.forEach((input) => {
+            originalBasicInfoValues[input.id] = input.value;
+            input.disabled = false;
+          });
+
+          // 显示保存按钮
+          saveBasicInfoBtnGroup.style.display = "block";
+          // 隐藏编辑按钮
+          editBasicInfoBtn.style.display = "none";
+        });
+
+        cancelBasicInfoBtn.addEventListener("click", function () {
+          // 恢复原始值并禁用输入框
+          basicInfoInputs.forEach((input) => {
+            input.value = originalBasicInfoValues[input.id];
+            input.disabled = true;
+          });
+
+          // 隐藏保存按钮
+          saveBasicInfoBtnGroup.style.display = "none";
+          // 显示编辑按钮
+          editBasicInfoBtn.style.display = "block";
+        });
+
+        saveBasicInfoBtn.addEventListener("click", function () {
+          // 在实际应用中，这里会发送数据到服务器
+
+          // 禁用输入框
+          basicInfoInputs.forEach((input) => {
+            input.disabled = true;
+          });
+
+          // 隐藏保存按钮
+          saveBasicInfoBtnGroup.style.display = "none";
+          // 显示编辑按钮
+          editBasicInfoBtn.style.display = "block";
+
+          // 更新用户名显示
+          document.querySelector(".user-name").textContent =
+            document.getElementById("full-name").value;
+
+          // 显示成功消息
+          alert("基本信息已更新");
+        });
+
+        // 教育经历编辑
+        const editEducationBtn = document.getElementById("edit-education");
+        const saveEducationBtn = document.getElementById("save-education");
+        const cancelEducationBtn = document.getElementById("cancel-education");
+        const saveEducationBtnGroup = document.getElementById(
+          "save-education-btn-group"
+        );
+        const educationInputs = document.querySelectorAll(
+          "#education-form input"
+        );
+
+        // 保存原始值，用于取消时恢复
+        const originalEducationValues = {};
+
+        editEducationBtn.addEventListener("click", function () {
+          // 启用输入框
+          educationInputs.forEach((input) => {
+            originalEducationValues[input.id] = input.value;
+            input.disabled = false;
+          });
+
+          // 显示保存按钮
+          saveEducationBtnGroup.style.display = "block";
+          // 隐藏编辑按钮
+          editEducationBtn.style.display = "none";
+        });
+
+        cancelEducationBtn.addEventListener("click", function () {
+          // 恢复原始值并禁用输入框
+          educationInputs.forEach((input) => {
+            input.value = originalEducationValues[input.id];
+            input.disabled = true;
+          });
+
+          // 隐藏保存按钮
+          saveEducationBtnGroup.style.display = "none";
+          // 显示编辑按钮
+          editEducationBtn.style.display = "block";
+        });
+
+        saveEducationBtn.addEventListener("click", function () {
+          // 在实际应用中，这里会发送数据到服务器
+
+          // 禁用输入框
+          educationInputs.forEach((input) => {
+            input.disabled = true;
+          });
+
+          // 隐藏保存按钮
+          saveEducationBtnGroup.style.display = "none";
+          // 显示编辑按钮
+          editEducationBtn.style.display = "block";
+
+          // 显示成功消息
+          alert("教育经历已更新");
+        });
+
+        // 头像上传
+        const avatarInput = document.getElementById("avatar-input");
+        const userAvatar = document.getElementById("user-avatar");
+
+        avatarInput.addEventListener("change", function () {
+          const file = this.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              userAvatar.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        // 修改密码
+        const changePasswordBtn = document.getElementById(
+          "change-password-btn"
+        );
+        const passwordModal = document.getElementById("password-modal");
+        const closePasswordModal = document.getElementById(
+          "close-password-modal"
+        );
+        const cancelPasswordBtn = document.getElementById("cancel-password");
+        const passwordForm = document.getElementById("password-form");
+
+        // 打开密码模态框
+        changePasswordBtn.addEventListener("click", function () {
+          passwordModal.style.display = "flex";
+        });
+
+        // 关闭密码模态框
+        function closePasswordModal() {
+          passwordModal.style.display = "none";
+          passwordForm.reset();
+        }
+
+        closePasswordModal.addEventListener("click", closePasswordModal);
+        cancelPasswordBtn.addEventListener("click", closePasswordModal);
+
+        // 点击外部关闭模态框
+        window.addEventListener("click", function (event) {
+          if (event.target === passwordModal) {
+            closePasswordModal();
+          }
+        });
+
+        // 密码表单提交
+        passwordForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const currentPassword =
+            document.getElementById("current-password").value;
+          const newPassword = document.getElementById("new-password").value;
+          const confirmPassword =
+            document.getElementById("confirm-password").value;
+
+          // 简单验证
+          if (newPassword !== confirmPassword) {
+            alert("两次输入的新密码不一致");
+            return;
+          }
+
+          // 在实际应用中，这里会发送数据到服务器进行密码更改
+
+          // 关闭模态框
+          closePasswordModal();
+
+          // 显示成功消息
+          alert("密码已成功修改");
+        });
+
+        // 手机更换功能（简化处理）
+        const changePhoneBtn = document.getElementById("change-phone-btn");
+
+        changePhoneBtn.addEventListener("click", function () {
+          const newPhone = prompt("请输入新手机号码：");
+          if (newPhone && /^1[3-9]\d{9}$/.test(newPhone)) {
+            alert("手机号码已更新");
+          } else if (newPhone) {
+            alert("请输入有效的手机号码");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

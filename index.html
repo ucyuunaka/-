@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>课堂助手 - 你的学习管理伙伴</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- 使用图标库 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      /* 首页特定样式 */
+      .hero-section {
+        background: linear-gradient(135deg, var(--primary-color), #0368b2);
+        color: white;
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+        border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-content {
+        max-width: 600px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .hero-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-text {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+      }
+
+      .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .hero-decoration {
+        position: absolute;
+        right: -150px;
+        top: -20px;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0) 70%
+        );
+        border-radius: 50%;
+        z-index: 1;
+      }
+
+      .hero-decoration::before {
+        content: "";
+        position: absolute;
+        right: 50px;
+        top: 100px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0) 70%
+        );
+        border-radius: 50%;
+      }
+
+      .features-section {
+        padding: 2rem 0 4rem;
+      }
+
+      .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        font-size: 2rem;
+        font-weight: 700;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+
+      .feature-card {
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        background-color: var(--background-color);
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .feature-icon {
+        width: 60px;
+        height: 60px;
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .feature-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .feature-text {
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+      }
+
+      .feature-link {
+        margin-top: auto;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .feature-link i {
+        font-size: 0.8rem;
+        transition: transform 0.3s;
+      }
+
+      .feature-link:hover i {
+        transform: translateX(3px);
+      }
+
+      .stats-section {
+        background-color: var(--primary-light);
+        padding: 3rem 0;
+        margin: 3rem 0;
+        border-radius: var(--border-radius-lg);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+      }
+
+      .stat-item {
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      .cta-section {
+        padding: 4rem 0;
+        text-align: center;
+      }
+
+      .cta-title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .cta-text {
+        color: var(--text-secondary);
+        font-size: 1.25rem;
+        max-width: 800px;
+        margin: 0 auto 2rem;
+      }
+
+      /* 响应式设计调整 */
+      @media (max-width: 768px) {
+        .hero-title {
+          font-size: 2rem;
+        }
+
+        .hero-text {
+          font-size: 1.1rem;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+
+        .feature-card {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+      <div class="container navbar-container">
+        <a href="index.html" class="logo">
+          <i class="fas fa-book-reader"></i>
+          课堂助手
+        </a>
+        <button class="nav-toggle" aria-label="切换导航菜单">
+          <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-links">
+          <li><a href="index.html" class="active">首页</a></li>
+          <li><a href="schedule.html">课表</a></li>
+          <li><a href="countdown.html">考试倒计时</a></li>
+          <li><a href="profile.html">个人资料</a></li>
+          <li><a href="settings.html">设置</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main>
+      <!-- 英雄区域 -->
+      <section class="hero-section">
+        <div class="container">
+          <div class="hero-content">
+            <h1 class="hero-title">让你的学习生活更高效有序</h1>
+            <p class="hero-text">
+              课堂助手帮你管理课程安排、记录学习进度、提醒考试日期，让你专注于学习本身。
+            </p>
+            <div class="hero-buttons">
+              <a href="schedule.html" class="btn">查看我的课表</a>
+              <a
+                href="countdown.html"
+                class="btn btn-outline"
+                style="
+                  background-color: rgba(255, 255, 255, 0.2);
+                  border-color: white;
+                  color: white;
+                "
+                >考试倒计时</a
+              >
+            </div>
+          </div>
+          <div class="hero-decoration"></div>
+        </div>
+      </section>
+
+      <!-- 特色功能区域 -->
+      <section class="features-section">
+        <div class="container">
+          <h2 class="section-title">核心功能</h2>
+          <div class="features-grid">
+            <!-- 课表特性 -->
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fas fa-calendar-alt"></i>
+              </div>
+              <h3 class="feature-title">课程管理</h3>
+              <p class="feature-text">
+                轻松创建和自定义你的课表，可视化地展示每周课程安排，并支持导出和分享功能。
+              </p>
+              <a href="schedule.html" class="feature-link">
+                管理我的课表 <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+
+            <!-- 倒计时特性 -->
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fas fa-hourglass-half"></i>
+              </div>
+              <h3 class="feature-title">考试倒计时</h3>
+              <p class="feature-text">
+                设置重要的考试日期，系统会自动计算剩余时间并提醒你，确保你的备考计划有条不紊。
+              </p>
+              <a href="countdown.html" class="feature-link">
+                查看考试倒计时 <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+
+            <!-- 个性化特性 -->
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fas fa-user-graduate"></i>
+              </div>
+              <h3 class="feature-title">个人资料</h3>
+              <p class="feature-text">
+                定制你的个人学习资料，包括专业、课程喜好等信息，让系统为你提供更个性化的服务。
+              </p>
+              <a href="profile.html" class="feature-link">
+                编辑个人资料 <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+
+            <!-- 设置特性 -->
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fas fa-cog"></i>
+              </div>
+              <h3 class="feature-title">偏好设置</h3>
+              <p class="feature-text">
+                根据个人喜好调整界面主题、语言选择等，让使用体验更符合你的习惯。
+              </p>
+              <a href="settings.html" class="feature-link">
+                调整设置 <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 统计数据 -->
+      <section class="stats-section">
+        <div class="container">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-number">3000+</div>
+              <div class="stat-label">活跃用户</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">12,000+</div>
+              <div class="stat-label">课程管理</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">98%</div>
+              <div class="stat-label">用户满意度</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 呼吁行动区域 -->
+      <section class="cta-section">
+        <div class="container">
+          <h2 class="cta-title">开始使用课堂助手</h2>
+          <p class="cta-text">
+            无需注册，立即开始管理你的学习，只需选择你想使用的功能，即可体验课堂助手带来的便利。
+          </p>
+          <a href="schedule.html" class="btn">开始使用</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-column">
+            <h3 class="footer-title">课堂助手</h3>
+            <p>你的学习管理伙伴，让学习更加高效有序。</p>
+          </div>
+          <div class="footer-column">
+            <h3 class="footer-title">快速链接</h3>
+            <ul class="footer-links">
+              <li><a href="index.html">首页</a></li>
+              <li><a href="schedule.html">课表</a></li>
+              <li><a href="countdown.html">考试倒计时</a></li>
+              <li><a href="profile.html">个人资料</a></li>
+              <li><a href="settings.html">设置</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3 class="footer-title">联系我们</h3>
+            <ul class="footer-links">
+              <li><i class="fas fa-envelope"></i> contact@classhelper.com</li>
+              <li><i class="fas fa-phone"></i> +86 123 4567 8901</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 课堂助手 版权所有</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 滚动动画效果
+        const animateStatistics = () => {
+          const stats = document.querySelectorAll(".stat-number");
+
+          stats.forEach((stat) => {
+            const target = parseInt(stat.textContent);
+            let current = 0;
+            const increment = target / 30; // 将动画分成30步
+
+            const updateCount = () => {
+              if (current < target) {
+                current += increment;
+                stat.textContent =
+                  Math.ceil(current) +
+                  (stat.textContent.includes("%") ? "%" : "+");
+                requestAnimationFrame(updateCount);
+              } else {
+                stat.textContent =
+                  target + (stat.textContent.includes("%") ? "%" : "+");
+              }
+            };
+
+            // 当元素滚动到可见范围时启动动画
+            const observer = new IntersectionObserver(
+              (entries) => {
+                entries.forEach((entry) => {
+                  if (entry.isIntersecting) {
+                    updateCount();
+                    observer.unobserve(entry.target);
+                  }
+                });
+              },
+              { threshold: 0.5 }
+            );
+
+            observer.observe(stat);
+          });
+        };
+
+        // 初始化统计数字动画
+        animateStatistics();
+      });
+    </script>
+  </body>
+</html>
