@@ -259,6 +259,12 @@
     transition: padding 0.4s ease-in-out;
 }
 
+/* 确保页脚也有相同的左侧内边距 */
+.footer {
+    padding-left: 110px;
+    transition: padding 0.4s ease-in-out;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
     .sidebar {
@@ -272,6 +278,11 @@
     }
     
     .sidebar-active {
+        padding-left: 0;
+    }
+    
+    /* 在移动端视图中移除页脚的左侧内边距 */
+    .footer {
         padding-left: 0;
     }
     
