@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>成绩管理 - 课堂助手</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
+    <!-- 使用图标库 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- 添加 Remix Icon 库，用于侧边栏图标 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <!-- 引入Chart.js图表库 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      /* 成绩管理页面特定样式 */
+      .grades-header {
+        background: linear-gradient(135deg, var(--primary-color), #0368b2);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+      }
+
+      .grades-title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .grades-subtitle {
+        opacity: 0.9;
+      }
+
+      .grades-section {
+        margin-bottom: 3rem;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      .grades-card {
+        background-color: var(--background-color);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        margin-bottom: 1.5rem;
+      }
+
+      .grades-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .summary-item {
+        background-color: var(--background-color);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+
+      .summary-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+      }
+
+      .summary-label {
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      .grades-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .grades-table th,
+      .grades-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .grades-table th {
+        background-color: var(--background-secondary);
+        font-weight: 600;
+      }
+
+      .grades-table tr:hover {
+        background-color: var(--background-hover);
+      }
+
+      .score-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-weight: 500;
+      }
+
+      .score-excellent {
+        background-color: var(--success-light);
+        color: var(--success-color);
+      }
+
+      .score-good {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+      }
+
+      .score-average {
+        background-color: var(--warning-light);
+        color: var(--warning-color);
+      }
+
+      .score-poor {
+        background-color: var(--danger-light);
+        color: var(--danger-color);
+      }
+
+      .action-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .chart-container {
+        height: 300px;
+        margin-bottom: 2rem;
+      }
+
+      .grade-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+        font-weight: 500;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        background-color: var(--input-bg);
+        color: var(--text-color);
+      }
+
+      select.form-control {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23555' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 12px 12px;
+        padding-right: 2rem;
+      }
+
+      .tab-container {
+        margin-bottom: 1.5rem;
+      }
+
+      .tab-buttons {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .tab-button {
+        padding: 0.75rem 1.5rem;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        font-weight: 500;
+        color: var(--text-secondary);
+        cursor: pointer;
+      }
+
+      .tab-button.active {
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      @media (max-width: 768px) {
+        .grades-summary {
+          grid-template-columns: 1fr;
+        }
+
+        .grades-table {
+          font-size: 0.9rem;
+        }
+
+        .grades-table th,
+        .grades-table td {
+          padding: 0.75rem 0.5rem;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+
+        .tab-buttons {
+          overflow-x: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 侧边栏导航 -->
+    <aside class="sidebar">
+      <!-- 按钮组 -->
+      <div class="sidebar-btn">
+        <div class="sidebar-btn-item"></div>
+        <div class="sidebar-btn-item"></div>
+        <div class="sidebar-btn-item"></div>
+      </div>
+
+      <!-- 用户资料 -->
+      <div class="sidebar-profile">
+        <div class="sidebar-profile-img">
+          <img
+            src="https://randomuser.me/api/portraits/men/32.jpg"
+            alt="用户头像"
+          />
+        </div>
+        <div class="sidebar-profile-text">
+          <p>欢迎使用</p>
+          <h2>课堂助手</h2>
+        </div>
+      </div>
+
+      <div class="sidebar-line"></div>
+
+      <!-- 主菜单 -->
+      <div class="sidebar-title">
+        <p>主菜单</p>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="sidebar-item" data-href="index.html">
+          <div class="sidebar-light"></div>
+          <div class="sidebar-icon-left"><i class="ri-home-line"></i></div>
+          <div class="sidebar-text">首页</div>
+          <div class="sidebar-icon-right">
+            <i class="ri-arrow-right-s-line"></i>
+          </div>
+        </div>
+
+        <div class="sidebar-item" data-href="schedule.html">
+          <div class="sidebar-light"></div>
+          <div class="sidebar-icon-left"><i class="ri-calendar-line"></i></div>
+          <div class="sidebar-text">课表</div>
+          <div class="sidebar-icon-right">
+            <i class="ri-arrow-right-s-line"></i>
+          </div>
+        </div>
+
+        <div class="sidebar-item active" data-href="grades.html">
+          <div class="sidebar-light"></div>
+          <div class="sidebar-icon-left"><i class="ri-bar-chart-line"></i></div>
+          <div class="sidebar-text">成绩管理</div>
+          <div class="sidebar-icon-right">
+            <i class="ri-arrow-right-s-line"></i>
+          </div>
+        </div>
+
+        <div class="sidebar-item" data-href="countdown.html">
+          <div class="sidebar-light"></div>
+          <div class="sidebar-icon-left"><i class="ri-time-line"></i></div>
+          <div class="sidebar-text">考试倒计时</div>
+          <div class="sidebar-icon-right">
+            <i class="ri-arrow-right-s-line"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-line"></div>
+
+      <!-- 个人中心 -->
+      <div class="sidebar-title">
+        <p>个人中心</p>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="sidebar-item" data-href="profile.html">
+          <div class="sidebar-light"></div>
+          <div class="sidebar-icon-left"><i class="ri-user-line"></i></div>
+          <div class="sidebar-text">个人资料</div>
+          <div class="sidebar-icon-right">
+            <i class="ri-arrow-right-s-line"></i>
+          </div>
+        </div>
+
+        <div class="sidebar-item" data-href="settings.html">
+          <div class="sidebar-light"></div>
+          <div class="sidebar-icon-left">
+            <i class="ri-settings-3-line"></i>
+          </div>
+          <div class="sidebar-text">设置</div>
+          <div class="sidebar-icon-right">
+            <i class="ri-settings-3-line"></i>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 移动端菜单切换按钮 -->
+    <div class="sidebar-toggle">
+      <i class="ri-menu-line"></i>
+    </div>
+
+    <!-- 移动端遮罩层 -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- 主要内容 -->
+    <main class="sidebar-active">
+      <!-- 成绩页面标题区域 -->
+      <section class="grades-header">
+        <div class="container">
+          <h1 class="grades-title">成绩管理</h1>
+          <p class="grades-subtitle">记录、分析并追踪你的学习成果</p>
+        </div>
+      </section>
+
+      <div class="container">
+        <!-- 成绩总览 -->
+        <section class="grades-section">
+          <h2 class="section-title">成绩概览</h2>
+          <div class="grades-summary">
+            <div class="summary-item">
+              <div class="summary-value" id="gpa-value">3.8</div>
+              <div class="summary-label">总GPA</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-value" id="avg-score">92</div>
+              <div class="summary-label">平均分</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-value" id="total-courses">8</div>
+              <div class="summary-label">课程数量</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-value" id="highest-score">98</div>
+              <div class="summary-label">最高分</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 图表展示区 -->
+        <section class="grades-section">
+          <h2 class="section-title">成绩趋势</h2>
+          <div class="tab-container">
+            <div class="tab-buttons">
+              <button class="tab-button active" data-tab="tab-trend">学期趋势</button>
+              <button class="tab-button" data-tab="tab-subject">科目分布</button>
+              <button class="tab-button" data-tab="tab-comp">成绩对比</button>
+            </div>
+            <div class="tab-content active" id="tab-trend">
+              <div class="chart-container">
+                <canvas id="trendChart"></canvas>
+              </div>
+            </div>
+            <div class="tab-content" id="tab-subject">
+              <div class="chart-container">
+                <canvas id="subjectChart"></canvas>
+              </div>
+            </div>
+            <div class="tab-content" id="tab-comp">
+              <div class="chart-container">
+                <canvas id="compareChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 成绩录入 -->
+        <section class="grades-section">
+          <div class="action-buttons">
+            <button class="btn btn-primary" id="addGradeBtn">
+              <i class="fas fa-plus"></i> 添加成绩
+            </button>
+            <button class="btn">
+              <i class="fas fa-file-export"></i> 导出成绩单
+            </button>
+            <button class="btn btn-outline">
+              <i class="fas fa-filter"></i> 筛选
+            </button>
+          </div>
+
+          <!-- 成绩添加表单，默认隐藏 -->
+          <div class="grades-card" id="addGradeForm" style="display: none;">
+            <h3>添加新成绩</h3>
+            <form id="gradeForm">
+              <div class="grade-form">
+                <div class="form-group">
+                  <label for="subject">课程名称</label>
+                  <select id="subject" class="form-control" required>
+                    <option value="">选择课程...</option>
+                    <option value="calculus">高等数学</option>
+                    <option value="programming">程序设计</option>
+                    <option value="physics">大学物理</option>
+                    <option value="english">大学英语</option>
+                    <option value="database">数据库原理</option>
+                    <option value="other">其他课程...</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="examType">考试类型</label>
+                  <select id="examType" class="form-control" required>
+                    <option value="">选择类型...</option>
+                    <option value="midterm">期中考试</option>
+                    <option value="final">期末考试</option>
+                    <option value="quiz">课堂测验</option>
+                    <option value="assignment">作业</option>
+                    <option value="project">项目</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="score">分数</label>
+                  <input
+                    type="number"
+                    id="score"
+                    class="form-control"
+                    min="0"
+                    max="100"
+                    required
+                    placeholder="例如：88"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="maxScore">满分值</label>
+                  <input
+                    type="number"
+                    id="maxScore"
+                    class="form-control"
+                    value="100"
+                    min="1"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="grade-form">
+                <div class="form-group">
+                  <label for="credit">学分</label>
+                  <input
+                    type="number"
+                    id="credit"
+                    class="form-control"
+                    value="3"
+                    min="0"
+                    step="0.5"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="semester">学期</label>
+                  <select id="semester" class="form-control" required>
+                    <option value="">选择学期...</option>
+                    <option value="2024-1">2024-2025 第一学期</option>
+                    <option value="2024-2">2024-2025 第二学期</option>
+                    <option value="2023-1">2023-2024 第一学期</option>
+                    <option value="2023-2">2023-2024 第二学期</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="examDate">考试日期</label>
+                  <input
+                    type="date"
+                    id="examDate"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="weight">权重 (%)</label>
+                  <input
+                    type="number"
+                    id="weight"
+                    class="form-control"
+                    value="100"
+                    min="1"
+                    max="100"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="notes">备注</label>
+                <textarea
+                  id="notes"
+                  class="form-control"
+                  rows="2"
+                  placeholder="可以添加关于这次考试的备注..."
+                ></textarea>
+              </div>
+              <div style="text-align: right; margin-top: 1rem;">
+                <button type="button" class="btn btn-outline" id="cancelAddBtn">取消</button>
+                <button type="submit" class="btn btn-primary">保存成绩</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- 成绩表格 -->
+          <div class="grades-card">
+            <table class="grades-table">
+              <thead>
+                <tr>
+                  <th>课程名称</th>
+                  <th>类型</th>
+                  <th>学期</th>
+                  <th>分数</th>
+                  <th>学分</th>
+                  <th>日期</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="gradesTableBody">
+                <!-- 这里会通过JavaScript动态添加内容 -->
+                <tr>
+                  <td>高等数学</td>
+                  <td>期末考试</td>
+                  <td>2024-2025 第一学期</td>
+                  <td><span class="score-badge score-good">92</span></td>
+                  <td>5</td>
+                  <td>2025-01-15</td>
+                  <td>
+                    <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>程序设计</td>
+                  <td>期末项目</td>
+                  <td>2024-2025 第一学期</td>
+                  <td><span class="score-badge score-excellent">98</span></td>
+                  <td>4</td>
+                  <td>2025-01-10</td>
+                  <td>
+                    <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>大学物理</td>
+                  <td>期中考试</td>
+                  <td>2024-2025 第一学期</td>
+                  <td><span class="score-badge score-average">78</span></td>
+                  <td>4</td>
+                  <td>2024-11-05</td>
+                  <td>
+                    <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>大学英语</td>
+                  <td>期末考试</td>
+                  <td>2024-2025 第一学期</td>
+                  <td><span class="score-badge score-good">88</span></td>
+                  <td>3</td>
+                  <td>2025-01-18</td>
+                  <td>
+                    <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>数据库原理</td>
+                  <td>期末考试</td>
+                  <td>2023-2024 第二学期</td>
+                  <td><span class="score-badge score-excellent">95</span></td>
+                  <td>3</td>
+                  <td>2024-06-20</td>
+                  <td>
+                    <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- GPA计算器 -->
+        <section class="grades-section">
+          <h2 class="section-title">GPA计算器</h2>
+          <div class="grades-card">
+            <p>根据成绩自动计算GPA，支持不同计算方法。</p>
+            <div style="margin: 1.5rem 0;">
+              <label for="gpaSystem" style="margin-right: 1rem;">GPA计算标准:</label>
+              <select id="gpaSystem" class="form-control" style="width: auto; display: inline-block;">
+                <option value="4.0">4.0制（通用）</option>
+                <option value="4.3">4.3制（部分高校）</option>
+                <option value="5.0">5.0制</option>
+                <option value="100">百分制（中国）</option>
+              </select>
+            </div>
+            <table class="grades-table">
+              <thead>
+                <tr>
+                  <th>分数段</th>
+                  <th>等级</th>
+                  <th>GPA值（4.0制）</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>90-100</td>
+                  <td>A</td>
+                  <td>4.0</td>
+                </tr>
+                <tr>
+                  <td>85-89</td>
+                  <td>A-</td>
+                  <td>3.7</td>
+                </tr>
+                <tr>
+                  <td>80-84</td>
+                  <td>B+</td>
+                  <td>3.3</td>
+                </tr>
+                <tr>
+                  <td>75-79</td>
+                  <td>B</td>
+                  <td>3.0</td>
+                </tr>
+                <tr>
+                  <td>70-74</td>
+                  <td>B-</td>
+                  <td>2.7</td>
+                </tr>
+                <tr>
+                  <td>65-69</td>
+                  <td>C+</td>
+                  <td>2.3</td>
+                </tr>
+                <tr>
+                  <td>60-64</td>
+                  <td>C</td>
+                  <td>2.0</td>
+                </tr>
+                <tr>
+                  <td>0-59</td>
+                  <td>F</td>
+                  <td>0.0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-column">
+            <h3 class="footer-title">课堂助手</h3>
+            <p>你的学习管理伙伴，让学习更加高效有序。</p>
+          </div>
+          <div class="footer-column">
+            <h3 class="footer-title">快速链接</h3>
+            <ul class="footer-links">
+              <li><a href="index.html">首页</a></li>
+              <li><a href="schedule.html">课表</a></li>
+              <li><a href="grades.html">成绩管理</a></li>
+              <li><a href="countdown.html">考试倒计时</a></li>
+              <li><a href="profile.html">个人资料</a></li>
+              <li><a href="settings.html">设置</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3 class="footer-title">联系我们</h3>
+            <ul class="footer-links">
+              <li><i class="fas fa-envelope"></i> contact@classhelper.com</li>
+              <li><i class="fas fa-phone"></i> +86 123 4567 8901</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 课堂助手 版权所有</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 初始化表单日期为当天
+        document.getElementById("examDate").valueAsDate = new Date();
+        
+        // 为标签切换添加事件监听
+        const tabButtons = document.querySelectorAll(".tab-button");
+        tabButtons.forEach(button => {
+          button.addEventListener("click", function() {
+            // 移除所有活动状态
+            document.querySelectorAll(".tab-button").forEach(btn => {
+              btn.classList.remove("active");
+            });
+            document.querySelectorAll(".tab-content").forEach(content => {
+              content.classList.remove("active");
+            });
+            
+            // 添加当前选中状态
+            this.classList.add("active");
+            const tabId = this.getAttribute("data-tab");
+            document.getElementById(tabId).classList.add("active");
+          });
+        });
+        
+        // 添加成绩表单显示/隐藏
+        const addGradeBtn = document.getElementById("addGradeBtn");
+        const addGradeForm = document.getElementById("addGradeForm");
+        const cancelAddBtn = document.getElementById("cancelAddBtn");
+        
+        addGradeBtn.addEventListener("click", function() {
+          addGradeForm.style.display = "block";
+          this.style.display = "none";
+        });
+        
+        cancelAddBtn.addEventListener("click", function() {
+          addGradeForm.style.display = "none";
+          addGradeBtn.style.display = "inline-block";
+        });
+        
+        // 成绩表单提交
+        document.getElementById("gradeForm").addEventListener("submit", function(e) {
+          e.preventDefault();
+          
+          // 在这里可以添加成绩数据处理和保存逻辑
+          // 这里只是示例，实际应用中可能需要与后端交互
+          
+          // 模拟添加成绩到表格
+          const subject = document.getElementById("subject").options[document.getElementById("subject").selectedIndex].text;
+          const examType = document.getElementById("examType").options[document.getElementById("examType").selectedIndex].text;
+          const semester = document.getElementById("semester").options[document.getElementById("semester").selectedIndex].text;
+          const score = document.getElementById("score").value;
+          const credit = document.getElementById("credit").value;
+          const examDate = document.getElementById("examDate").value;
+          
+          // 创建新行
+          const newRow = document.createElement("tr");
+          
+          // 设置评分样式
+          let scoreClass = "score-poor";
+          if (score >= 90) {
+            scoreClass = "score-excellent";
+          } else if (score >= 80) {
+            scoreClass = "score-good";
+          } else if (score >= 60) {
+            scoreClass = "score-average";
+          }
+          
+          // 添加行内容
+          newRow.innerHTML = `
+            <td>${subject}</td>
+            <td>${examType}</td>
+            <td>${semester}</td>
+            <td><span class="score-badge ${scoreClass}">${score}</span></td>
+            <td>${credit}</td>
+            <td>${examDate}</td>
+            <td>
+              <button class="btn-icon"><i class="fas fa-edit"></i></button>
+              <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+            </td>
+          `;
+          
+          // 插入表格
+          document.getElementById("gradesTableBody").prepend(newRow);
+          
+          // 重置表单和UI状态
+          this.reset();
+          document.getElementById("examDate").valueAsDate = new Date();
+          addGradeForm.style.display = "none";
+          addGradeBtn.style.display = "inline-block";
+          
+          // 重新计算统计信息和更新图表
+          updateStatistics();
+          renderCharts();
+        });
+        
+        // 初始化图表
+        renderCharts();
+        
+        // 绘制所有图表
+        function renderCharts() {
+          renderTrendChart();
+          renderSubjectChart();
+          renderCompareChart();
+        }
+        
+        // 趋势图表
+        function renderTrendChart() {
+          const ctx = document.getElementById('trendChart').getContext('2d');
+          
+          // 假设的历史数据
+          const data = {
+            labels: ['2023-1', '2023-2', '2024-1', '2024-2'],
+            datasets: [
+              {
+                label: 'GPA趋势',
+                data: [3.4, 3.6, 3.8, 3.9],
+                borderColor: '#4285F4',
+                backgroundColor: 'rgba(66, 133, 244, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+              },
+              {
+                label: '平均分',
+                data: [83, 87, 90, 92],
+                borderColor: '#0F9D58',
+                backgroundColor: 'rgba(15, 157, 88, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+              }
+            ]
+          };
+          
+          new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: false
+                }
+              },
+              plugins: {
+                legend: {
+                  position: 'top',
+                }
+              }
+            }
+          });
+        }
+        
+        // 科目分布图
+        function renderSubjectChart() {
+          const ctx = document.getElementById('subjectChart').getContext('2d');
+          
+          const data = {
+            labels: ['高等数学', '程序设计', '大学物理', '大学英语', '数据库原理'],
+            datasets: [{
+              data: [92, 98, 78, 88, 95],
+              backgroundColor: [
+                'rgba(66, 133, 244, 0.7)',
+                'rgba(15, 157, 88, 0.7)',
+                'rgba(244, 160, 0, 0.7)',
+                'rgba(219, 68, 55, 0.7)',
+                'rgba(162, 63, 173, 0.7)'
+              ],
+              borderWidth: 1
+            }]
+          };
+          
+          new Chart(ctx, {
+            type: 'radar',
+            data: data,
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                r: {
+                  beginAtZero: true,
+                  max: 100,
+                  ticks: {
+                    stepSize: 20
+                  }
+                }
+              }
+            }
+          });
+        }
+        
+        // 比较图表
+        function renderCompareChart() {
+          const ctx = document.getElementById('compareChart').getContext('2d');
+          
+          const data = {
+            labels: ['高等数学', '程序设计', '大学物理', '大学英语', '数据库原理'],
+            datasets: [
+              {
+                label: '你的分数',
+                data: [92, 98, 78, 88, 95],
+                backgroundColor: 'rgba(66, 133, 244, 0.7)'
+              },
+              {
+                label: '班级平均',
+                data: [86, 85, 83, 90, 87],
+                backgroundColor: 'rgba(244, 160, 0, 0.7)'
+              }
+            ]
+          };
+          
+          new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 100
+                }
+              },
+              plugins: {
+                legend: {
+                  position: 'top',
+                }
+              }
+            }
+          });
+        }
+        
+        // 更新统计信息
+        function updateStatistics() {
+          // 在实际应用中，这里应该重新计算GPA和平均分
+          // 这里只是简单示例，实际应用中可能需要更复杂的计算逻辑
+          document.getElementById('total-courses').textContent = 
+            document.getElementById('gradesTableBody').getElementsByTagName('tr').length;
+        }
+        
+        // 更改GPA计算系统时更新显示
+        document.getElementById('gpaSystem').addEventListener('change', function() {
+          // 在实际应用中，这里应该根据所选系统重新计算并显示GPA
+          // 这里只是示例
+          alert('已切换到' + this.options[this.selectedIndex].text + '计算方式，将重新计算GPA');
+        });
+      });
+    </script>
+  </body>
+</html>
