@@ -472,7 +472,9 @@
         </div>
 
         <!-- 即将到来的考试 -->
-        <div class="countdown-item upcoming animate-on-scroll fade-up delay-100">
+        <div
+          class="countdown-item upcoming animate-on-scroll fade-up delay-100"
+        >
           <div class="status-badge status-upcoming">即将到来</div>
           <div class="countdown-main">
             <h3 class="countdown-title">计算机网络期中考试</h3>
@@ -576,10 +578,12 @@
                 <div class="countdown-value" id="hours-3">12</div>
                 <div class="countdown-unit-label">时</div>
               </div>
-              <div class="countdown-value" id="minutes-3">25</div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="minutes-3">25</div>
                 <div class="countdown-unit-label">分</div>
               </div>
-              <div class="countdown-value" id="seconds-3">08</div>
+              <div class="countdown-unit">
+                <div class="countdown-value" id="seconds-3">08</div>
                 <div class="countdown-unit-label">秒</div>
               </div>
             </div>
@@ -590,7 +594,11 @@
         </div>
 
         <!-- 无考试时显示的空状态 -->
-        <div class="empty-state animate-on-scroll fade-up" id="empty-state" style="display: none">
+        <div
+          class="empty-state animate-on-scroll fade-up"
+          id="empty-state"
+          style="display: none"
+        >
           <div class="empty-icon">
             <i class="fas fa-calendar-xmark"></i>
           </div>
@@ -682,11 +690,11 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // 初始化滚动动画
-        initScrollAnimation('.animate-on-scroll', {
+        initScrollAnimation(".animate-on-scroll", {
           threshold: 0.1,
-          once: true
+          once: true,
         });
-        
+
         // 模拟考试数据
         const exams = [
           {
