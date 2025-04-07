@@ -186,7 +186,8 @@
       .data-management {
         margin-top: 2rem;
         padding-top: 2rem;
-        border-top: 1px solid var(--border-color);
+        /* 移除顶部边框，避免与上一个设置行的底部边框重叠 */
+        /* border-top: 1px solid var(--border-color); */
       }
 
       .data-action-buttons {
@@ -213,7 +214,7 @@
       .btn-danger:hover {
         background-color: #c53030;
       }
-      
+
       /* 添加模态框样式 */
       .modal {
         display: none;
@@ -227,7 +228,7 @@
         justify-content: center;
         z-index: 1000;
       }
-      
+
       .modal-content {
         background-color: var(--background-color);
         border-radius: var(--border-radius);
@@ -237,7 +238,7 @@
         width: 90%;
         position: relative;
       }
-      
+
       .modal-close {
         position: absolute;
         right: 1.5rem;
