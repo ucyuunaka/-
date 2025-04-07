@@ -6,6 +6,8 @@
   <title>课表 - 课堂助手</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/sidebar.css">
+  <!-- 添加滚动动画样式 -->
+  <link rel="stylesheet" href="css/scrollAnimation.css">
   <!-- 使用图标库 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <!-- 添加 Remix Icon 库，用于侧边栏图标 -->
@@ -422,14 +424,14 @@
     <!-- 页面标题和描述 -->
     <div class="page-header">
       <div class="container">
-        <h1 class="mb-2">我的课程表</h1>
-        <p class="text-secondary">管理和安排你的课程，清晰掌握每周学习时间</p>
+        <h1 class="mb-2 animate-on-scroll fade-up">我的课程表</h1>
+        <p class="text-secondary animate-on-scroll fade-up delay-100">管理和安排你的课程，清晰掌握每周学习时间</p>
       </div>
     </div>
     
     <div class="schedule-container">
       <!-- 课表控制区域 -->
-      <div class="schedule-controls">
+      <div class="schedule-controls animate-on-scroll fade-up">
         <div class="view-toggle">
           <button class="active" id="week-view">周视图</button>
           <button id="list-view">列表视图</button>
@@ -468,7 +470,7 @@
       </div>
       
       <!-- 周视图课表 -->
-      <div id="week-view-container">
+      <div id="week-view-container" class="animate-on-scroll fade-up delay-100">
         <div class="timetable"></div>
           <div class="timetable-grid">
             <!-- 表头 -->
@@ -725,7 +727,7 @@
       </div>
       
       <!-- 列表视图 -->
-      <div id="list-view-container" style="display: none;">
+      <div id="list-view-container" style="display: none;" class="animate-on-scroll fade-up delay-100">
         <div class="card">
           <h3 class="mb-3">周一</h3>
           <div class="mb-3">
@@ -968,8 +970,16 @@
 
   <script src="js/main.js"></script>
   <script src="js/sidebar.js"></script>
+  <!-- 添加滚动动画脚本 -->
+  <script src="js/scrollAnimation.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // 初始化滚动动画
+      initScrollAnimation('.animate-on-scroll', {
+        threshold: 0.1,
+        once: true
+      });
+      
       // 添加课程弹窗
       const addCourseBtn = document.getElementById('add-course-btn');
       const addCourseModal = document.getElementById('add-course-modal');

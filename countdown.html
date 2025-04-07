@@ -6,6 +6,8 @@
     <title>考试倒计时 - 课堂助手</title>
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/sidebar.css" />
+    <!-- 添加滚动动画样式 -->
+    <link rel="stylesheet" href="css/scrollAnimation.css" />
     <!-- 使用图标库 -->
     <link
       rel="stylesheet"
@@ -368,14 +370,14 @@
           align-items: center;
         "
       >
-        <h1 class="mb-3">考试倒计时</h1>
-        <button class="btn" id="add-exam-btn">
+        <h1 class="mb-3 animate-on-scroll fade-up">考试倒计时</h1>
+        <button class="btn animate-on-scroll fade-up" id="add-exam-btn">
           <i class="fas fa-plus"></i> 添加考试
         </button>
       </div>
 
       <!-- 筛选和排序 -->
-      <div class="filters">
+      <div class="filters animate-on-scroll fade-up">
         <div class="search-box">
           <i class="fas fa-search search-icon"></i>
           <input
@@ -408,7 +410,7 @@
       <!-- 考试倒计时列表 -->
       <div class="countdown-list" id="countdown-list">
         <!-- 紧急考试 -->
-        <div class="countdown-item urgent">
+        <div class="countdown-item urgent animate-on-scroll fade-up">
           <div class="status-badge status-urgent">紧急</div>
           <div class="countdown-main">
             <h3 class="countdown-title">数据结构期末考试</h3>
@@ -468,7 +470,7 @@
         </div>
 
         <!-- 即将到来的考试 -->
-        <div class="countdown-item upcoming">
+        <div class="countdown-item upcoming animate-on-scroll fade-up delay-100">
           <div class="status-badge status-upcoming">即将到来</div>
           <div class="countdown-main">
             <h3 class="countdown-title">计算机网络期中考试</h3>
@@ -528,7 +530,7 @@
         </div>
 
         <!-- 较远的考试 -->
-        <div class="countdown-item distant">
+        <div class="countdown-item distant animate-on-scroll fade-up delay-200">
           <div class="status-badge status-distant">较远</div>
           <div class="countdown-main">
             <h3 class="countdown-title">操作系统期末考试</h3>
@@ -587,7 +589,7 @@
         </div>
 
         <!-- 无考试时显示的空状态 -->
-        <div class="empty-state" id="empty-state" style="display: none">
+        <div class="empty-state animate-on-scroll fade-up" id="empty-state" style="display: none">
           <div class="empty-icon">
             <i class="fas fa-calendar-xmark"></i>
           </div>
@@ -702,8 +704,16 @@
 
     <script src="js/main.js"></script>
     <script src="js/sidebar.js"></script>
+    <!-- 添加滚动动画脚本 -->
+    <script src="js/scrollAnimation.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        // 初始化滚动动画
+        initScrollAnimation('.animate-on-scroll', {
+          threshold: 0.1,
+          once: true
+        });
+        
         // 模拟考试数据
         const exams = [
           {

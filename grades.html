@@ -6,6 +6,8 @@
     <title>成绩管理 - 课堂助手</title>
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/sidebar.css" />
+    <!-- 添加滚动动画样式 -->
+    <link rel="stylesheet" href="css/scrollAnimation.css" />
     <!-- 使用图标库 -->
     <link
       rel="stylesheet"
@@ -351,29 +353,31 @@
       <!-- 成绩页面标题区域 -->
       <section class="grades-header">
         <div class="container">
-          <h1 class="grades-title">成绩管理</h1>
-          <p class="grades-subtitle">记录、分析并追踪你的学习成果</p>
+          <h1 class="grades-title animate-on-scroll fade-up">成绩管理</h1>
+          <p class="grades-subtitle animate-on-scroll fade-up delay-100">
+            记录、分析并追踪你的学习成果
+          </p>
         </div>
       </section>
 
       <div class="container">
         <!-- 成绩总览 -->
         <section class="grades-section">
-          <h2 class="section-title">成绩概览</h2>
+          <h2 class="section-title animate-on-scroll fade-up">成绩概览</h2>
           <div class="grades-summary">
-            <div class="summary-item">
+            <div class="summary-item animate-on-scroll fade-up">
               <div class="summary-value" id="gpa-value">3.8</div>
               <div class="summary-label">总GPA</div>
             </div>
-            <div class="summary-item">
+            <div class="summary-item animate-on-scroll fade-up delay-100">
               <div class="summary-value" id="avg-score">92</div>
               <div class="summary-label">平均分</div>
             </div>
-            <div class="summary-item">
+            <div class="summary-item animate-on-scroll fade-up delay-200">
               <div class="summary-value" id="total-courses">8</div>
               <div class="summary-label">课程数量</div>
             </div>
-            <div class="summary-item">
+            <div class="summary-item animate-on-scroll fade-up delay-300">
               <div class="summary-value" id="highest-score">98</div>
               <div class="summary-label">最高分</div>
             </div>
@@ -382,8 +386,8 @@
 
         <!-- 图表展示区 -->
         <section class="grades-section">
-          <h2 class="section-title">成绩趋势</h2>
-          <div class="tab-container">
+          <h2 class="section-title animate-on-scroll fade-up">成绩趋势</h2>
+          <div class="tab-container animate-on-scroll fade-up delay-100">
             <div class="tab-buttons">
               <button class="tab-button active" data-tab="tab-trend">
                 学期趋势
@@ -413,7 +417,7 @@
 
         <!-- 成绩录入 -->
         <section class="grades-section">
-          <div class="action-buttons">
+          <div class="action-buttons animate-on-scroll fade-up">
             <button class="btn btn-primary" id="addGradeBtn">
               <i class="fas fa-plus"></i> 添加成绩
             </button>
@@ -426,7 +430,11 @@
           </div>
 
           <!-- 成绩添加表单，默认隐藏 -->
-          <div class="grades-card" id="addGradeForm" style="display: none">
+          <div
+            class="grades-card animate-on-scroll fade-up"
+            id="addGradeForm"
+            style="display: none"
+          >
             <h3>添加新成绩</h3>
             <form id="gradeForm">
               <div class="grade-form">
@@ -541,7 +549,7 @@
           </div>
 
           <!-- 成绩表格 -->
-          <div class="grades-card">
+          <div class="grades-card animate-on-scroll fade-up">
             <table class="grades-table">
               <thead>
                 <tr>
@@ -643,8 +651,8 @@
 
         <!-- GPA计算器 -->
         <section class="grades-section">
-          <h2 class="section-title">GPA计算器</h2>
-          <div class="grades-card">
+          <h2 class="section-title animate-on-scroll fade-up">GPA计算器</h2>
+          <div class="grades-card animate-on-scroll fade-up delay-100">
             <p>根据成绩自动计算GPA，支持不同计算方法。</p>
             <div style="margin: 1.5rem 0">
               <label for="gpaSystem" style="margin-right: 1rem"
@@ -752,8 +760,16 @@
 
     <script src="js/main.js"></script>
     <script src="js/sidebar.js"></script>
+    <!-- 添加滚动动画脚本 -->
+    <script src="js/scrollAnimation.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        // 初始化滚动动画
+        initScrollAnimation(".animate-on-scroll", {
+          threshold: 0.1,
+          once: true,
+        });
+
         // 初始化表单日期为当天
         document.getElementById("examDate").valueAsDate = new Date();
 

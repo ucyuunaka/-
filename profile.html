@@ -6,6 +6,8 @@
     <title>个人资料 - 课堂助手</title>
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/sidebar.css" />
+    <!-- 添加滚动动画样式 -->
+    <link rel="stylesheet" href="css/scrollAnimation.css" />
     <!-- 使用图标库 -->
     <link
       rel="stylesheet"
@@ -246,12 +248,12 @@
 
     <!-- 主内容区 -->
     <div class="container py-4 sidebar-active">
-      <h1 class="mb-4">个人资料</h1>
+      <h1 class="mb-4 animate-on-scroll fade-up">个人资料</h1>
 
       <div class="profile-container">
         <!-- 左侧信息栏 -->
         <div class="profile-sidebar">
-          <div class="profile-card">
+          <div class="profile-card animate-on-scroll fade-up">
             <div class="avatar-container">
               <img
                 src="https://randomuser.me/api/portraits/men/32.jpg"
@@ -276,19 +278,19 @@
             </div>
 
             <div class="stats-container">
-              <div class="stat-item">
+              <div class="stat-item animate-on-scroll fade-up delay-100">
                 <div class="stat-value">12</div>
                 <div class="stat-label">已完成课程</div>
               </div>
-              <div class="stat-item">
+              <div class="stat-item animate-on-scroll fade-up delay-200">
                 <div class="stat-value">5</div>
                 <div class="stat-label">待考试程</div>
               </div>
-              <div class="stat-item">
+              <div class="stat-item animate-on-scroll fade-up delay-100">
                 <div class="stat-value">89%</div>
                 <div class="stat-label">平均出勤率</div>
               </div>
-              <div class="stat-item">
+              <div class="stat-item animate-on-scroll fade-up delay-200">
                 <div class="stat-value">18</div>
                 <div class="stat-label">学习天数</div>
               </div>
@@ -299,7 +301,7 @@
         <!-- 右侧内容区 -->
         <div class="profile-content">
           <!-- 基本信息 -->
-          <div class="profile-card">
+          <div class="profile-card animate-on-scroll fade-up">
             <div class="card-header">
               <h3 class="card-title">基本信息</h3>
               <button class="btn btn-outline" id="edit-basic-info">
@@ -395,7 +397,7 @@
           </div>
 
           <!-- 教育经历 -->
-          <div class="profile-card">
+          <div class="profile-card animate-on-scroll fade-up delay-100">
             <div class="card-header">
               <h3 class="card-title">教育经历</h3>
               <button class="btn btn-outline" id="edit-education">
@@ -469,7 +471,7 @@
           </div>
 
           <!-- 账号安全 -->
-          <div class="profile-card">
+          <div class="profile-card animate-on-scroll fade-up delay-200">
             <div class="card-header">
               <h3 class="card-title">账号安全</h3>
             </div>
@@ -600,8 +602,16 @@
 
     <script src="js/main.js"></script>
     <script src="js/sidebar.js"></script>
+    <!-- 添加滚动动画脚本 -->
+    <script src="js/scrollAnimation.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        // 初始化滚动动画
+        initScrollAnimation(".animate-on-scroll", {
+          threshold: 0.1,
+          once: true,
+        });
+
         // 基本信息编辑
         const editBasicInfoBtn = document.getElementById("edit-basic-info");
         const saveBasicInfoBtn = document.getElementById("save-basic-info");
