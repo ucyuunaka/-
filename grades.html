@@ -407,15 +407,15 @@
           <h2 class="section-title animate-on-scroll fade-up">成绩概览</h2>
           <div class="grades-summary">
             <div class="summary-item animate-on-scroll fade-up">
-              <div class="summary-value" id="gpa-value">3.8</div>
+              <div class="summary-value" id="gpa-value">3.76</div>
               <div class="summary-label">总GPA</div>
             </div>
             <div class="summary-item animate-on-scroll fade-up delay-100">
-              <div class="summary-value" id="avg-score">92</div>
+              <div class="summary-value" id="avg-score">89.2</div>
               <div class="summary-label">平均分</div>
             </div>
             <div class="summary-item animate-on-scroll fade-up delay-200">
-              <div class="summary-value" id="total-courses">8</div>
+              <div class="summary-value" id="total-courses">12</div>
               <div class="summary-label">课程数量</div>
             </div>
             <div class="summary-item animate-on-scroll fade-up delay-300">
@@ -460,20 +460,91 @@
             <button class="btn btn-primary" id="addGradeBtn">
               <i class="fas fa-plus"></i> 添加成绩
             </button>
-            <button class="btn">
+            <button class="btn" id="exportBtn">
               <i class="fas fa-file-export"></i> 导出成绩单
             </button>
-            <button class="btn btn-outline">
+            <button class="btn btn-outline" id="filterBtn">
               <i class="fas fa-filter"></i> 筛选
+            </button>
+            <button class="btn btn-outline" id="sortBtn">
+              <i class="fas fa-sort"></i> 排序
             </button>
           </div>
 
+          <!-- 筛选表单，默认隐藏 -->
+          <div class="grades-card animate-on-scroll fade-up" id="filterForm" style="display: none">
+            <h3>筛选成绩</h3>
+            <div class="grade-form">
+              <div class="form-group">
+                <label for="filterSubject">课程</label>
+                <select id="filterSubject" class="form-control">
+                  <option value="">全部课程</option>
+                  <option value="高等数学">高等数学</option>
+                  <option value="程序设计">程序设计</option>
+                  <option value="大学物理">大学物理</option>
+                  <option value="大学英语">大学英语</option>
+                  <option value="数据库原理">数据库原理</option>
+                  <option value="计算机网络">计算机网络</option>
+                  <option value="操作系统">操作系统</option>
+                  <option value="软件工程">软件工程</option>
+                  <option value="人工智能">人工智能</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="filterSemester">学期</label>
+                <select id="filterSemester" class="form-control">
+                  <option value="">全部学期</option>
+                  <option value="2024-2025 第二学期">2024-2025 第二学期</option>
+                  <option value="2024-2025 第一学期">2024-2025 第一学期</option>
+                  <option value="2023-2024 第二学期">2023-2024 第二学期</option>
+                  <option value="2023-2024 第一学期">2023-2024 第一学期</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="filterScore">最低分数</label>
+                <input type="range" id="filterScore" class="form-control" min="0" max="100" value="0" oninput="this.nextElementSibling.value = this.value" />
+                <output>0</output>
+              </div>
+            </div>
+            <div style="text-align: right; margin-top: 1rem">
+              <button type="button" class="btn btn-outline" id="cancelFilterBtn">取消</button>
+              <button type="button" class="btn btn-primary" id="applyFilterBtn">应用筛选</button>
+            </div>
+          </div>
+
+          <!-- 排序选项，默认隐藏 -->
+          <div class="grades-card animate-on-scroll fade-up" id="sortOptions" style="display: none">
+            <h3>排序方式</h3>
+            <div class="grade-form" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+              <div class="form-check">
+                <input type="radio" name="sortOption" id="sortByDate" value="date" class="form-check-input" checked />
+                <label for="sortByDate" class="form-check-label">按日期</label>
+              </div>
+              <div class="form-check">
+                <input type="radio" name="sortOption" id="sortByScore" value="score" class="form-check-input" />
+                <label for="sortByScore" class="form-check-label">按分数</label>
+              </div>
+              <div class="form-check">
+                <input type="radio" name="sortOption" id="sortBySubject" value="subject" class="form-check-input" />
+                <label for="sortBySubject" class="form-check-label">按课程名称</label>
+              </div>
+              <div class="form-check">
+                <input type="radio" name="sortOption" id="sortByCredit" value="credit" class="form-check-input" />
+                <label for="sortByCredit" class="form-check-label">按学分</label>
+              </div>
+            </div>
+            <div class="form-check" style="margin-top: 1rem">
+              <input type="checkbox" id="sortDesc" class="form-check-input" />
+              <label for="sortDesc" class="form-check-label">降序排列</label>
+            </div>
+            <div style="text-align: right; margin-top: 1rem">
+              <button type="button" class="btn btn-outline" id="cancelSortBtn">取消</button>
+              <button type="button" class="btn btn-primary" id="applySortBtn">应用排序</button>
+            </div>
+          </div>
+
           <!-- 成绩添加表单，默认隐藏 -->
-          <div
-            class="grades-card animate-on-scroll fade-up"
-            id="addGradeForm"
-            style="display: none"
-          >
+          <div class="grades-card animate-on-scroll fade-up" id="addGradeForm" style="display: none">
             <h3>添加新成绩</h3>
             <form id="gradeForm">
               <div class="grade-form">
@@ -486,6 +557,10 @@
                     <option value="physics">大学物理</option>
                     <option value="english">大学英语</option>
                     <option value="database">数据库原理</option>
+                    <option value="network">计算机网络</option>
+                    <option value="os">操作系统</option>
+                    <option value="softeng">软件工程</option>
+                    <option value="ai">人工智能</option>
                     <option value="other">其他课程...</option>
                   </select>
                 </div>
@@ -611,10 +686,10 @@
                   <td>5</td>
                   <td>2025-01-15</td>
                   <td>
-                    <button class="btn-icon">
+                    <button class="btn-icon edit-btn" data-id="1">
                       <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn-icon text-danger">
+                    <button class="btn-icon text-danger delete-btn" data-id="1">
                       <i class="fas fa-trash"></i>
                     </button>
                   </td>
@@ -627,10 +702,10 @@
                   <td>4</td>
                   <td>2025-01-10</td>
                   <td>
-                    <button class="btn-icon">
+                    <button class="btn-icon edit-btn" data-id="2">
                       <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn-icon text-danger">
+                    <button class="btn-icon text-danger delete-btn" data-id="2">
                       <i class="fas fa-trash"></i>
                     </button>
                   </td>
@@ -643,10 +718,10 @@
                   <td>4</td>
                   <td>2024-11-05</td>
                   <td>
-                    <button class="btn-icon">
+                    <button class="btn-icon edit-btn" data-id="3">
                       <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn-icon text-danger">
+                    <button class="btn-icon text-danger delete-btn" data-id="3">
                       <i class="fas fa-trash"></i>
                     </button>
                   </td>
@@ -659,10 +734,10 @@
                   <td>3</td>
                   <td>2025-01-18</td>
                   <td>
-                    <button class="btn-icon">
+                    <button class="btn-icon edit-btn" data-id="4">
                       <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn-icon text-danger">
+                    <button class="btn-icon text-danger delete-btn" data-id="4">
                       <i class="fas fa-trash"></i>
                     </button>
                   </td>
@@ -670,17 +745,275 @@
                 <tr>
                   <td>数据库原理</td>
                   <td>期末考试</td>
-                  <td>2023-2024 第二学期</td>
+                  <td>2024-2025 第一学期</td>
                   <td><span class="score-badge score-excellent">95</span></td>
                   <td>3</td>
-                  <td>2024-06-20</td>
+                  <td>2025-01-05</td>
                   <td>
-                    <button class="btn-icon">
+                    <button class="btn-icon edit-btn" data-id="5">
                       <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn-icon text-danger">
+                    <button class="btn-icon text-danger delete-btn" data-id="5">
                       <i class="fas fa-trash"></i>
                     </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>计算机网络</td>
+                  <td>期末考试</td>
+                  <td>2024-2025 第一学期</td>
+                  <td><span class="score-badge score-good">87</span></td>
+                  <td>3</td>
+                  <td>2025-01-08</td>
+                  <td>
+                    <button class="btn-icon edit-btn" data-id="6">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon text-danger delete-btn" data-id="6">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>操作系统</td>
+                  <td>期末项目</td>
+                  <td>2023-2024 第二学期</td>
+                  <td><span class="score-badge score-excellent">94</span></td>
+                  <td>4</td>
+                  <td>2024-06-15</td>
+                  <td>
+                    <button class="btn-icon edit-btn" data-id="7">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon text-danger delete-btn" data-id="7">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>软件工程</td>
+                  <td>团队项目</td>
+                  <td>2023-2024 第二学期</td>
+                  <td><span class="score-badge score-excellent">91</span></td>
+                  <td>4</td>
+                  <td>2024-06-20</td>
+                  <td>
+                    <button class="btn-icon edit-btn" data-id="8">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon text-danger delete-btn" data-id="8">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>高等数学</td>
+                  <td>期中考试</td>
+                  <td>2023-2024 第二学期</td>
+                  <td><span class="score-badge score-average">76</span></td>
+                  <td>5</td>
+                  <td>2024-04-10</td>
+                  <td>
+                    <button class="btn-icon edit-btn" data-id="9">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon text-danger delete-btn" data-id="9">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>人工智能</td>
+                  <td>期末项目</td>
+                  <td>2023-2024 第二学期</td>
+                  <td><span class="score-badge score-good">89</span></td>
+                  <td>3</td>
+                  <td>2024-06-22</td>
+                  <td>
+                    <button class="btn-icon edit-btn" data-id="10">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon text-danger delete-btn" data-id="10">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>大学英语</td>
+                  <td>口语测验</td>
+                  <td>2023-2024 第一学期</td>
+                  <td><span class="score-badge score-average">82</span></td>
+                  <td>2</td>
+                  <td>2023-12-05</td>
+                  <td>
+                    <button class="btn-icon edit-btn" data-id="11">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon text-danger delete-btn" data-id="11">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>大学物理</td>
+                  <td>实验报告</td>
+                  <td>2023-2024 第一学期</td>
+                  <td><span class="score-badge score-good">88</span></td>
+                  <td>1.5</td>
+                  <td>2023-11-25</td>
+                  <td>
+                    <button class="btn-icon edit-btn" data-id="12">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon text-danger delete-btn" data-id="12">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 编辑成绩弹窗 -->
+          <div class="modal" id="editGradeModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+            <div class="modal-content" style="background-color: var(--background-color); margin: 10% auto; padding: 20px; border-radius: var(--border-radius); box-shadow: var(--shadow); width: 80%; max-width: 600px;">
+              <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid var(--border-color);">
+                <h3>编辑成绩</h3>
+                <span class="modal-close" style="cursor: pointer; font-size: 1.5rem;">&times;</span>
+              </div>
+              <form id="editGradeForm">
+                <input type="hidden" id="editGradeId">
+                <div class="grade-form">
+                  <div class="form-group">
+                    <label for="editSubject">课程名称</label>
+                    <select id="editSubject" class="form-control" required>
+                      <option value="">选择课程...</option>
+                      <option value="calculus">高等数学</option>
+                      <option value="programming">程序设计</option>
+                      <option value="physics">大学物理</option>
+                      <option value="english">大学英语</option>
+                      <option value="database">数据库原理</option>
+                      <option value="network">计算机网络</option>
+                      <option value="os">操作系统</option>
+                      <option value="softeng">软件工程</option>
+                      <option value="ai">人工智能</option>
+                      <option value="other">其他课程...</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="editExamType">考试类型</label>
+                    <select id="editExamType" class="form-control" required>
+                      <option value="">选择类型...</option>
+                      <option value="midterm">期中考试</option>
+                      <option value="final">期末考试</option>
+                      <option value="quiz">课堂测验</option>
+                      <option value="assignment">作业</option>
+                      <option value="project">项目</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="grade-form">
+                  <div class="form-group">
+                    <label for="editScore">分数</label>
+                    <input type="number" id="editScore" class="form-control" min="0" max="100" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="editCredit">学分</label>
+                    <input type="number" id="editCredit" class="form-control" min="0" step="0.5" required />
+                  </div>
+                </div>
+                <div class="grade-form">
+                  <div class="form-group">
+                    <label for="editSemester">学期</label>
+                    <select id="editSemester" class="form-control" required>
+                      <option value="">选择学期...</option>
+                      <option value="2024-1">2024-2025 第一学期</option>
+                      <option value="2024-2">2024-2025 第二学期</option>
+                      <option value="2023-1">2023-2024 第一学期</option>
+                      <option value="2023-2">2023-2024 第二学期</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="editExamDate">考试日期</label>
+                    <input type="date" id="editExamDate" class="form-control" required />
+                  </div>
+                </div>
+                <div style="text-align: right; margin-top: 1rem">
+                  <button type="button" class="btn btn-outline modal-close-btn">取消</button>
+                  <button type="submit" class="btn btn-primary">保存修改</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- 删除确认弹窗 -->
+          <div class="modal" id="deleteConfirmModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+            <div class="modal-content" style="background-color: var(--background-color); margin: 15% auto; padding: 20px; border-radius: var(--border-radius); box-shadow: var(--shadow); width: 80%; max-width: 400px;">
+              <h3>确认删除</h3>
+              <p>确定要删除这条成绩记录吗？此操作不可撤销。</p>
+              <div style="text-align: right; margin-top: 1rem">
+                <button type="button" class="btn btn-outline modal-close-btn">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">删除</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 成绩目标 -->
+        <section class="grades-section">
+          <h2 class="section-title animate-on-scroll fade-up">成绩目标</h2>
+          <div class="grades-card animate-on-scroll fade-up delay-100">
+            <div class="goal-summary" style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+              <div>
+                <h3>当前学期目标</h3>
+                <p>通过设定学习目标，追踪你的学习进展</p>
+              </div>
+              <button class="btn btn-primary btn-sm" id="addGoalBtn">
+                <i class="fas fa-plus"></i> 添加目标
+              </button>
+            </div>
+            <table class="grades-table">
+              <thead>
+                <tr>
+                  <th>课程</th>
+                  <th>目标分数</th>
+                  <th>当前分数</th>
+                  <th>差距</th>
+                  <th>进度</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>高等数学</td>
+                  <td>95</td>
+                  <td>92</td>
+                  <td>3</td>
+                  <td>
+                    <div class="progress" style="height: 8px; background-color: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden;">
+                      <div style="width: 97%; height: 100%; background-color: var(--success-color);"></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>大学物理</td>
+                  <td>90</td>
+                  <td>78</td>
+                  <td>12</td>
+                  <td>
+                    <div class="progress" style="height: 8px; background-color: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden;">
+                      <div style="width: 87%; height: 100%; background-color: var(--warning-color);"></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>计算机网络</td>
+                  <td>95</td>
+                  <td>87</td>
+                  <td>8</td>
+                  <td>
+                    <div class="progress" style="height: 8px; background-color: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden;">
+                      <div style="width: 92%; height: 100%; background-color: var(--primary-color);"></div>
+                    </div>
                   </td>
                 </tr>
               </tbody>
