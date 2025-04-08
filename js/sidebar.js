@@ -5,15 +5,44 @@
 
 // 文档加载完成后执行
 document.addEventListener('DOMContentLoaded', function() {
-  // 初始化侧边栏
-  initSidebar();
-  
-  // 监听主题变化事件
-  listenForThemeChanges();
-  
-  // 初始化侧边栏悬停功能
-  initSidebarHover();
+  // 加载侧边栏HTML内容
+  loadSidebarContent();
 });
+
+/**
+ * 加载侧边栏HTML内容
+ */
+function loadSidebarContent() {
+  // 查找侧边栏元素
+  const sidebar = document.querySelector('.sidebar');
+  
+  if (sidebar) {
+    // 加载侧边栏内容
+    fetch('pages/sidebar.html')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('无法加载侧边栏模板');
+        }
+        return response.text();
+      })
+      .then(html => {
+        // 插入侧边栏内容
+        sidebar.innerHTML = html;
+        
+        // 初始化侧边栏功能
+        initSidebar();
+        
+        // 监听主题变化事件
+        listenForThemeChanges();
+        
+        // 初始化侧边栏悬停功能
+        initSidebarHover();
+      })
+      .catch(error => {
+        console.error('侧边栏加载失败:', error);
+      });
+  }
+}
 
 /**
  * 初始化侧边栏功能
