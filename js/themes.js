@@ -1,6 +1,6 @@
 /**
  * 课堂助手 - 扩展主题系统
- * 处理多种主题切换和视觉效果应用
+ * 处理多种渐变主题切换和视觉效果应用
  */
 
 // 文档加载完成后执行
@@ -11,15 +11,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 主题管理器
 const ThemeManager = {
-  // 可用的主题列表
+  // 可用的主题列表（渐变组合）
   themes: [
-    { id: 'light', name: '浅色模式' },
-    { id: 'dark', name: '深色模式' },
-    { id: 'pastel', name: '柔和粉彩' },
+    { id: 'classic-blue-pink', name: '经典蓝粉' },
     { id: 'mint-purple', name: '薄荷紫' },
     { id: 'peach-coral', name: '蜜桃珊瑚' },
-    { id: 'blue-green', name: '蓝绿主题' },
-    { id: 'dark-pastel', name: '深色粉彩' }
+    { id: 'green-blue', name: '绿蓝渐变' },
+    { id: 'lavender-cream', name: '薰衣草奶油' },
+    { id: 'blue-violet', name: '蓝紫渐变' },
+    { id: 'coral-mint', name: '珊瑚薄荷' },
+    { id: 'sunset', name: '夕阳渐变' },
+    { id: 'dark', name: '深色模式' }
   ],
   
   // 可用的背景效果
@@ -32,13 +34,13 @@ const ThemeManager = {
   ],
   
   // 当前主题和效果
-  currentTheme: 'light',
+  currentTheme: 'classic-blue-pink',
   currentEffect: 'none',
   
   // 初始化主题系统
   init: function() {
     // 从本地存储加载主题和效果设置
-    this.currentTheme = localStorage.getItem('theme') || 'light';
+    this.currentTheme = localStorage.getItem('theme') || 'classic-blue-pink';
     this.currentEffect = localStorage.getItem('effect') || 'none';
     
     // 应用主题和效果
@@ -101,7 +103,7 @@ const ThemeManager = {
       const isActive = this.currentEffect === effect.id;
       html += `
         <div class="effect-preview ${isActive ? 'active' : ''}" data-effect="${effect.id}">
-          <div class="effect-preview-content effect-${effect.id}">
+          <div class="effect-preview-content effect-${effect.id}-preview">
             <span class="effect-preview-name">${effect.name}</span>
           </div>
         </div>
@@ -137,12 +139,12 @@ const ThemeManager = {
     // 修改主题开关状态（仅限设置页面）
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
-      themeToggle.checked = themeId === 'dark' || themeId === 'dark-pastel';
+      themeToggle.checked = themeId === 'dark';
     }
     
     // 显示通知
     if (window.showNotification) {
-      showNotification(`已切换到${this.getThemeName(themeId)}主题`, 'success');
+      showNotification(`已切换到${this.getThemeName(themeId)}`, 'success');
     }
     
     // 触发主题改变事件
@@ -169,12 +171,6 @@ const ThemeManager = {
   // 应用主题到DOM
   applyTheme: function(themeId) {
     document.body.setAttribute('data-theme', themeId);
-    
-    // 如果有主题边框元素，同时更新它
-    const themeBorder = document.getElementById('theme-border');
-    if (themeBorder) {
-      themeBorder.className = `theme-border theme-${themeId}`;
-    }
   },
   
   // 应用视觉效果

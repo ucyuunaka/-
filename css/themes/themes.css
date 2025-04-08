@@ -1,70 +1,71 @@
 /**
  * 课堂助手 - 扩展主题系统
- * 基于测试色彩搭配文件中的色彩方案扩展主题选项
+ * 基于测试色彩搭配文件中的组合渐变效果扩展主题选项
  */
 
-/* 默认主题变量（浅色模式）保持不变 */
+/* 主题渐变变量 */
+:root {
+  /* 背景色 */
+  --background-color: #f7f2fa;
+  --background-secondary: #ffffff;
+  
+  /* 文本颜色 */
+  --text-color: #333333;
+  --text-secondary: #666666;
+  
+  /* 边框颜色 */
+  --border-color: #dddddd;
+  
+  /* 阴影 */
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* 边框圆角 */
+  --border-radius: 8px;
+  --border-radius-sm: 4px;
+}
 
-/* 扩展主题颜色方案 */
+/* 渐变主题定义 */
 
-/* 1. 柔和粉彩主题 */
-[data-theme="pastel"] {
-  --primary-color: #91defe;
-  --primary-light: #e1f1ff;
-  --primary-dark: #59b8e6;
+/* 1. 经典蓝粉渐变 (原始) */
+[data-theme="classic-blue-pink"] {
+  --gradient-primary: linear-gradient(to right, #91defe, #f9bccc);
+  --gradient-primary-hover: linear-gradient(to right, #7ed0f8, #f7a8bd);
+  --gradient-start: #91defe;
+  --gradient-end: #f9bccc;
   
-  --secondary-color: #f9bccc;
-  --secondary-light: #ffd7e8;
-  
-  --success-color: #a0e8e0;
-  --warning-color: #fff2d7;
-  --danger-color: #ffb7c5;
-  
-  --background-color: #f7d6ff;
-  --background-secondary: #faf0ff;
+  --background-color: #f7f2fa;
+  --background-secondary: #ffffff;
   
   --text-color: #5a3d7a;
   --text-secondary: #8e6bab;
   
-  --border-color: #e6c6ff;
-  
-  /* 阴影保持不变 */
+  --border-color: #dddddd;
 }
 
-/* 2. 薄荷紫主题 */
+/* 2. 薄荷紫渐变 */
 [data-theme="mint-purple"] {
-  --primary-color: #a0e8e0;
-  --primary-light: #d8f7f3;
-  --primary-dark: #4cccc0;
+  --gradient-primary: linear-gradient(to right, #a0e8e0, #d4bbfc);
+  --gradient-primary-hover: linear-gradient(to right, #8fdfd6, #c9a9fa);
+  --gradient-start: #a0e8e0;
+  --gradient-end: #d4bbfc;
   
-  --secondary-color: #d4bbfc;
-  --secondary-light: #e6d6ff;
-  
-  --success-color: #d2e8c8;
-  --warning-color: #fff2d7;
-  --danger-color: #ffb7c5;
-  
-  --background-color: #ffffff;
-  --background-secondary: #f8fcfb;
+  --background-color: #f5fbfa;
+  --background-secondary: #ffffff;
   
   --text-color: #4a5568;
   --text-secondary: #718096;
   
-  --border-color: #d4bbfc;
+  --border-color: #e2f0ee;
 }
 
-/* 3. 蜜桃珊瑚主题 */
+/* 3. 蜜桃珊瑚渐变 */
 [data-theme="peach-coral"] {
-  --primary-color: #ffd7e8;
-  --primary-light: #fff0f7;
-  --primary-dark: #ffb7c5;
-  
-  --secondary-color: #ffb7c5;
-  --secondary-light: #ffe8ed;
-  
-  --success-color: #a0e8e0;
-  --warning-color: #fff2d7;
-  --danger-color: #ff8fa3;
+  --gradient-primary: linear-gradient(to right, #ffd7e8, #ffb7c5);
+  --gradient-primary-hover: linear-gradient(to right, #ffc7df, #ff9fb3);
+  --gradient-start: #ffd7e8;
+  --gradient-end: #ffb7c5;
   
   --background-color: #fff8f8;
   --background-secondary: #fffafb;
@@ -75,69 +76,116 @@
   --border-color: #ffdeeb;
 }
 
-/* 4. 蓝绿主题 */
-[data-theme="blue-green"] {
-  --primary-color: #b5d8ff;
-  --primary-light: #e5f0ff;
-  --primary-dark: #7fb5f5;
+/* 4. 绿蓝渐变 */
+[data-theme="green-blue"] {
+  --gradient-primary: linear-gradient(to right, #d2e8c8, #b5d8ff);
+  --gradient-primary-hover: linear-gradient(to right, #c5e2b7, #a1cdff);
+  --gradient-start: #d2e8c8;
+  --gradient-end: #b5d8ff;
   
-  --secondary-color: #d2e8c8;
-  --secondary-light: #eaf6e6;
-  
-  --success-color: #a0e8e0;
-  --warning-color: #ffd7a0;
-  --danger-color: #ffb7c5;
-  
-  --background-color: #f0f7ff;
-  --background-secondary: #f7fbff;
+  --background-color: #f7faff;
+  --background-secondary: #ffffff;
   
   --text-color: #2c5282;
   --text-secondary: #4a69a5;
   
-  --border-color: #c7e2ff;
+  --border-color: #d8e4ff;
 }
 
-/* 5. 深色粉彩主题 */
-[data-theme="dark-pastel"] {
-  --primary-color: #91defe;
-  --primary-light: #2c4c63;
-  --primary-dark: #59b8e6;
+/* 5. 薰衣草奶油渐变 */
+[data-theme="lavender-cream"] {
+  --gradient-primary: linear-gradient(to right, #e6c6ff, #fff2d7);
+  --gradient-primary-hover: linear-gradient(to right, #deb6fa, #ffe9c0);
+  --gradient-start: #e6c6ff;
+  --gradient-end: #fff2d7;
   
-  --secondary-color: #f9bccc;
-  --secondary-light: #5c3a48;
+  --background-color: #faf5ff;
+  --background-secondary: #ffffff;
   
-  --success-color: #a0e8e0;
-  --warning-color: #f6d365;
-  --danger-color: #ffb7c5;
+  --text-color: #5a4a2d;
+  --text-secondary: #7d6c47;
   
-  --background-color: #2d2a3d;
-  --background-secondary: #242230;
+  --border-color: #e8d7fc;
+}
+
+/* 6. 蓝紫渐变 */
+[data-theme="blue-violet"] {
+  --gradient-primary: linear-gradient(to right, #b5d8ff, #d4bbfc);
+  --gradient-primary-hover: linear-gradient(to right, #9ccaff, #c8a8fa);
+  --gradient-start: #b5d8ff;
+  --gradient-end: #d4bbfc;
   
-  --text-color: #f1e6ff;
-  --text-secondary: #c6b8e0;
+  --background-color: #f5f7ff;
+  --background-secondary: #ffffff;
   
-  --border-color: #3f3655;
+  --text-color: #4c3d82;
+  --text-secondary: #6b5caa;
+  
+  --border-color: #d2d5fc;
+}
+
+/* 7. 珊瑚薄荷渐变 */
+[data-theme="coral-mint"] {
+  --gradient-primary: linear-gradient(to right, #ffb7c5, #a0e8e0);
+  --gradient-primary-hover: linear-gradient(to right, #ffa3b6, #8fdfd6);
+  --gradient-start: #ffb7c5;
+  --gradient-end: #a0e8e0;
+  
+  --background-color: #f8fffc;
+  --background-secondary: #ffffff;
+  
+  --text-color: #3c5d58;
+  --text-secondary: #5c837e;
+  
+  --border-color: #d9f5f1;
+}
+
+/* 8. 夕阳渐变 */
+[data-theme="sunset"] {
+  --gradient-primary: linear-gradient(to right, #f9bccc, #fff2d7);
+  --gradient-primary-hover: linear-gradient(to right, #f7a8bd, #ffe9c0);
+  --gradient-start: #f9bccc;
+  --gradient-end: #fff2d7;
+  
+  --background-color: #fffaf2;
+  --background-secondary: #ffffff;
+  
+  --text-color: #7a5a3d;
+  --text-secondary: #ab8e6b;
+  
+  --border-color: #fbe2d8;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] {
+  --gradient-primary: linear-gradient(to right, #4a7b9b, #7a4a6b);
+  --gradient-primary-hover: linear-gradient(to right, #3c6a87, #6a3957);
+  --gradient-start: #4a7b9b;
+  --gradient-end: #7a4a6b;
+  
+  --background-color: #1a1a2e;
+  --background-secondary: #16213e;
+  
+  --text-color: #e6e6fa;
+  --text-secondary: #b0b0cc;
+  
+  --border-color: #2a2a4a;
   
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
 }
 
-/* 背景视觉效果 */
+/* 背景视觉效果 - 专为渐变效果设计 */
 
 /* 1. 无效果（默认） */
 .effect-none {
-  background-color: var(--background-secondary);
+  background: var(--background-secondary);
 }
 
 /* 2. 叠加效果 */
 .effect-overlay {
-  background-color: var(--background-secondary);
-  background-image: linear-gradient(
-    to right,
-    var(--primary-color),
-    var(--secondary-color)
-  );
+  background-image: var(--gradient-primary);
   background-blend-mode: overlay;
   background-attachment: fixed;
   opacity: 0.15;
@@ -145,45 +193,42 @@
 
 /* 3. 多层渐变效果 */
 .effect-multi-layer {
-  background-color: var(--background-secondary);
   background-image: linear-gradient(
       45deg,
       rgba(255, 255, 255, 0.1) 25%,
       transparent 25%
     ),
-    linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    var(--gradient-primary);
   background-size: 20px 20px, cover;
-  opacity: 0.1;
+  opacity: 0.15;
 }
 
 /* 4. 径向与圆锥渐变 */
 .effect-radial-conic {
-  background-color: var(--background-secondary);
   background-image: radial-gradient(
       circle at top left,
-      var(--primary-color) 0%,
+      var(--gradient-start) 0%,
       transparent 50%
     ),
     conic-gradient(
       from 90deg,
-      var(--secondary-color),
-      var(--primary-color),
-      var(--secondary-color)
+      var(--gradient-end),
+      var(--gradient-start),
+      var(--gradient-end)
     );
-  opacity: 0.1;
+  opacity: 0.15;
 }
 
 /* 5. 混合方向渐变 */
 .effect-mixed-directions {
-  background-color: var(--background-secondary);
   background-image: linear-gradient(
       45deg,
       transparent 20%,
       rgba(255, 255, 255, 0.1) 40%,
       transparent 60%
     ),
-    linear-gradient(to right, var(--primary-color), var(--secondary-color));
-  opacity: 0.1;
+    var(--gradient-primary);
+  opacity: 0.15;
 }
 
 /* 效果容器 */
@@ -221,17 +266,17 @@
 }
 
 .theme-preview.active {
-  border: 2px solid var(--primary-color);
+  border: 2px solid var(--gradient-start);
 }
 
 .theme-preview-top {
   height: 50px;
-  background-color: var(--primary-color);
+  background-image: var(--gradient-primary);
 }
 
 .theme-preview-bottom {
   height: 30px;
-  background-color: var(--secondary-color);
+  background-color: var(--background-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -239,8 +284,7 @@
 
 .theme-preview-name {
   font-size: 0.75rem;
-  color: #fff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  color: var(--text-color);
 }
 
 .effect-preview-container {
@@ -265,7 +309,56 @@
 }
 
 .effect-preview.active {
-  border: 2px solid var(--primary-color);
+  border: 2px solid var(--gradient-start);
+}
+
+/* 效果预览特定样式 */
+.effect-none-preview {
+  background: var(--gradient-primary);
+  opacity: 0.7;
+}
+
+.effect-overlay-preview {
+  background-image: var(--gradient-primary);
+  background-blend-mode: overlay;
+  opacity: 0.7;
+}
+
+.effect-multi-layer-preview {
+  background-image: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.1) 25%,
+      transparent 25%
+    ),
+    var(--gradient-primary);
+  background-size: 10px 10px, cover;
+  opacity: 0.7;
+}
+
+.effect-radial-conic-preview {
+  background-image: radial-gradient(
+      circle at top left,
+      var(--gradient-start) 0%,
+      transparent 50%
+    ),
+    conic-gradient(
+      from 90deg,
+      var(--gradient-end),
+      var(--gradient-start),
+      var(--gradient-end)
+    );
+  opacity: 0.7;
+}
+
+.effect-mixed-directions-preview {
+  background-image: linear-gradient(
+      45deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.1) 40%,
+      transparent 60%
+    ),
+    var(--gradient-primary);
+  opacity: 0.7;
 }
 
 .effect-preview-content {
