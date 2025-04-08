@@ -1,0 +1,332 @@
+/**
+ * 课表数据
+ * 包含课程信息、时间段和星期数据
+ */
+
+// 导出课表数据
+export const scheduleData = {
+  courses: [
+    {
+      id: 1,
+      title: "人工智能导论",
+      teacher: "张教授",
+      location: "东一101",
+      color: "course-math",
+      day: 1,
+      startTime: 1,
+      endTime: 2,
+      weeks: "1-16周",
+    },
+    {
+      id: 2,
+      title: "工程数学",
+      teacher: "张教授",
+      location: "东二201",
+      color: "course-math",
+      day: 3,
+      startTime: 1,
+      endTime: 2,
+      weeks: "1-16周",
+    },
+    {
+      id: 3,
+      title: "数据结构",
+      teacher: "郑教授",
+      location: "东二301",
+      color: "course-computer",
+      day: 4,
+      startTime: 1,
+      endTime: 2,
+      weeks: "1-16周",
+    },
+    {
+      id: 4,
+      title: "工程数学",
+      teacher: "张教授",
+      location: "东二201",
+      color: "course-math",
+      day: 5,
+      startTime: 1,
+      endTime: 2,
+      weeks: "1-16周",
+    },
+    {
+      id: 5,
+      title: "机器学习基础",
+      teacher: "王教授",
+      location: "东二205",
+      color: "course-computer",
+      day: 2,
+      startTime: 3,
+      endTime: 4,
+      weeks: "1-16周",
+    },
+    {
+      id: 6,
+      title: "工程物理",
+      teacher: "李教授",
+      location: "东二207",
+      color: "course-physics",
+      day: 4,
+      startTime: 3,
+      endTime: 4,
+      weeks: "1-16周",
+    },
+    {
+      id: 7,
+      title: "算法分析与设计",
+      teacher: "杨教授",
+      location: "东二304",
+      color: "course-computer",
+      day: 5,
+      startTime: 3,
+      endTime: 4,
+      weeks: "1-16周",
+    },
+    {
+      id: 8,
+      title: "智能系统设计",
+      teacher: "黄教授",
+      location: "东二302",
+      color: "course-computer",
+      day: 1,
+      startTime: 5,
+      endTime: 6,
+      weeks: "1-16周",
+    },
+    {
+      id: 9,
+      title: "神经网络与深度学习",
+      teacher: "吴教授",
+      location: "工学院1-470",
+      color: "course-computer",
+      day: 2,
+      startTime: 5,
+      endTime: 5,
+      weeks: "1-16周",
+    },
+    {
+      id: 10,
+      title: "传感器技术基础",
+      teacher: "黄教授",
+      location: "工学院1-526",
+      color: "course-computer",
+      day: 3,
+      startTime: 5,
+      endTime: 5,
+      weeks: "1-16周",
+    },
+    {
+      id: 11,
+      title: "嵌入式系统",
+      teacher: "陈教授",
+      location: "东二202",
+      color: "course-computer",
+      day: 5,
+      startTime: 5,
+      endTime: 5,
+      weeks: "1-16周",
+    },
+    {
+      id: 12,
+      title: "智能机器人社团",
+      teacher: "学生活动",
+      location: "创新实验室A栋",
+      color: "course-sports",
+      day: 6,
+      startTime: 5,
+      endTime: 5,
+      weeks: "1-16周",
+    },
+    {
+      id: 13,
+      title: "工程英语沟通",
+      teacher: "王教授",
+      location: "东二206",
+      color: "course-english",
+      day: 3,
+      startTime: 6,
+      endTime: 6,
+      weeks: "1-16周",
+    },
+    {
+      id: 14,
+      title: "自动控制原理",
+      teacher: "罗教授",
+      location: "东二204",
+      color: "course-computer",
+      day: 4,
+      startTime: 6,
+      endTime: 6,
+      weeks: "1-16周",
+    },
+    {
+      id: 15,
+      title: "工程英语沟通",
+      teacher: "王教授",
+      location: "东二206",
+      color: "course-english",
+      day: 5,
+      startTime: 6,
+      endTime: 6,
+      weeks: "1-16周",
+    },
+    {
+      id: 16,
+      title: "专业英语",
+      teacher: "刘教授",
+      location: "东二206",
+      color: "course-english",
+      day: 1,
+      startTime: 7,
+      endTime: 8,
+      weeks: "1-16周",
+    },
+    {
+      id: 17,
+      title: "大学英语",
+      teacher: "王教授",
+      location: "文学楼303",
+      color: "course-english",
+      day: 3,
+      startTime: 7,
+      endTime: 7,
+      weeks: "1-16周",
+    },
+    {
+      id: 18,
+      title: "大学英语",
+      teacher: "王教授",
+      location: "文学楼303",
+      color: "course-english",
+      day: 5,
+      startTime: 7,
+      endTime: 7,
+      weeks: "1-16周",
+    },
+    {
+      id: 19,
+      title: "深度学习架构",
+      teacher: "吴教授",
+      location: "工学院1-470",
+      color: "course-computer",
+      day: 2,
+      startTime: 8,
+      endTime: 8,
+      weeks: "1-16周",
+    },
+    {
+      id: 20,
+      title: "图像处理与分析",
+      teacher: "林教授",
+      location: "工学院1-470",
+      color: "course-computer",
+      day: 3,
+      startTime: 9,
+      endTime: 10,
+      weeks: "1-16周",
+    },
+    {
+      id: 21,
+      title: "计算机视觉",
+      teacher: "陈教授",
+      location: "工学院1-470",
+      color: "course-computer",
+      day: 5,
+      startTime: 9,
+      endTime: 10,
+      weeks: "1-16周",
+    },
+    {
+      id: 22,
+      title: "智能机器人导论",
+      teacher: "赵教授",
+      location: "东二305",
+      color: "course-physics",
+      day: 1,
+      startTime: 11,
+      endTime: 11,
+      weeks: "1-16周",
+    },
+    {
+      id: 23,
+      title: "智能机器人导论",
+      teacher: "赵教授",
+      location: "东二305",
+      color: "course-physics",
+      day: 4,
+      startTime: 11,
+      endTime: 11,
+      weeks: "1-16周",
+    },
+  ],
+  timePeriods: [
+    { id: 1, time: "08:00-08:45" },
+    { id: 2, time: "08:55-09:40" },
+    { id: 3, time: "10:10-10:55" },
+    { id: 4, time: "11:05-11:50" },
+    { id: 5, time: "14:20-15:05" },
+    { id: 6, time: "15:15-16:00" },
+    { id: 7, time: "16:30-17:15" },
+    { id: 8, time: "17:25-18:10" },
+    { id: 9, time: "19:00-19:45" },
+    { id: 10, time: "19:55-20:40" },
+    { id: 11, time: "20:50-21:35" },
+  ],
+  days: [
+    { id: 1, name: "周一" },
+    { id: 2, name: "周二" },
+    { id: 3, name: "周三" },
+    { id: 4, name: "周四" },
+    { id: 5, name: "周五" },
+    { id: 6, name: "周六" },
+    { id: 7, name: "周日" },
+  ],
+};
+
+// 提供添加课程的方法
+export function addCourse(courseData) {
+  // 生成新的课程ID
+  const newId = scheduleData.courses.length > 0
+    ? Math.max(...scheduleData.courses.map(c => c.id)) + 1
+    : 1;
+  
+  // 创建新课程对象
+  const newCourse = {
+    id: newId,
+    ...courseData
+  };
+  
+  // 添加到课程列表
+  scheduleData.courses.push(newCourse);
+  
+  return newCourse;
+}
+
+// 提供删除课程的方法
+export function deleteCourse(courseId) {
+  const initialLength = scheduleData.courses.length;
+  scheduleData.courses = scheduleData.courses.filter(course => course.id !== courseId);
+  
+  // 返回是否删除成功
+  return scheduleData.courses.length < initialLength;
+}
+
+// 提供清空课程的方法
+export function clearCourses() {
+  scheduleData.courses = [];
+}
+
+// 提供更新课程的方法
+export function updateCourse(courseId, updatedData) {
+  const courseIndex = scheduleData.courses.findIndex(course => course.id === courseId);
+  
+  if (courseIndex === -1) return false;
+  
+  scheduleData.courses[courseIndex] = {
+    ...scheduleData.courses[courseIndex],
+    ...updatedData
+  };
+  
+  return true;
+}
