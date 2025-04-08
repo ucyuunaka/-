@@ -35,47 +35,52 @@ const ThemeManager = {
     // 应用主题
     this.applyTheme(this.currentTheme);
     
-    // 渲染主题选择界面（如果在设置页）
-    if (document.querySelector('#theme-preview-container')) {
-      this.renderThemeSelectors();
+    // 设置页面初始化小球主题切换器
+    this.initThemeBalls();
+  },
+  
+  // 初始化小球主题切换器
+  initThemeBalls: function() {
+    const themeBalls = document.querySelectorAll('.theme-ball');
+    const currentThemeDisplay = document.getElementById('current-theme');
+    
+    if (!themeBalls.length) return;
+    
+    // 更新活动小球状态
+    this.updateActiveBall(this.currentTheme);
+    
+    // 为每个主题小球添加点击事件
+    themeBalls.forEach(ball => {
+      ball.addEventListener('click', () => {
+        const themeId = ball.getAttribute('data-theme');
+        this.setTheme(themeId);
+        this.updateActiveBall(themeId);
+      });
+    });
+    
+    // 初始更新当前主题显示
+    if (currentThemeDisplay) {
+      currentThemeDisplay.textContent = `当前主题: ${this.getThemeName(this.currentTheme)}`;
     }
   },
   
-  // 渲染主题选择器
-  renderThemeSelectors: function() {
-    const container = document.getElementById('theme-preview-container');
-    if (!container) return;
+  // 更新主题小球的活动状态
+  updateActiveBall: function(themeId) {
+    const themeBalls = document.querySelectorAll('.theme-ball');
+    const currentThemeDisplay = document.getElementById('current-theme');
     
-    let html = '';
-    
-    // 为每个主题创建预览卡片
-    this.themes.forEach(theme => {
-      const isActive = this.currentTheme === theme.id;
-      html += `
-        <div class="theme-preview ${isActive ? 'active' : ''}" data-theme="${theme.id}">
-          <div class="theme-preview-top"></div>
-          <div class="theme-preview-bottom">
-            <span class="theme-preview-name">${theme.name}</span>
-          </div>
-        </div>
-      `;
+    themeBalls.forEach(ball => {
+      if (ball.getAttribute('data-theme') === themeId) {
+        ball.classList.add('active');
+      } else {
+        ball.classList.remove('active');
+      }
     });
     
-    container.innerHTML = html;
-    
-    // 添加点击事件
-    const themeCards = document.querySelectorAll('.theme-preview');
-    themeCards.forEach(card => {
-      card.addEventListener('click', () => {
-        const themeId = card.getAttribute('data-theme');
-        this.setTheme(themeId);
-        
-        // 移除其他卡片的活动状态
-        themeCards.forEach(c => c.classList.remove('active'));
-        // 添加活动状态到当前卡片
-        card.classList.add('active');
-      });
-    });
+    // 更新当前主题显示
+    if (currentThemeDisplay) {
+      currentThemeDisplay.textContent = `当前主题: ${this.getThemeName(themeId)}`;
+    }
   },
   
   // 设置主题
@@ -91,6 +96,11 @@ const ThemeManager = {
     if (window.showNotification) {
       showNotification(`已切换到${this.getThemeName(themeId)}`, 'success');
     }
+    
+    // 触发主题改变事件
+    window.dispatchEvent(
+      new CustomEvent('themeChanged', { detail: { theme: themeId } })
+    );
   },
   
   // 应用主题到DOM

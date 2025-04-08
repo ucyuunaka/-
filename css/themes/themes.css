@@ -34,6 +34,8 @@
   --gradient-primary-hover: linear-gradient(to right, #7ed0f8, #f7a8bd);
   --gradient-start: #91defe;
   --gradient-end: #f9bccc;
+  --gradient-start-rgb: 145, 222, 254;
+  --gradient-end-rgb: 249, 188, 204;
   
   --background-color: #f7f2fa;
   --background-secondary: #ffffff;
@@ -50,6 +52,8 @@
   --gradient-primary-hover: linear-gradient(to right, #8fdfd6, #c9a9fa);
   --gradient-start: #a0e8e0;
   --gradient-end: #d4bbfc;
+  --gradient-start-rgb: 160, 232, 224;
+  --gradient-end-rgb: 212, 187, 252;
   
   --background-color: #f5fbfa;
   --background-secondary: #ffffff;
@@ -66,6 +70,8 @@
   --gradient-primary-hover: linear-gradient(to right, #ffc7df, #ff9fb3);
   --gradient-start: #ffd7e8;
   --gradient-end: #ffb7c5;
+  --gradient-start-rgb: 255, 215, 232;
+  --gradient-end-rgb: 255, 183, 197;
   
   --background-color: #fff8f8;
   --background-secondary: #fffafb;
@@ -82,6 +88,8 @@
   --gradient-primary-hover: linear-gradient(to right, #c5e2b7, #a1cdff);
   --gradient-start: #d2e8c8;
   --gradient-end: #b5d8ff;
+  --gradient-start-rgb: 210, 232, 200;
+  --gradient-end-rgb: 181, 216, 255;
   
   --background-color: #f7faff;
   --background-secondary: #ffffff;
@@ -98,6 +106,8 @@
   --gradient-primary-hover: linear-gradient(to right, #deb6fa, #ffe9c0);
   --gradient-start: #e6c6ff;
   --gradient-end: #fff2d7;
+  --gradient-start-rgb: 230, 198, 255;
+  --gradient-end-rgb: 255, 242, 215;
   
   --background-color: #faf5ff;
   --background-secondary: #ffffff;
@@ -114,6 +124,8 @@
   --gradient-primary-hover: linear-gradient(to right, #9ccaff, #c8a8fa);
   --gradient-start: #b5d8ff;
   --gradient-end: #d4bbfc;
+  --gradient-start-rgb: 181, 216, 255;
+  --gradient-end-rgb: 212, 187, 252;
   
   --background-color: #f5f7ff;
   --background-secondary: #ffffff;
@@ -130,6 +142,8 @@
   --gradient-primary-hover: linear-gradient(to right, #ffa3b6, #8fdfd6);
   --gradient-start: #ffb7c5;
   --gradient-end: #a0e8e0;
+  --gradient-start-rgb: 255, 183, 197;
+  --gradient-end-rgb: 160, 232, 224;
   
   --background-color: #f8fffc;
   --background-secondary: #ffffff;
@@ -146,6 +160,8 @@
   --gradient-primary-hover: linear-gradient(to right, #f7a8bd, #ffe9c0);
   --gradient-start: #f9bccc;
   --gradient-end: #fff2d7;
+  --gradient-start-rgb: 249, 188, 204;
+  --gradient-end-rgb: 255, 242, 215;
   
   --background-color: #fffaf2;
   --background-secondary: #ffffff;
@@ -162,6 +178,8 @@
   --gradient-primary-hover: linear-gradient(to right, #3c6a87, #6a3957);
   --gradient-start: #4a7b9b;
   --gradient-end: #7a4a6b;
+  --gradient-start-rgb: 74, 123, 155;
+  --gradient-end-rgb: 122, 74, 107;
   
   --background-color: #1a1a2e;
   --background-secondary: #16213e;
