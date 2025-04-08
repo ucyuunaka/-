@@ -17,6 +17,11 @@ function loadSidebarContent() {
   const sidebar = document.querySelector('.sidebar');
   
   if (sidebar) {
+    // 创建侧边栏悬停遮罩层元素
+    const overlay = document.createElement('div');
+    overlay.className = 'sidebar-hover-overlay';
+    document.body.appendChild(overlay);
+    
     // 加载侧边栏内容
     fetch('pages/sidebar.html')
       .then(response => {
@@ -98,16 +103,35 @@ function initSidebar() {
  */
 function initSidebarHover() {
   const sidebar = document.querySelector('.sidebar');
-  if (sidebar) {
+  const overlay = document.querySelector('.sidebar-hover-overlay');
+  
+  if (sidebar && overlay) {
     sidebar.addEventListener('mouseenter', function() {
       if (window.innerWidth > 768) {
         updateFooterPosition(true);
+        // 显示遮罩层
+        overlay.classList.add('active');
       }
     });
     
     sidebar.addEventListener('mouseleave', function() {
       if (window.innerWidth > 768) {
         updateFooterPosition(false);
+        // 隐藏遮罩层
+        overlay.classList.remove('active');
+      }
+    });
+    
+    // 确保遮罩层不会拦截点击事件
+    overlay.addEventListener('mouseenter', function() {
+      if (window.innerWidth > 768) {
+        overlay.classList.remove('active');
+        // 延迟一点时间，确保侧边栏也收起
+        setTimeout(() => {
+          if (!sidebar.matches(':hover')) {
+            updateFooterPosition(false);
+          }
+        }, 100);
       }
     });
   }

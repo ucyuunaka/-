@@ -27,6 +27,31 @@
     width: 280px;
 }
 
+/* 侧边栏悬停遮罩层 */
+.sidebar-hover-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    pointer-events: none;
+}
+
+/* 深色模式调整遮罩层颜色 */
+[data-theme="dark"] .sidebar-hover-overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.sidebar-hover-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
 /* 按钮组 */
 .sidebar-btn {
     width: 60px;
