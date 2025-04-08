@@ -1,1109 +1,1352 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>课表 - 课堂助手</title>
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/sidebar.css">
-  <!-- 添加页脚样式 -->
-  <link rel="stylesheet" href="css/footer.css">  <!-- 添加滚动动画样式 -->
-  <link rel="stylesheet" href="css/scrollAnimation.css">
-  <!-- 添加主题样式 -->
-  <link rel="stylesheet" href="css/themes/themes.css">
-  <!-- 使用图标库 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <!-- 添加 Remix Icon 库，用于侧边栏图标 -->
-  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-  <style>
-    /* 课表页面特定样式 */
-    .page-header {
-      padding: 2rem 0;
-      background-color: var(--background-color);
-      border-radius: var(--border-radius);
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow);
-    }
-    
-    .schedule-container {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-    
-    .schedule-controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    
-    .schedule-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
-    
-    /* 课表网格 */
-    .timetable {
-      background: var(--background-color);
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      overflow-x: auto;
-      width: 100%;
-    }
-    
-    .timetable-grid {
-      display: grid;
-      grid-template-columns: 80px repeat(7, 1fr);
-      min-width: 800px;
-    }
-    
-    .timetable-header {
-      background-color: var(--primary-light);
-      font-weight: 600;
-      text-align: center;
-      padding: 1rem 0.5rem;
-      border-bottom: 1px solid var(--border-color);
-    }
-    
-    .timetable-time {
-      grid-column: 1;
-      padding: 1rem 0.5rem;
-      text-align: center;
-      border-right: 1px solid var(--border-color);
-      border-bottom: 1px solid var(--border-color);
-      font-weight: 500;
-      background-color: var(--background-secondary);
-    }
-    
-    .timetable-cell {
-      border-right: 1px solid var(--border-color);
-      border-bottom: 1px solid var(--border-color);
-      padding: 0.5rem;
-      min-height: 80px;
-      position: relative;
-    }
-    
-    .timetable-cell:last-child {
-      border-right: none;
-    }
-    
-    /* 课程卡片样式 */
-    .course-card {
-      background-color: var(--primary-light);
-      color: var(--primary-dark);
-      border-radius: var(--border-radius-sm);
-      padding: 0.5rem;
-      font-size: 0.9rem;
-      height: 100%;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .course-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
-    }
-    
-    .course-title {
-      font-weight: 600;
-      font-size: 0.95rem;
-      margin-bottom: 0.25rem;
-    }
-    
-    .course-info {
-      color: var(--text-secondary);
-      font-size: 0.8rem;
-    }
-    
-    .course-location {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      margin-top: 0.25rem;
-      font-size: 0.8rem;
-    }
-    
-    /* 课程颜色变量 */
-    .course-math {
-      background-color: #e1f1ff;
-      color: #0368B2;
-    }
-    
-    .course-physics {
-      background-color: #feedc9;
-      color: #c25e00;
-    }
-    
-    .course-chemistry {
-      background-color: #d7f8e8;
-      color: #00714b;
-    }
-    
-    .course-biology {
-      background-color: #ffe2ec;
-      color: #b30047;
-    }
-    
-    .course-literature {
-      background-color: #e6e6ff;
-      color: #3333cc;
-    }
-    
-    .course-history {
-      background-color: #f2e8ff;
-      color: #6200ea;
-    }
-    
-    .course-english {
-      background-color: #e0f7fa;
-      color: #006064;
-    }
-    
-    /* 新增课程颜色 */
-    .course-computer {
-      background-color: #e6f7ff;
-      color: #0050b3;
-    }
-    
-    .course-art {
-      background-color: #fff1f0;
-      color: #cf1322;
-    }
-    
-    .course-music {
-      background-color: #f9f0ff;
-      color: #722ed1;
-    }
-    
-    .course-sports {
-      background-color: #f0f5ff;
-      color: #096dd9;
-    }
-    
-    .course-politics {
-      background-color: #fff0f6;
-      color: #c41d7f;
-    }
-    
-    .course-geography {
-      background-color: #f4ffb8;
-      color: #5b8c00;
-    }
-    
-    /* 添加课程弹窗 */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .modal-content {
-      background-color: var(--background-color);
-      border-radius: var(--border-radius);
-      padding: 2rem;
-      width: 90%;
-      max-width: 500px;
-      position: relative;
-      box-shadow: var(--shadow-lg);
-    }
-    
-    .modal-close {
-      position: absolute;
-      right: 1.5rem;
-      top: 1rem;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--text-secondary);
-      transition: color 0.2s;
-    }
-    
-    .modal-close:hover {
-      color: var(--danger-color);
-    }
-    
-    .form-row {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    
-    .form-group.col-6 {
-      flex: 0 0 calc(50% - 0.5rem);
-    }
-    
-    .color-options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    
-    .color-option {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    
-    .color-option:hover, .color-option.selected {
-      transform: scale(1.1);
-      box-shadow: 0 0 0 2px var(--primary-color);
-    }
-    
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-secondary);
-    }
-    
-    .empty-state-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: var(--border-color);
-    }
-    
-    .empty-state-text {
-      margin-bottom: 1.5rem;
-    }
-    
-    /* 导入导出按钮 */
-    .import-export {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-    
-    .export-dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    
-    .export-dropdown-content {
-      display: none;
-      position: absolute;
-      right: 0;
-      background-color: var(--background-color);
-      min-width: 160px;
-      box-shadow: var(--shadow-md);
-      z-index: 1;
-      border-radius: var(--border-radius-sm);
-      overflow: hidden;
-    }
-    
-    .export-dropdown-content a {
-      color: var(--text-color);
-      padding: 0.75rem 1rem;
-      text-decoration: none;
-      display: block;
-      transition: background-color 0.2s;
-    }
-    
-    .export-dropdown-content a:hover {
-      background-color: var(--background-secondary);
-    }
-    
-    .export-dropdown:hover .export-dropdown-content {
-      display: block;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>课表 - 课堂助手</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
+    <!-- 添加页脚样式 -->
+    <link rel="stylesheet" href="css/footer.css" />
+    <!-- 添加滚动动画样式 -->
+    <link rel="stylesheet" href="css/scrollAnimation.css" />
+    <!-- 添加主题样式 -->
+    <link rel="stylesheet" href="css/themes/themes.css" />
+    <!-- 使用图标库 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- 添加 Remix Icon 库，用于侧边栏图标 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* 课表页面特定样式 */
+      .page-header {
+        padding: 2rem 0;
+        background-color: var(--background-color);
+        border-radius: var(--border-radius);
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+      }
 
-    /* 切换视图按钮 */
-    .view-toggle {
-      display: flex;
-      background-color: var(--background-secondary);
-      border-radius: var(--border-radius);
-      overflow: hidden;
-    }
-    
-    .view-toggle button {
-      border: none;
-      background: none;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      font-weight: 500;
-      color: var(--text-secondary);
-      transition: background-color 0.3s, color 0.3s;
-    }
-    
-    .view-toggle button.active {
-      background-color: var(--primary-color);
-      color: white;
-    }
-    
-    /* 响应式调整 */
-    @media (max-width: 768px) {
+      .schedule-container {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
       .schedule-controls {
-        flex-direction: column;
-        align-items: stretch;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
       }
-      
+
+      .schedule-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      /* 课表网格 */
+      .timetable {
+        background: var(--background-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow-x: auto;
+        width: 100%;
+      }
+
       .timetable-grid {
-        grid-template-columns: 60px repeat(7, 1fr);
+        display: grid;
+        grid-template-columns: 80px repeat(7, 1fr);
+        min-width: 800px;
       }
-      
-      .form-row {
+
+      .timetable-header {
+        background-color: var(--primary-light);
+        font-weight: 600;
+        text-align: center;
+        padding: 1rem 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .timetable-time {
+        grid-column: 1;
+        padding: 1rem 0.5rem;
+        text-align: center;
+        border-right: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 500;
+        background-color: var(--background-secondary);
+      }
+
+      .timetable-cell {
+        border-right: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+        padding: 0.5rem;
+        min-height: 80px;
+        position: relative;
+      }
+
+      .timetable-cell:last-child {
+        border-right: none;
+      }
+
+      /* 课程卡片样式 */
+      .course-card {
+        background-color: var(--primary-light);
+        color: var(--primary-dark);
+        border-radius: var(--border-radius-sm);
+        padding: 0.5rem;
+        font-size: 0.9rem;
+        height: 100%;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
         flex-direction: column;
-        gap: 0rem;
       }
-      
+
+      .course-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+      }
+
+      .course-title {
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .course-info {
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+      }
+
+      .course-location {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-top: 0.25rem;
+        font-size: 0.8rem;
+      }
+
+      /* 课程颜色变量 */
+      .course-math {
+        background-color: #e1f1ff;
+        color: #0368b2;
+      }
+
+      .course-physics {
+        background-color: #feedc9;
+        color: #c25e00;
+      }
+
+      .course-chemistry {
+        background-color: #d7f8e8;
+        color: #00714b;
+      }
+
+      .course-biology {
+        background-color: #ffe2ec;
+        color: #b30047;
+      }
+
+      .course-literature {
+        background-color: #e6e6ff;
+        color: #3333cc;
+      }
+
+      .course-history {
+        background-color: #f2e8ff;
+        color: #6200ea;
+      }
+
+      .course-english {
+        background-color: #e0f7fa;
+        color: #006064;
+      }
+
+      /* 新增课程颜色 */
+      .course-computer {
+        background-color: #e6f7ff;
+        color: #0050b3;
+      }
+
+      .course-art {
+        background-color: #fff1f0;
+        color: #cf1322;
+      }
+
+      .course-music {
+        background-color: #f9f0ff;
+        color: #722ed1;
+      }
+
+      .course-sports {
+        background-color: #f0f5ff;
+        color: #096dd9;
+      }
+
+      .course-politics {
+        background-color: #fff0f6;
+        color: #c41d7f;
+      }
+
+      .course-geography {
+        background-color: #f4ffb8;
+        color: #5b8c00;
+      }
+
+      /* 添加课程弹窗 */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background-color: var(--background-color);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .modal-close {
+        position: absolute;
+        right: 1.5rem;
+        top: 1rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--text-secondary);
+        transition: color 0.2s;
+      }
+
+      .modal-close:hover {
+        color: var(--danger-color);
+      }
+
+      .form-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
       .form-group.col-6 {
-        flex: 0 0 100%;
+        flex: 0 0 calc(50% - 0.5rem);
       }
-    }
-  </style>
-</head>
-<body>
-  <!-- 侧边栏导航 - 只保留容器元素 -->
-  <aside class="sidebar"></aside>
 
-  <!-- 移动端菜单切换按钮 -->
-  <div class="sidebar-toggle">
-    <i class="ri-menu-line"></i>
-  </div>
-  
-  <!-- 移动端遮罩层 -->
-  <div class="sidebar-overlay"></div>
-
-  <!-- 主要内容 -->
-  <div class="container py-4 sidebar-active">
-    <!-- 页面标题和描述 -->
-    <div class="page-header">
-      <div class="container">
-        <h1 class="mb-2 animate-on-scroll fade-up">我的课程表</h1>
-        <p class="text-secondary animate-on-scroll fade-up delay-100">管理和安排你的课程，清晰掌握每周学习时间</p>
-      </div>
-    </div>
-    
-    <div class="schedule-container">
-      <!-- 课表控制区域 -->
-      <div class="schedule-controls animate-on-scroll fade-up">
-        <div class="view-toggle">
-          <button class="active" id="week-view">周视图</button>
-          <button id="list-view">列表视图</button>
-        </div>
-        
-        <div class="schedule-actions">
-          <button class="btn" id="add-course-btn">
-            <i class="fas fa-plus"></i> 添加课程
-          </button>
-          
-          <div class="import-export">
-            <div class="export-dropdown">
-              <button class="btn btn-outline">
-                <i class="fas fa-ellipsis-v"></i>
-              </button>
-              <div class="export-dropdown-content">
-                <a href="#" id="export-ical">
-                  <i class="far fa-calendar"></i> 导出为iCal
-                </a>
-                <a href="#" id="export-csv">
-                  <i class="far fa-file-excel"></i> 导出为CSV
-                </a>
-                <a href="#" id="import-courses">
-                  <i class="fas fa-file-import"></i> 导入课程
-                </a>
-                <a href="#" id="print-schedule">
-                  <i class="fas fa-print"></i> 打印课表
-                </a>
-                <a href="#" id="clear-schedule" class="text-danger">
-                  <i class="fas fa-trash-alt"></i> 清空课表
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- 周视图课表 -->
-      <div id="week-view-container" class="animate-on-scroll fade-up delay-100">
-        <div class="timetable"></div>
-          <div class="timetable-grid">
-            <!-- 表头 -->
-            <div class="timetable-header">时间</div>
-            <div class="timetable-header">周一</div>
-            <div class="timetable-header">周二</div>
-            <div class="timetable-header">周三</div>
-            <div class="timetable-header">周四</div>
-            <div class="timetable-header">周五</div>
-            <div class="timetable-header">周六</div>
-            <div class="timetable-header">周日</div>
-            
-            <!-- 第1节课 -->
-            <div class="timetable-time">8:00-8:45</div>
-            <div class="timetable-cell" data-day="1" data-time="1">
-              <div class="course-card course-math">
-                <div class="course-title">高等数学</div>
-                <div class="course-info">张教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 理学楼101
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="2" data-time="1"></div>
-            <div class="timetable-cell" data-day="3" data-time="1">
-              <div class="course-card course-math">
-                <div class="course-title">高等数学</div>
-                <div class="course-info">张教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 理学楼101
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="4" data-time="1"></div>
-            <div class="timetable-cell" data-day="5" data-time="1">
-              <div class="course-card course-math">
-                <div class="course-title">高等数学</div>
-                <div class="course-info">张教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 理学楼101
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="6" data-time="1"></div>
-            <div class="timetable-cell" data-day="7" data-time="1"></div>
-            
-            <!-- 第2节课 -->
-            <div class="timetable-time">8:55-9:40</div>
-            <div class="timetable-cell" data-day="1" data-time="2">
-              <div class="course-card course-math">
-                <div class="course-title">高等数学</div>
-                <div class="course-info">张教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 理学楼101
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="2" data-time="2"></div>
-            <div class="timetable-cell" data-day="3" data-time="2">
-              <div class="course-card course-math">
-                <div class="course-title">高等数学</div>
-                <div class="course-info">张教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 理学楼101
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="4" data-time="2"></div>
-            <div class="timetable-cell" data-day="5" data-time="2">
-              <div class="course-card course-math">
-                <div class="course-title">高等数学</div>
-                <div class="course-info">张教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 理学楼101
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="6" data-time="2"></div>
-            <div class="timetable-cell" data-day="7" data-time="2"></div>
-            
-            <!-- 第3节课 -->
-            <div class="timetable-time">10:00-10:45</div>
-            <div class="timetable-cell" data-day="1" data-time="3"></div>
-            <div class="timetable-cell" data-day="2" data-time="3">
-              <div class="course-card course-physics">
-                <div class="course-title">大学物理</div>
-                <div class="course-info">李教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 理学楼205
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="3" data-time="3"></div>
-            <div class="timetable-cell" data-day="4" data-time="3">
-              <div class="course-card course-physics">
-                <div class="course-title">大学物理</div>
-                <div class="course-info">李教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 理学楼205
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="5" data-time="3"></div>
-            <div class="timetable-cell" data-day="6" data-time="3"></div>
-            <div class="timetable-cell" data-day="7" data-time="3"></div>
-            
-            <!-- 第4节课 -->
-            <div class="timetable-time">10:55-11:40</div>
-            <div class="timetable-cell" data-day="1" data-time="4"></div>
-            <div class="timetable-cell" data-day="2" data-time="4">
-              <div class="course-card course-physics">
-                <div class="course-title">大学物理</div>
-                <div class="course-info">李教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 理学楼205
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="3" data-time="4"></div>
-            <div class="timetable-cell" data-day="4" data-time="4">
-              <div class="course-card course-physics">
-                <div class="course-title">大学物理</div>
-                <div class="course-info">李教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 理学楼205
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="5" data-time="4"></div>
-            <div class="timetable-cell" data-day="6" data-time="4"></div>
-            <div class="timetable-cell" data-day="7" data-time="4"></div>
-              <!-- 第5节课 -->
-            <div class="timetable-time">14:00-14:45</div>
-            <div class="timetable-cell" data-day="1" data-time="5">
-              <div class="course-card course-computer">
-                <div class="course-title">计算机基础</div>
-                <div class="course-info">黄教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 计算机楼301
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="2" data-time="5">
-              <div class="course-card course-biology">
-                <div class="course-title">生物学导论</div>
-                <div class="course-info">陈教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 生物楼202
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="3" data-time="5">
-              <div class="course-card course-computer">
-                <div class="course-title">计算机基础</div>
-                <div class="course-info">黄教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 计算机楼301
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="4" data-time="5"></div>
-            <div class="timetable-cell" data-day="5" data-time="5">
-              <div class="course-card course-biology">
-                <div class="course-title">生物学导论</div>
-                <div class="course-info">陈教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 生物楼202
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="6" data-time="5"></div>
-            <div class="timetable-cell" data-day="7" data-time="5"></div>
-            
-            <!-- 第6节课 -->
-            <div class="timetable-time">14:55-15:40</div>
-            <div class="timetable-cell" data-day="1" data-time="6">
-              <div class="course-card course-english">
-                <div class="course-title">大学英语</div>
-                <div class="course-info">王教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 文学楼303
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="2" data-time="6"></div>
-            <div class="timetable-cell" data-day="3" data-time="6">
-              <div class="course-card course-english">
-                <div class="course-title">大学英语</div>
-                <div class="course-info">王教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 文学楼303
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="4" data-time="6"></div>
-            <div class="timetable-cell" data-day="5" data-time="6">
-              <div class="course-card course-english">
-                <div class="course-title">大学英语</div>
-                <div class="course-info">王教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 文学楼303
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="6" data-time="6"></div>
-            <div class="timetable-cell" data-day="7" data-time="6"></div>
-            
-            <!-- 第7节课 -->
-            <div class="timetable-time">16:00-16:45</div>
-            <div class="timetable-cell" data-day="1" data-time="7">
-              <div class="course-card course-english">
-                <div class="course-title">大学英语</div>
-                <div class="course-info">王教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 文学楼303
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="2" data-time="7">
-              <div class="course-card course-chemistry">
-                <div class="course-title">有机化学</div>
-                <div class="course-info">赵教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 化学楼102
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="3" data-time="7">
-              <div class="course-card course-english">
-                <div class="course-title">大学英语</div>
-                <div class="course-info">王教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 文学楼303
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="4" data-time="7">
-              <div class="course-card course-chemistry">
-                <div class="course-title">有机化学</div>
-                <div class="course-info">赵教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 化学楼102
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="5" data-time="7">
-              <div class="course-card course-english">
-                <div class="course-title">大学英语</div>
-                <div class="course-info">王教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 文学楼303
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="6" data-time="7"></div>
-            <div class="timetable-cell" data-day="7" data-time="7"></div>
-            
-            <!-- 第8节课 -->
-            <div class="timetable-time">16:55-17:40</div>
-            <div class="timetable-cell" data-day="1" data-time="8"></div>
-            <div class="timetable-cell" data-day="2" data-time="8">
-              <div class="course-card course-chemistry">
-                <div class="course-title">有机化学</div>
-                <div class="course-info">赵教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 化学楼102
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="3" data-time="8"></div>
-            <div class="timetable-cell" data-day="4" data-time="8">
-              <div class="course-card course-chemistry">
-                <div class="course-title">有机化学</div>
-                <div class="course-info">赵教授</div>
-                <div class="course-location">
-                  <i class="fas fa-map-marker-alt"></i> 化学楼102
-                </div>
-              </div>
-            </div>
-            <div class="timetable-cell" data-day="5" data-time="8"></div>
-            <div class="timetable-cell" data-day="6" data-time="8"></div>
-            <div class="timetable-cell" data-day="7" data-time="8"></div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- 列表视图 -->
-      <div id="list-view-container" style="display: none;" class="animate-on-scroll fade-up delay-100">
-        <div class="card">
-          <h3 class="mb-3">周一</h3>
-          <div class="mb-3">
-            <div class="course-card course-math">
-              <div class="course-title">高等数学</div>
-              <div class="course-info">张教授</div>
-              <div class="course-info">8:00-9:40</div>
-              <div class="course-location">
-                <i class="fas fa-map-marker-alt"></i> 理学楼101
-              </div>
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="course-card course-english">
-              <div class="course-title">大学英语</div>
-              <div class="course-info">王教授</div>
-              <div class="course-info">14:55-16:45</div>
-              <div class="course-location">
-                <i class="fas fa-map-marker-alt"></i> 文学楼303
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="card mt-4">
-          <h3 class="mb-3">周二</h3>
-          <div class="mb-3">
-            <div class="course-card course-physics">
-              <div class="course-title">大学物理</div>
-              <div class="course-info">李教授</div>
-              <div class="course-info">10:00-11:40</div>
-              <div class="course-location">
-                <i class="fas fa-map-marker-alt"></i> 理学楼205
-              </div>
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="course-card course-chemistry">
-              <div class="course-title">有机化学</div>
-              <div class="course-info">赵教授</div>
-              <div class="course-info">16:00-17:40</div>
-              <div class="course-location">
-                <i class="fas fa-map-marker-alt"></i> 化学楼102
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="card mt-4">
-          <h3 class="mb-3">周三</h3>
-          <div class="mb-3">
-            <div class="course-card course-math">
-              <div class="course-title">高等数学</div>
-              <div class="course-info">张教授</div>
-              <div class="course-info">8:00-9:40</div>
-              <div class="course-location">
-                <i class="fas fa-map-marker-alt"></i> 理学楼101
-              </div>
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="course-card course-english">
-              <div class="course-title">大学英语</div>
-              <div class="course-info">王教授</div>
-              <div class="course-info">14:55-16:45</div>
-              <div class="course-location">
-                <i class="fas fa-map-marker-alt"></i> 文学楼303
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="card mt-4">
-          <h3 class="mb-3">周四</h3>
-          <div class="mb-3">
-            <div class="course-card course-physics">
-              <div class="course-title">大学物理</div>
-              <div class="course-info">李教授</div>
-              <div class="course-info">10:00-11:40</div>
-              <div class="course-location">
-                <i class="fas fa-map-marker-alt"></i> 理学楼205
-              </div>
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="course-card course-chemistry">
-              <div class="course-title">有机化学</div>
-              <div class="course-info">赵教授</div>
-              <div class="course-info">16:00-17:40</div>
-              <div class="course-location">
-                <i class="fas fa-map-marker-alt"></i> 化学楼102
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="card mt-4">
-          <h3 class="mb-3">周五</h3>
-          <div class="mb-3">
-            <div class="course-card course-math">
-              <div class="course-title">高等数学</div>
-              <div class="course-info">张教授</div>
-              <div class="course-info">8:00-9:40</div>
-              <div class="course-location">
-                <i class="fas fa-map-marker-alt"></i> 理学楼101
-              </div>
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="course-card course-english">
-              <div class="course-title">大学英语</div>
-              <div class="course-info">王教授</div>
-              <div class="course-info">14:55-16:45</div>
-              <div class="course-location">
-                <i class="fas fa-map-marker-alt"></i> 文学楼303
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 添加课程弹窗 -->
-  <div class="modal" id="add-course-modal">
-    <div class="modal-content">
-      <div class="modal-close" id="close-course-modal">×</div>
-      <h2 class="mb-3">添加新课程</h2>
-      <form id="add-course-form">
-        <div class="form-group">
-          <label class="form-label" for="course-name">课程名称</label>
-          <input type="text" class="form-control" id="course-name" placeholder="例如：高等数学" required>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group col-6">
-            <label class="form-label" for="course-teacher">授课教师</label>
-            <input type="text" class="form-control" id="course-teacher" placeholder="例如：张教授">
-          </div>
-          <div class="form-group col-6">
-            <label class="form-label" for="course-location">上课地点</label>
-            <input type="text" class="form-control" id="course-location" placeholder="例如：理学楼101">
-          </div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group col-6">
-            <label class="form-label" for="course-day">星期几</label>
-            <select class="form-control" id="course-day" required>
-              <option value="">请选择</option>
-              <option value="1">星期一</option>
-              <option value="2">星期二</option>
-              <option value="3">星期三</option>
-              <option value="4">星期四</option>
-              <option value="5">星期五</option>
-              <option value="6">星期六</option>
-              <option value="7">星期日</option>
-            </select>
-          </div>
-          <div class="form-group col-6">
-            <label class="form-label" for="course-time">课程节数</label>
-            <select class="form-control" id="course-time" required>
-              <option value="">请选择</option>
-              <option value="1">第1节 (8:00-8:45)</option>
-              <option value="2">第2节 (8:55-9:40)</option>
-              <option value="3">第3节 (10:00-10:45)</option>
-              <option value="4">第4节 (10:55-11:40)</option>
-              <option value="5">第5节 (14:00-14:45)</option>
-              <option value="6">第6节 (14:55-15:40)</option>
-              <option value="7">第7节 (16:00-16:45)</option>
-              <option value="8">第8节 (16:55-17:40)</option>
-            </select>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="course-weeks">上课周数</label>
-          <input type="text" class="form-control" id="course-weeks" placeholder="例如：1-16周 或 1,3,5,7,9,11,13,15周">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">课程颜色</label>
-          <div class="color-options">
-            <div class="color-option selected" style="background-color: #e1f1ff;" data-class="course-math"></div>
-            <div class="color-option" style="background-color: #feedc9;" data-class="course-physics"></div>
-            <div class="color-option" style="background-color: #d7f8e8;" data-class="course-chemistry"></div>
-            <div class="color-option" style="background-color: #ffe2ec;" data-class="course-biology"></div>
-            <div class="color-option" style="background-color: #e6e6ff;" data-class="course-literature"></div>
-            <div class="color-option" style="background-color: #f2e8ff;" data-class="course-history"></div>
-            <div class="color-option" style="background-color: #e0f7fa;" data-class="course-english"></div>
-            <!-- 添加新的颜色选项 -->
-            <div class="color-option" style="background-color: #e6f7ff;" data-class="course-computer"></div>
-            <div class="color-option" style="background-color: #fff1f0;" data-class="course-art"></div>
-            <div class="color-option" style="background-color: #f9f0ff;" data-class="course-music"></div>
-            <div class="color-option" style="background-color: #f0f5ff;" data-class="course-sports"></div>
-            <div class="color-option" style="background-color: #fff0f6;" data-class="course-politics"></div>
-            <div class="color-option" style="background-color: #f4ffb8;" data-class="course-geography"></div>
-          </div>
-          <input type="hidden" id="course-color" value="course-math">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="course-notes">备注</label>
-          <textarea class="form-control" id="course-notes" placeholder="添加其他信息（可选）"></textarea>
-        </div>
-        
-        <div class="text-center mt-4">
-          <button type="submit" class="btn">保存课程</button>
-          <button type="button" class="btn btn-outline" id="cancel-course">取消</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 页脚 - 简化为只保留容器 -->
-  <footer class="footer"></footer>
-  <script src="js/main.js"></script>
-  <script src="js/sidebar.js"></script>
-  <!-- 添加页脚脚本 -->
-  <script src="js/footer.js"></script>
-  <!-- 添加滚动动画脚本 -->
-  <script src="js/scrollAnimation.js"></script>
-  <!-- 添加主题管理脚本 -->
-  <script src="js/themes.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // 初始化滚动动画
-      initScrollAnimation('.animate-on-scroll', {
-        threshold: 0.1,
-        once: true
-      });
-      
-      // 添加课程弹窗
-      const addCourseBtn = document.getElementById('add-course-btn');
-      const addCourseModal = document.getElementById('add-course-modal');
-      const closeCourseModal = document.getElementById('close-course-modal');
-      const cancelCourse = document.getElementById('cancel-course');
-      const addCourseForm = document.getElementById('add-course-form');
-      
-      // 视图切换
-      const weekViewBtn = document.getElementById('week-view');
-      const listViewBtn = document.getElementById('list-view');
-      const weekViewContainer = document.getElementById('week-view-container');
-      const listViewContainer = document.getElementById('list-view-container');
-      
-      // 颜色选择功能
-      const colorOptions = document.querySelectorAll('.color-option');
-      const courseColorInput = document.getElementById('course-color');
-      
-      // 打开添加课程弹窗
-      addCourseBtn.addEventListener('click', function() {
-        addCourseModal.style.display = 'flex';
-      });
-      
-      // 关闭添加课程弹窗
-      function closeModal() {
-        addCourseModal.style.display = 'none';
-        addCourseForm.reset();
-        // 重置颜色选择
-        colorOptions.forEach(option => option.classList.remove('selected'));
-        colorOptions[0].classList.add('selected');
-        courseColorInput.value = 'course-math';
+      .color-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
       }
-      
-      // 关闭按钮事件
-      closeCourseModal.addEventListener('click', closeModal);
-      cancelCourse.addEventListener('click', closeModal);
-      
-      // 点击外部关闭弹窗
-      window.addEventListener('click', function(event) {
-        if (event.target === addCourseModal) {
-          closeModal();
+
+      .color-option {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .color-option:hover,
+      .color-option.selected {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 2px var(--primary-color);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--text-secondary);
+      }
+
+      .empty-state-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: var(--border-color);
+      }
+
+      .empty-state-text {
+        margin-bottom: 1.5rem;
+      }
+
+      /* 导入导出按钮 */
+      .import-export {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .export-dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .export-dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: var(--background-color);
+        min-width: 160px;
+        box-shadow: var(--shadow-md);
+        z-index: 1;
+        border-radius: var(--border-radius-sm);
+        overflow: hidden;
+      }
+
+      .export-dropdown-content a {
+        color: var(--text-color);
+        padding: 0.75rem 1rem;
+        text-decoration: none;
+        display: block;
+        transition: background-color 0.2s;
+      }
+
+      .export-dropdown-content a:hover {
+        background-color: var(--background-secondary);
+      }
+
+      .export-dropdown:hover .export-dropdown-content {
+        display: block;
+      }
+
+      /* 切换视图按钮 */
+      .view-toggle {
+        display: flex;
+        background-color: var(--background-secondary);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+      }
+
+      .view-toggle button {
+        border: none;
+        background: none;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        font-weight: 500;
+        color: var(--text-secondary);
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .view-toggle button.active {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      /* 响应式调整 */
+      @media (max-width: 768px) {
+        .schedule-controls {
+          flex-direction: column;
+          align-items: stretch;
         }
-      });
-      
-      // 切换课表视图
-      weekViewBtn.addEventListener('click', function() {
-        weekViewBtn.classList.add('active');
-        listViewBtn.classList.remove('active');
-        weekViewContainer.style.display = 'block';
-        listViewContainer.style.display = 'none';
-      });
-      
-      listViewBtn.addEventListener('click', function() {
-        listViewBtn.classList.add('active');
-        weekViewBtn.classList.remove('active');
-        listViewContainer.style.display = 'block';
-        weekViewContainer.style.display = 'none';
-      });
-      
-      // 颜色选择逻辑
-      colorOptions.forEach(option => {
-        option.addEventListener('click', function() {
-          // 移除其他选中状态
-          colorOptions.forEach(opt => opt.classList.remove('selected'));
-          // 添加当前选中状态
-          this.classList.add('selected');
-          // 更新隐藏字段的值
-          courseColorInput.value = this.getAttribute('data-class');
+
+        .timetable-grid {
+          grid-template-columns: 60px repeat(7, 1fr);
+        }
+
+        .form-row {
+          flex-direction: column;
+          gap: 0rem;
+        }
+
+        .form-group.col-6 {
+          flex: 0 0 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 侧边栏导航 - 只保留容器元素 -->
+    <aside class="sidebar"></aside>
+
+    <!-- 移动端菜单切换按钮 -->
+    <div class="sidebar-toggle">
+      <i class="ri-menu-line"></i>
+    </div>
+
+    <!-- 移动端遮罩层 -->
+    <div class="sidebar-overlay"></div>
+    <!-- 主要内容 -->
+    <div class="container py-4 sidebar-active">
+      <!-- 页面标题和描述 -->
+      <div class="page-header">
+        <div class="container">
+          <h1 class="mb-2 animate-on-scroll fade-up">我的课程表</h1>
+          <p class="text-secondary animate-on-scroll fade-up delay-100">
+            管理和安排你的课程，清晰掌握每周学习时间
+          </p>
+        </div>
+      </div>
+
+      <div class="schedule-container">
+        <!-- 课表控制区域 -->
+        <div class="schedule-controls animate-on-scroll fade-up">
+          <div class="view-toggle">
+            <button class="active" id="week-view">周视图</button>
+            <button id="list-view">列表视图</button>
+          </div>
+
+          <div class="schedule-actions">
+            <button class="btn" id="add-course-btn">
+              <i class="fas fa-plus"></i> 添加课程
+            </button>
+
+            <div class="import-export">
+              <div class="export-dropdown">
+                <button class="btn btn-outline">
+                  <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div class="export-dropdown-content">
+                  <a href="#" id="export-ical">
+                    <i class="far fa-calendar"></i> 导出为iCal
+                  </a>
+                  <a href="#" id="export-csv">
+                    <i class="far fa-file-excel"></i> 导出为CSV
+                  </a>
+                  <a href="#" id="import-courses">
+                    <i class="fas fa-file-import"></i> 导入课程
+                  </a>
+                  <a href="#" id="print-schedule">
+                    <i class="fas fa-print"></i> 打印课表
+                  </a>
+                  <a href="#" id="clear-schedule" class="text-danger">
+                    <i class="fas fa-trash-alt"></i> 清空课表
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 周视图课表 -->
+        <div
+          id="week-view-container"
+          class="animate-on-scroll fade-up delay-100"
+        >
+          <div class="timetable">
+            <div class="timetable-grid" id="timetable-grid">
+              <!-- 表头将由JavaScript动态生成 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 列表视图 -->
+        <div
+          id="list-view-container"
+          style="display: none"
+          class="animate-on-scroll fade-up delay-100"
+          id="list-container"
+        >
+          <!-- 列表视图内容将由JavaScript动态生成 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 添加课程弹窗 -->
+    <div class="modal" id="add-course-modal">
+      <div class="modal-content">
+        <div class="modal-close" id="close-course-modal">×</div>
+        <h2 class="mb-3">添加新课程</h2>
+        <form id="add-course-form">
+          <div class="form-group">
+            <label class="form-label" for="course-name">课程名称</label>
+            <input
+              type="text"
+              class="form-control"
+              id="course-name"
+              placeholder="例如：高等数学"
+              required
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label" for="course-teacher">授课教师</label>
+              <input
+                type="text"
+                class="form-control"
+                id="course-teacher"
+                placeholder="例如：张教授"
+              />
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label" for="course-location">上课地点</label>
+              <input
+                type="text"
+                class="form-control"
+                id="course-location"
+                placeholder="例如：理学楼101"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label class="form-label" for="course-day">星期几</label>
+              <select class="form-control" id="course-day" required>
+                <option value="">请选择</option>
+                <option value="1">星期一</option>
+                <option value="2">星期二</option>
+                <option value="3">星期三</option>
+                <option value="4">星期四</option>
+                <option value="5">星期五</option>
+                <option value="6">星期六</option>
+                <option value="7">星期日</option>
+              </select>
+            </div>
+            <div class="form-group col-6">
+              <label class="form-label" for="course-time">课程节数</label>
+              <select class="form-control" id="course-time" required>
+                <option value="">请选择</option>
+                <option value="1">第1节 (8:00-8:45)</option>
+                <option value="2">第2节 (8:55-9:40)</option>
+                <option value="3">第3节 (10:00-10:45)</option>
+                <option value="4">第4节 (10:55-11:40)</option>
+                <option value="5">第5节 (14:00-14:45)</option>
+                <option value="6">第6节 (14:55-15:40)</option>
+                <option value="7">第7节 (16:00-16:45)</option>
+                <option value="8">第8节 (16:55-17:40)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="course-weeks">上课周数</label>
+            <input
+              type="text"
+              class="form-control"
+              id="course-weeks"
+              placeholder="例如：1-16周 或 1,3,5,7,9,11,13,15周"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">课程颜色</label>
+            <div class="color-options">
+              <div
+                class="color-option selected"
+                style="background-color: #e1f1ff"
+                data-class="course-math"
+              ></div>
+              <div
+                class="color-option"
+                style="background-color: #feedc9"
+                data-class="course-physics"
+              ></div>
+              <div
+                class="color-option"
+                style="background-color: #d7f8e8"
+                data-class="course-chemistry"
+              ></div>
+              <div
+                class="color-option"
+                style="background-color: #ffe2ec"
+                data-class="course-biology"
+              ></div>
+              <div
+                class="color-option"
+                style="background-color: #e6e6ff"
+                data-class="course-literature"
+              ></div>
+              <div
+                class="color-option"
+                style="background-color: #f2e8ff"
+                data-class="course-history"
+              ></div>
+              <div
+                class="color-option"
+                style="background-color: #e0f7fa"
+                data-class="course-english"
+              ></div>
+              <!-- 添加新的颜色选项 -->
+              <div
+                class="color-option"
+                style="background-color: #e6f7ff"
+                data-class="course-computer"
+              ></div>
+              <div
+                class="color-option"
+                style="background-color: #fff1f0"
+                data-class="course-art"
+              ></div>
+              <div
+                class="color-option"
+                style="background-color: #f9f0ff"
+                data-class="course-music"
+              ></div>
+              <div
+                class="color-option"
+                style="background-color: #f0f5ff"
+                data-class="course-sports"
+              ></div>
+              <div
+                class="color-option"
+                style="background-color: #fff0f6"
+                data-class="course-politics"
+              ></div>
+              <div
+                class="color-option"
+                style="background-color: #f4ffb8"
+                data-class="course-geography"
+              ></div>
+            </div>
+            <input type="hidden" id="course-color" value="course-math" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="course-notes">备注</label>
+            <textarea
+              class="form-control"
+              id="course-notes"
+              placeholder="添加其他信息（可选）"
+            ></textarea>
+          </div>
+
+          <div class="text-center mt-4">
+            <button type="submit" class="btn">保存课程</button>
+            <button type="button" class="btn btn-outline" id="cancel-course">
+              取消
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 页脚 - 简化为只保留容器 -->
+    <footer class="footer"></footer>
+    <script src="js/main.js"></script>
+    <script src="js/sidebar.js"></script>
+    <!-- 添加页脚脚本 -->
+    <script src="js/footer.js"></script>
+    <!-- 添加滚动动画脚本 -->
+    <script src="js/scrollAnimation.js"></script>
+    <!-- 添加主题管理脚本 -->
+    <script src="js/themes.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // 初始化滚动动画
+        initScrollAnimation(".animate-on-scroll", {
+          threshold: 0.1,
+          once: true,
         });
-      });
-      
-      // 添加课程表单提交
-      addCourseForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // 获取表单数据
-        const courseName = document.getElementById('course-name').value;
-        const courseTeacher = document.getElementById('course-teacher').value;
-        const courseLocation = document.getElementById('course-location').value;
-        const courseDay = document.getElementById('course-day').value;
-        const courseTime = document.getElementById('course-time').value;
-        const courseColor = document.getElementById('course-color').value;
-        
-        // 创建新课程卡片
-        const cell = document.querySelector(`[data-day="${courseDay}"][data-time="${courseTime}"]`);
-        if (cell) {
-          // 清空单元格内容
-          cell.innerHTML = '';
-          
-          // 创建课程卡片
-          const courseCard = document.createElement('div');
-          courseCard.className = `course-card ${courseColor}`;
-          courseCard.innerHTML = `
-            <div class="course-title">${courseName}</div>
-            <div class="course-info">${courseTeacher}</div>
-            <div class="course-location">
-              <i class="fas fa-map-marker-alt"></i> ${courseLocation}
+
+        // 添加课程弹窗
+        const addCourseBtn = document.getElementById("add-course-btn");
+        const addCourseModal = document.getElementById("add-course-modal");
+        const closeCourseModal = document.getElementById("close-course-modal");
+        const cancelCourse = document.getElementById("cancel-course");
+        const addCourseForm = document.getElementById("add-course-form");
+
+        // 视图切换
+        const weekViewBtn = document.getElementById("week-view");
+        const listViewBtn = document.getElementById("list-view");
+        const weekViewContainer = document.getElementById(
+          "week-view-container"
+        );
+        const listViewContainer = document.getElementById(
+          "list-view-container"
+        );
+
+        // 颜色选择功能
+        const colorOptions = document.querySelectorAll(".color-option");
+        const courseColorInput = document.getElementById("course-color");
+
+        // 课表数据 - 直接内联在JavaScript中而非从外部JSON加载
+        let scheduleData = {
+          courses: [
+            {
+              id: 1,
+              title: "人工智能导论",
+              teacher: "张教授",
+              location: "东一101",
+              color: "course-math",
+              day: 1,
+              startTime: 1,
+              endTime: 2,
+              weeks: "1-16周",
+            },
+            {
+              id: 2,
+              title: "工程数学",
+              teacher: "张教授",
+              location: "东二201",
+              color: "course-math",
+              day: 3,
+              startTime: 1,
+              endTime: 2,
+              weeks: "1-16周",
+            },
+            {
+              id: 3,
+              title: "数据结构",
+              teacher: "郑教授",
+              location: "东二301",
+              color: "course-computer",
+              day: 4,
+              startTime: 1,
+              endTime: 2,
+              weeks: "1-16周",
+            },
+            {
+              id: 4,
+              title: "工程数学",
+              teacher: "张教授",
+              location: "东二201",
+              color: "course-math",
+              day: 5,
+              startTime: 1,
+              endTime: 2,
+              weeks: "1-16周",
+            },
+            {
+              id: 5,
+              title: "机器学习基础",
+              teacher: "王教授",
+              location: "东二205",
+              color: "course-computer",
+              day: 2,
+              startTime: 3,
+              endTime: 4,
+              weeks: "1-16周",
+            },
+            {
+              id: 6,
+              title: "工程物理",
+              teacher: "李教授",
+              location: "东二207",
+              color: "course-physics",
+              day: 4,
+              startTime: 3,
+              endTime: 4,
+              weeks: "1-16周",
+            },
+            {
+              id: 7,
+              title: "算法分析与设计",
+              teacher: "杨教授",
+              location: "东二304",
+              color: "course-computer",
+              day: 5,
+              startTime: 3,
+              endTime: 4,
+              weeks: "1-16周",
+            },
+            {
+              id: 8,
+              title: "智能系统设计",
+              teacher: "黄教授",
+              location: "东二302",
+              color: "course-computer",
+              day: 1,
+              startTime: 5,
+              endTime: 6,
+              weeks: "1-16周",
+            },
+            {
+              id: 9,
+              title: "神经网络与深度学习",
+              teacher: "吴教授",
+              location: "工学院1-470",
+              color: "course-computer",
+              day: 2,
+              startTime: 5,
+              endTime: 5,
+              weeks: "1-16周",
+            },
+            {
+              id: 10,
+              title: "传感器技术基础",
+              teacher: "黄教授",
+              location: "工学院1-526",
+              color: "course-computer",
+              day: 3,
+              startTime: 5,
+              endTime: 5,
+              weeks: "1-16周",
+            },
+            {
+              id: 11,
+              title: "嵌入式系统",
+              teacher: "陈教授",
+              location: "东二202",
+              color: "course-computer",
+              day: 5,
+              startTime: 5,
+              endTime: 5,
+              weeks: "1-16周",
+            },
+            {
+              id: 12,
+              title: "智能机器人社团",
+              teacher: "学生活动",
+              location: "创新实验室A栋",
+              color: "course-sports",
+              day: 6,
+              startTime: 5,
+              endTime: 5,
+              weeks: "1-16周",
+            },
+            {
+              id: 13,
+              title: "工程英语沟通",
+              teacher: "王教授",
+              location: "东二206",
+              color: "course-english",
+              day: 3,
+              startTime: 6,
+              endTime: 6,
+              weeks: "1-16周",
+            },
+            {
+              id: 14,
+              title: "自动控制原理",
+              teacher: "罗教授",
+              location: "东二204",
+              color: "course-computer",
+              day: 4,
+              startTime: 6,
+              endTime: 6,
+              weeks: "1-16周",
+            },
+            {
+              id: 15,
+              title: "工程英语沟通",
+              teacher: "王教授",
+              location: "东二206",
+              color: "course-english",
+              day: 5,
+              startTime: 6,
+              endTime: 6,
+              weeks: "1-16周",
+            },
+            {
+              id: 16,
+              title: "专业英语",
+              teacher: "刘教授",
+              location: "东二206",
+              color: "course-english",
+              day: 1,
+              startTime: 7,
+              endTime: 8,
+              weeks: "1-16周",
+            },
+            {
+              id: 17,
+              title: "大学英语",
+              teacher: "王教授",
+              location: "文学楼303",
+              color: "course-english",
+              day: 3,
+              startTime: 7,
+              endTime: 7,
+              weeks: "1-16周",
+            },
+            {
+              id: 18,
+              title: "大学英语",
+              teacher: "王教授",
+              location: "文学楼303",
+              color: "course-english",
+              day: 5,
+              startTime: 7,
+              endTime: 7,
+              weeks: "1-16周",
+            },
+            {
+              id: 19,
+              title: "深度学习架构",
+              teacher: "吴教授",
+              location: "工学院1-470",
+              color: "course-computer",
+              day: 2,
+              startTime: 8,
+              endTime: 8,
+              weeks: "1-16周",
+            },
+            {
+              id: 20,
+              title: "图像处理与分析",
+              teacher: "林教授",
+              location: "工学院1-470",
+              color: "course-computer",
+              day: 3,
+              startTime: 9,
+              endTime: 10,
+              weeks: "1-16周",
+            },
+            {
+              id: 21,
+              title: "计算机视觉",
+              teacher: "陈教授",
+              location: "工学院1-470",
+              color: "course-computer",
+              day: 5,
+              startTime: 9,
+              endTime: 10,
+              weeks: "1-16周",
+            },
+            {
+              id: 22,
+              title: "智能机器人导论",
+              teacher: "赵教授",
+              location: "东二305",
+              color: "course-physics",
+              day: 1,
+              startTime: 11,
+              endTime: 11,
+              weeks: "1-16周",
+            },
+            {
+              id: 23,
+              title: "智能机器人导论",
+              teacher: "赵教授",
+              location: "东二305",
+              color: "course-physics",
+              day: 4,
+              startTime: 11,
+              endTime: 11,
+              weeks: "1-16周",
+            },
+          ],
+          timePeriods: [
+            { id: 1, time: "08:00-08:45" },
+            { id: 2, time: "08:55-09:40" },
+            { id: 3, time: "10:10-10:55" },
+            { id: 4, time: "11:05-11:50" },
+            { id: 5, time: "14:20-15:05" },
+            { id: 6, time: "15:15-16:00" },
+            { id: 7, time: "16:30-17:15" },
+            { id: 8, time: "17:25-18:10" },
+            { id: 9, time: "19:00-19:45" },
+            { id: 10, time: "19:55-20:40" },
+            { id: 11, time: "20:50-21:35" },
+          ],
+          days: [
+            { id: 1, name: "周一" },
+            { id: 2, name: "周二" },
+            { id: 3, name: "周三" },
+            { id: 4, name: "周四" },
+            { id: 5, name: "周五" },
+            { id: 6, name: "周六" },
+            { id: 7, name: "周日" },
+          ],
+        };
+
+        // 初始化课表数据
+        function loadScheduleData() {
+          try {
+            console.log("正在初始化课表数据...");
+            // 直接使用已经内联的scheduleData
+            renderTimetable();
+            renderListView();
+            setupCourseCardEvents();
+            console.log("课表数据初始化成功");
+          } catch (error) {
+            console.error("初始化课表数据失败:", error);
+            document.getElementById("week-view-container").innerHTML = `
+            <div class="alert alert-danger">
+              <h4>初始化数据失败</h4>
+              <p>${error.message}</p>
+              <p>请检查控制台获取详细信息</p>
             </div>
           `;
-          
-          // 添加到课表单元格
-          cell.appendChild(courseCard);
-          
-          // 保存数据到本地存储
-          // ...
-          
+            showNotification("初始化课表数据失败，请刷新页面重试", "error");
+          }
+        }
+
+        // 渲染周视图课表
+        function renderTimetable() {
+          const timetableGrid = document.getElementById("timetable-grid");
+          if (!timetableGrid) return;
+
+          // 清空现有内容
+          timetableGrid.innerHTML = "";
+
+          // 添加表头
+          timetableGrid.appendChild(createHeader());
+
+          // 添加时间行和课程单元格
+          scheduleData.timePeriods.forEach((period) => {
+            // 添加时间单元格
+            const timeCell = document.createElement("div");
+            timeCell.className = "timetable-time";
+            timeCell.textContent = period.time;
+            timetableGrid.appendChild(timeCell);
+
+            // 为每一天添加课程单元格
+            for (let dayId = 1; dayId <= 7; dayId++) {
+              const cell = document.createElement("div");
+              cell.className = "timetable-cell";
+              cell.setAttribute("data-day", dayId);
+              cell.setAttribute("data-time", period.id);
+              timetableGrid.appendChild(cell);
+
+              // 查找并显示该单元格对应的课程
+              const coursesInCell = scheduleData.courses.filter(
+                (course) =>
+                  course.day === dayId &&
+                  course.startTime <= period.id &&
+                  course.endTime >= period.id
+              );
+
+              if (coursesInCell.length > 0) {
+                coursesInCell.forEach((course) => {
+                  // 只在连续课程的第一个时间段显示课程卡片
+                  if (period.id === course.startTime) {
+                    cell.appendChild(createCourseCard(course));
+                  }
+                });
+              }
+            }
+          });
+        }
+
+        // 创建表头
+        function createHeader() {
+          const headerFragment = document.createDocumentFragment();
+
+          // 时间表头
+          const timeHeader = document.createElement("div");
+          timeHeader.className = "timetable-header";
+          timeHeader.textContent = "时间";
+          headerFragment.appendChild(timeHeader);
+
+          // 星期表头
+          scheduleData.days.forEach((day) => {
+            const dayHeader = document.createElement("div");
+            dayHeader.className = "timetable-header";
+            dayHeader.textContent = day.name;
+            headerFragment.appendChild(dayHeader);
+          });
+
+          return headerFragment;
+        }
+
+        // 创建课程卡片
+        function createCourseCard(course) {
+          const card = document.createElement("div");
+          card.className = `course-card ${course.color}`;
+          card.setAttribute("data-course-id", course.id);
+
+          card.innerHTML = `
+          <div class="course-title">${course.title}</div>
+          <div class="course-info">${course.teacher}</div>
+          <div class="course-location">
+            <i class="fas fa-map-marker-alt"></i> ${course.location}
+          </div>
+        `;
+
+          if (course.weeks) {
+            const weeksInfo = document.createElement("div");
+            weeksInfo.className = "course-info";
+            weeksInfo.textContent = course.weeks;
+            card.appendChild(weeksInfo);
+          }
+
+          return card;
+        }
+
+        // 渲染列表视图
+        function renderListView() {
+          const listContainer = document.getElementById("list-view-container");
+          if (!listContainer) return;
+
+          // 清空现有内容
+          listContainer.innerHTML = "";
+
+          // 按天组织课程
+          const coursesByDay = {};
+          scheduleData.days.forEach((day) => {
+            coursesByDay[day.id] = [];
+          });
+
+          scheduleData.courses.forEach((course) => {
+            if (coursesByDay[course.day]) {
+              coursesByDay[course.day].push(course);
+            }
+          });
+
+          // 为每一天创建卡片
+          scheduleData.days.forEach((day) => {
+            // 如果该天没有课程，跳过
+            if (coursesByDay[day.id].length === 0) return;
+
+            // 创建该天的卡片
+            const dayCard = document.createElement("div");
+            dayCard.className = day.id === 1 ? "card" : "card mt-4";
+
+            // 添加标题
+            const dayTitle = document.createElement("h3");
+            dayTitle.className = "mb-3";
+            dayTitle.textContent = day.name;
+            dayCard.appendChild(dayTitle);
+
+            // 添加该天的课程
+            coursesByDay[day.id]
+              .sort((a, b) => a.startTime - b.startTime)
+              .forEach((course) => {
+                const courseWrapper = document.createElement("div");
+                courseWrapper.className = "mb-3";
+
+                const timeRange = getTimeRangeText(course);
+
+                const courseCard = document.createElement("div");
+                courseCard.className = `course-card ${course.color}`;
+                courseCard.setAttribute("data-course-id", course.id);
+
+                courseCard.innerHTML = `
+                <div class="course-title">${course.title}</div>
+                <div class="course-info">${course.teacher}</div>
+                <div class="course-info">${timeRange}</div>
+                <div class="course-location">
+                  <i class="fas fa-map-marker-alt"></i> ${course.location}
+                </div>
+              `;
+
+                if (course.weeks) {
+                  const weeksInfo = document.createElement("div");
+                  weeksInfo.className = "course-info";
+                  weeksInfo.textContent = course.weeks;
+                  courseCard.appendChild(weeksInfo);
+                }
+
+                courseWrapper.appendChild(courseCard);
+                dayCard.appendChild(courseWrapper);
+              });
+
+            listContainer.appendChild(dayCard);
+          });
+        }
+
+        // 获取课程时间范围文本
+        function getTimeRangeText(course) {
+          if (scheduleData.timePeriods && scheduleData.timePeriods.length > 0) {
+            const startPeriod = scheduleData.timePeriods.find(
+              (period) => period.id === course.startTime
+            );
+            const endPeriod = scheduleData.timePeriods.find(
+              (period) => period.id === course.endTime
+            );
+
+            if (startPeriod && endPeriod) {
+              const startTime = startPeriod.time.split("-")[0];
+              const endTime = endPeriod.time.split("-")[1];
+              return `${startTime}-${endTime}`;
+            }
+          }
+
+          return `第${course.startTime}-${course.endTime}节`;
+        }
+
+        // 设置课程卡片事件
+        function setupCourseCardEvents() {
+          // 动态绑定所有课程卡片点击事件
+          document.addEventListener("click", function (e) {
+            const courseCard = e.target.closest(".course-card");
+            if (courseCard) {
+              const courseId = courseCard.getAttribute("data-course-id");
+              if (courseId) {
+                const course = scheduleData.courses.find(
+                  (c) => c.id == courseId
+                );
+                if (course) {
+                  showCourseDetails(course);
+                }
+              }
+            }
+          });
+        }
+
+        // 显示课程详情
+        function showCourseDetails(course) {
+          // 可以在这里实现课程详情查看功能
+          // 例如：弹出模态框显示课程详细信息
+          console.log("查看课程详情:", course);
+        }
+
+        // 打开添加课程弹窗
+        addCourseBtn.addEventListener("click", function () {
+          addCourseModal.style.display = "flex";
+        });
+
+        // 关闭添加课程弹窗
+        function closeModal() {
+          addCourseModal.style.display = "none";
+          addCourseForm.reset();
+          // 重置颜色选择
+          colorOptions.forEach((option) => option.classList.remove("selected"));
+          colorOptions[0].classList.add("selected");
+          courseColorInput.value = "course-math";
+        }
+
+        // 关闭按钮事件
+        closeCourseModal.addEventListener("click", closeModal);
+        cancelCourse.addEventListener("click", closeModal);
+
+        // 点击外部关闭弹窗
+        window.addEventListener("click", function (event) {
+          if (event.target === addCourseModal) {
+            closeModal();
+          }
+        });
+
+        // 切换课表视图
+        weekViewBtn.addEventListener("click", function () {
+          weekViewBtn.classList.add("active");
+          listViewBtn.classList.remove("active");
+          weekViewContainer.style.display = "block";
+          listViewContainer.style.display = "none";
+        });
+
+        listViewBtn.addEventListener("click", function () {
+          listViewBtn.classList.add("active");
+          weekViewBtn.classList.remove("active");
+          listViewContainer.style.display = "block";
+          weekViewContainer.style.display = "none";
+        });
+
+        // 颜色选择逻辑
+        colorOptions.forEach((option) => {
+          option.addEventListener("click", function () {
+            // 移除其他选中状态
+            colorOptions.forEach((opt) => opt.classList.remove("selected"));
+            // 添加当前选中状态
+            this.classList.add("selected");
+            // 更新隐藏字段的值
+            courseColorInput.value = this.getAttribute("data-class");
+          });
+        });
+
+        // 添加课程表单提交
+        addCourseForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          // 获取表单数据
+          const courseName = document.getElementById("course-name").value;
+          const courseTeacher = document.getElementById("course-teacher").value;
+          const courseLocation =
+            document.getElementById("course-location").value;
+          const courseDay = parseInt(
+            document.getElementById("course-day").value,
+            10
+          );
+          const courseTime = parseInt(
+            document.getElementById("course-time").value,
+            10
+          );
+          const courseColor = document.getElementById("course-color").value;
+          const courseWeeks =
+            document.getElementById("course-weeks").value || "1-16周";
+
+          // 创建新课程对象
+          const newCourse = {
+            id:
+              scheduleData.courses.length > 0
+                ? Math.max(...scheduleData.courses.map((c) => c.id)) + 1
+                : 1,
+            title: courseName,
+            teacher: courseTeacher,
+            location: courseLocation,
+            color: courseColor,
+            day: courseDay,
+            startTime: courseTime,
+            endTime: courseTime,
+            weeks: courseWeeks,
+          };
+
+          // 添加到课程数据中
+          scheduleData.courses.push(newCourse);
+
+          // 更新视图
+          renderTimetable();
+          renderListView();
+
+          // 保存数据到服务器/本地
+          try {
+            // 这里可以添加保存到服务器的代码
+            // 模拟保存成功
+            showNotification("课程添加成功！", "success");
+          } catch (error) {
+            console.error("保存课程失败:", error);
+            showNotification("保存课程失败，请重试", "error");
+          }
+
           // 关闭弹窗
           closeModal();
-          
-          // 显示成功消息
-          showNotification('课程添加成功！', 'success');
-        }
-      });
-      
-      // 课程卡片点击事件
-      const courseCards = document.querySelectorAll('.course-card');
-      courseCards.forEach(card => {
-        card.addEventListener('click', function() {
-          // 实现课程详情查看
-          // ...
         });
-      });
-      
-      // 导出和清空事件
-      document.getElementById('export-ical').addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('导出为iCal功能正在开发中...');
-      });
-      
-      document.getElementById('export-csv').addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('导出为CSV功能正在开发中...');
-      });
-      
-      document.getElementById('import-courses').addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('导入课程功能正在开发中...');
-      });
-      
-      document.getElementById('print-schedule').addEventListener('click', function(e) {
-        e.preventDefault();
-        window.print();
-      });
-      
-      document.getElementById('clear-schedule').addEventListener('click', function(e) {
-        e.preventDefault();
-        if (confirm('确定要清空所有课程吗？此操作无法撤销。')) {
-          // 清空课表
-          const cells = document.querySelectorAll('.timetable-cell');
-          cells.forEach(cell => cell.innerHTML = '');
-          
-          // 清空本地存储
-          // localStorage.removeItem('courses');
-          
-          showNotification('课表已清空', 'success');
+
+        // 导出和清空事件
+        document
+          .getElementById("export-ical")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            alert("导出为iCal功能正在开发中...");
+          });
+
+        document
+          .getElementById("export-csv")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            alert("导出为CSV功能正在开发中...");
+          });
+
+        document
+          .getElementById("import-courses")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            alert("导入课程功能正在开发中...");
+          });
+
+        document
+          .getElementById("print-schedule")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            window.print();
+          });
+
+        document
+          .getElementById("clear-schedule")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            if (confirm("确定要清空所有课程吗？此操作无法撤销。")) {
+              // 清空课程数据
+              scheduleData.courses = [];
+
+              // 更新视图
+              renderTimetable();
+              renderListView();
+
+              // 这里可以添加将清空数据同步到服务器的代码
+
+              showNotification("课表已清空", "success");
+            }
+          });
+
+        // 显示通知
+        function showNotification(message, type = "info") {
+          // 简单的通知实现，可以替换为更复杂的通知系统
+          alert(message);
         }
+
+        // 加载课表数据
+        loadScheduleData();
       });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
