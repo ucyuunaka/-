@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 监听主题变化事件
   listenForThemeChanges();
+  
+  // 初始化侧边栏悬停功能
+  initSidebarHover();
 });
 
 /**
@@ -57,6 +60,49 @@ function initSidebar() {
   window.addEventListener('resize', function() {
     if (window.innerWidth > 768) {
       toggleSidebar(false);
+    }
+  });
+}
+
+/**
+ * 初始化侧边栏悬停效果，确保页脚位置正确
+ */
+function initSidebarHover() {
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar) {
+    sidebar.addEventListener('mouseenter', function() {
+      if (window.innerWidth > 768) {
+        updateFooterPosition(true);
+      }
+    });
+    
+    sidebar.addEventListener('mouseleave', function() {
+      if (window.innerWidth > 768) {
+        updateFooterPosition(false);
+      }
+    });
+  }
+}
+
+/**
+ * 更新页脚位置以匹配侧边栏状态
+ * @param {boolean} expanded - 侧边栏是否展开
+ */
+function updateFooterPosition(expanded) {
+  const footers = document.querySelectorAll('.footer');
+  footers.forEach(footer => {
+    if (expanded) {
+      footer.style.marginLeft = '280px';
+      footer.style.width = 'calc(100% - 280px)';
+    } else {
+      footer.style.marginLeft = '110px';
+      footer.style.width = 'calc(100% - 110px)';
+    }
+    
+    // 在移动视图中确保页脚宽度正确
+    if (window.innerWidth <= 768) {
+      footer.style.marginLeft = '0';
+      footer.style.width = '100%';
     }
   });
 }

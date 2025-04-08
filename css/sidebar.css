@@ -259,10 +259,11 @@
     transition: padding 0.4s ease-in-out;
 }
 
-/* 确保页脚也有相同的左侧内边距 */
+/* 确保页脚也有相同的左侧内边距，与侧边栏宽度匹配 */
 .footer {
-    padding-left: 110px;
-    transition: padding 0.4s ease-in-out;
+    margin-left: 110px;
+    width: calc(100% - 110px);
+    transition: all 0.4s ease-in-out;
 }
 
 /* 响应式设计 */
@@ -281,9 +282,10 @@
         padding-left: 0;
     }
     
-    /* 在移动端视图中移除页脚的左侧内边距 */
+    /* 在移动端视图中移除页脚的边距，让它占据全宽 */
     .footer {
-        padding-left: 0;
+        margin-left: 0;
+        width: 100%;
     }
     
     .sidebar-text {
@@ -332,5 +334,24 @@
     
     .sidebar-overlay.active {
         display: block;
+    }
+}
+
+/* 添加中等尺寸屏幕的特殊处理 */
+@media (min-width: 769px) and (max-width: 1024px) {
+    /* 在这个尺寸下，侧边栏悬停时页脚也要相应调整 */
+    .sidebar:hover ~ .footer,
+    .sidebar:hover ~ main .footer {
+        margin-left: 280px;
+        width: calc(100% - 280px);
+    }
+}
+
+/* 当侧边栏展开时，确保页脚不会被覆盖 */
+@media (min-width: 769px) {
+    .sidebar:hover ~ .footer,
+    .sidebar:hover ~ main .footer {
+        margin-left: 280px;
+        width: calc(100% - 280px);
     }
 }
