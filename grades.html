@@ -32,6 +32,29 @@
         border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
       }
 
+      /* 新增图表网格布局样式 */
+      .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .chart-card {
+        background-color: var(--background-color);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+
+      .chart-title {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: var(--text-color);
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.5rem;
+      }
+
       .grades-title {
         font-size: 2rem;
         margin-bottom: 1rem;
@@ -389,29 +412,25 @@
         <!-- 图表展示区 -->
         <section class="grades-section">
           <h2 class="section-title animate-on-scroll fade-up">成绩趋势</h2>
-          <div class="tab-container animate-on-scroll fade-up delay-100">
-            <div class="tab-buttons">
-              <button class="tab-button active" data-tab="tab-trend">
-                学期趋势
-              </button>
-              <button class="tab-button" data-tab="tab-subject">
-                科目分布
-              </button>
-              <button class="tab-button" data-tab="tab-comp">成绩对比</button>
-            </div>
-            <div class="tab-content active" id="tab-trend">
-              <div class="chart-container">
-                <canvas id="trendChart"></canvas>
+          <div class="animate-on-scroll fade-up delay-100">
+            <div class="charts-grid">
+              <div class="chart-card">
+                <h3 class="chart-title">学期趋势</h3>
+                <div class="chart-container">
+                  <canvas id="trendChart"></canvas>
+                </div>
               </div>
-            </div>
-            <div class="tab-content" id="tab-subject">
-              <div class="chart-container">
-                <canvas id="subjectChart"></canvas>
+              <div class="chart-card">
+                <h3 class="chart-title">科目分布</h3>
+                <div class="chart-container">
+                  <canvas id="subjectChart"></canvas>
+                </div>
               </div>
-            </div>
-            <div class="tab-content" id="tab-comp">
-              <div class="chart-container">
-                <canvas id="compareChart"></canvas>
+              <div class="chart-card">
+                <h3 class="chart-title">成绩对比</h3>
+                <div class="chart-container">
+                  <canvas id="compareChart"></canvas>
+                </div>
               </div>
             </div>
           </div>
@@ -746,25 +765,6 @@
 
         // 初始化表单日期为当天
         document.getElementById("examDate").valueAsDate = new Date();
-
-        // 为标签切换添加事件监听
-        const tabButtons = document.querySelectorAll(".tab-button");
-        tabButtons.forEach((button) => {
-          button.addEventListener("click", function () {
-            // 移除所有活动状态
-            document.querySelectorAll(".tab-button").forEach((btn) => {
-              btn.classList.remove("active");
-            });
-            document.querySelectorAll(".tab-content").forEach((content) => {
-              content.classList.remove("active");
-            });
-
-            // 添加当前选中状态
-            this.classList.add("active");
-            const tabId = this.getAttribute("data-tab");
-            document.getElementById(tabId).classList.add("active");
-          });
-        });
 
         // 添加成绩表单显示/隐藏
         const addGradeBtn = document.getElementById("addGradeBtn");
