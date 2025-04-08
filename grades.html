@@ -32,27 +32,43 @@
         border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
       }
 
-      /* 新增图表网格布局样式 */
+      /* 图表布局样式 */
       .charts-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 1.5rem;
         margin-bottom: 2rem;
       }
-
+      
+      .charts-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+      
       .chart-card {
         background-color: var(--background-color);
         border-radius: var(--border-radius);
         padding: 1.5rem;
         box-shadow: var(--shadow);
       }
-
+      
+      .chart-card.full-width {
+        grid-column: 1 / -1;
+      }
+      
       .chart-title {
         font-size: 1.2rem;
         margin-bottom: 1rem;
         color: var(--text-color);
         border-bottom: 1px solid var(--border-color);
         padding-bottom: 0.5rem;
+      }
+
+      /* 响应式调整 */
+      @media (max-width: 768px) {
+        .charts-row {
+          grid-template-columns: 1fr;
+        }
       }
 
       .grades-title {
@@ -325,7 +341,7 @@
           </div>
         </div>
 
-        <div class="sidebar-item" data-href="countdown.html">
+        <div class="sidebar-item" data-href="countdown.html"></div>
           <div class="sidebar-light"></div>
           <div class="sidebar-icon-left"><i class="ri-time-line"></i></div>
           <div class="sidebar-text">考试倒计时</div>
@@ -414,19 +430,21 @@
           <h2 class="section-title animate-on-scroll fade-up">成绩趋势</h2>
           <div class="animate-on-scroll fade-up delay-100">
             <div class="charts-grid">
-              <div class="chart-card">
-                <h3 class="chart-title">学期趋势</h3>
-                <div class="chart-container">
-                  <canvas id="trendChart"></canvas>
+              <div class="charts-row">
+                <div class="chart-card">
+                  <h3 class="chart-title">学期趋势</h3>
+                  <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
+                  </div>
+                </div>
+                <div class="chart-card">
+                  <h3 class="chart-title">科目分布</h3>
+                  <div class="chart-container">
+                    <canvas id="subjectChart"></canvas>
+                  </div>
                 </div>
               </div>
-              <div class="chart-card">
-                <h3 class="chart-title">科目分布</h3>
-                <div class="chart-container">
-                  <canvas id="subjectChart"></canvas>
-                </div>
-              </div>
-              <div class="chart-card">
+              <div class="chart-card full-width">
                 <h3 class="chart-title">成绩对比</h3>
                 <div class="chart-container">
                   <canvas id="compareChart"></canvas>
