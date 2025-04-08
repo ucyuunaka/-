@@ -1,6 +1,6 @@
 /**
  * 课堂助手 - 扩展主题系统
- * 处理多种渐变主题切换和视觉效果应用
+ * 处理多种渐变主题切换
  */
 
 // 文档加载完成后执行
@@ -24,33 +24,20 @@ const ThemeManager = {
     { id: 'dark', name: '深色模式' }
   ],
   
-  // 可用的背景效果
-  effects: [
-    { id: 'none', name: '无效果' },
-    { id: 'overlay', name: '叠加效果' },
-    { id: 'multi-layer', name: '多层渐变' },
-    { id: 'radial-conic', name: '径向圆锥' },
-    { id: 'mixed-directions', name: '多向渐变' }
-  ],
-  
-  // 当前主题和效果
+  // 当前主题
   currentTheme: 'classic-blue-pink',
-  currentEffect: 'none',
   
   // 初始化主题系统
   init: function() {
-    // 从本地存储加载主题和效果设置
+    // 从本地存储加载主题设置
     this.currentTheme = localStorage.getItem('theme') || 'classic-blue-pink';
-    this.currentEffect = localStorage.getItem('effect') || 'none';
     
-    // 应用主题和效果
+    // 应用主题
     this.applyTheme(this.currentTheme);
-    this.applyEffect(this.currentEffect);
     
     // 渲染主题选择界面（如果在设置页）
     if (document.querySelector('#theme-preview-container')) {
       this.renderThemeSelectors();
-      this.renderEffectSelectors();
     }
   },
   
@@ -91,42 +78,6 @@ const ThemeManager = {
     });
   },
   
-  // 渲染效果选择器
-  renderEffectSelectors: function() {
-    const container = document.getElementById('effect-preview-container');
-    if (!container) return;
-    
-    let html = '';
-    
-    // 为每个效果创建预览卡片
-    this.effects.forEach(effect => {
-      const isActive = this.currentEffect === effect.id;
-      html += `
-        <div class="effect-preview ${isActive ? 'active' : ''}" data-effect="${effect.id}">
-          <div class="effect-preview-content effect-${effect.id}-preview">
-            <span class="effect-preview-name">${effect.name}</span>
-          </div>
-        </div>
-      `;
-    });
-    
-    container.innerHTML = html;
-    
-    // 添加点击事件
-    const effectCards = document.querySelectorAll('.effect-preview');
-    effectCards.forEach(card => {
-      card.addEventListener('click', () => {
-        const effectId = card.getAttribute('data-effect');
-        this.setEffect(effectId);
-        
-        // 移除其他卡片的活动状态
-        effectCards.forEach(c => c.classList.remove('active'));
-        // 添加活动状态到当前卡片
-        card.classList.add('active');
-      });
-    });
-  },
-  
   // 设置主题
   setTheme: function(themeId) {
     // 保存到本地存储
@@ -153,53 +104,15 @@ const ThemeManager = {
     );
   },
   
-  // 设置视觉效果
-  setEffect: function(effectId) {
-    // 保存到本地存储
-    localStorage.setItem('effect', effectId);
-    this.currentEffect = effectId;
-    
-    // 应用效果
-    this.applyEffect(effectId);
-    
-    // 显示通知
-    if (window.showNotification) {
-      showNotification(`已应用${this.getEffectName(effectId)}`, 'success');
-    }
-  },
-  
   // 应用主题到DOM
   applyTheme: function(themeId) {
     document.body.setAttribute('data-theme', themeId);
-  },
-  
-  // 应用视觉效果
-  applyEffect: function(effectId) {
-    // 首先移除已有的效果容器
-    const existingEffect = document.querySelector('.background-effect');
-    if (existingEffect) {
-      existingEffect.remove();
-    }
-    
-    // 如果选择"无效果"，则不需要创建新容器
-    if (effectId === 'none') return;
-    
-    // 创建新的效果容器
-    const effectElement = document.createElement('div');
-    effectElement.className = `background-effect effect-${effectId}`;
-    document.body.appendChild(effectElement);
   },
   
   // 获取主题名称
   getThemeName: function(themeId) {
     const theme = this.themes.find(t => t.id === themeId);
     return theme ? theme.name : '默认';
-  },
-  
-  // 获取效果名称
-  getEffectName: function(effectId) {
-    const effect = this.effects.find(e => e.id === effectId);
-    return effect ? effect.name : '无效果';
   }
 };
 

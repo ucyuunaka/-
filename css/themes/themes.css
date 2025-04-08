@@ -176,73 +176,6 @@
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
 }
 
-/* 背景视觉效果 - 专为渐变效果设计 */
-
-/* 1. 无效果（默认） */
-.effect-none {
-  background: var(--background-secondary);
-}
-
-/* 2. 叠加效果 */
-.effect-overlay {
-  background-image: var(--gradient-primary);
-  background-blend-mode: overlay;
-  background-attachment: fixed;
-  opacity: 0.15;
-}
-
-/* 3. 多层渐变效果 */
-.effect-multi-layer {
-  background-image: linear-gradient(
-      45deg,
-      rgba(255, 255, 255, 0.1) 25%,
-      transparent 25%
-    ),
-    var(--gradient-primary);
-  background-size: 20px 20px, cover;
-  opacity: 0.15;
-}
-
-/* 4. 径向与圆锥渐变 */
-.effect-radial-conic {
-  background-image: radial-gradient(
-      circle at top left,
-      var(--gradient-start) 0%,
-      transparent 50%
-    ),
-    conic-gradient(
-      from 90deg,
-      var(--gradient-end),
-      var(--gradient-start),
-      var(--gradient-end)
-    );
-  opacity: 0.15;
-}
-
-/* 5. 混合方向渐变 */
-.effect-mixed-directions {
-  background-image: linear-gradient(
-      45deg,
-      transparent 20%,
-      rgba(255, 255, 255, 0.1) 40%,
-      transparent 60%
-    ),
-    var(--gradient-primary);
-  opacity: 0.15;
-}
-
-/* 效果容器 */
-.background-effect {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  transition: all 0.5s ease;
-  pointer-events: none;
-}
-
 /* 主题预览样式 */
 .theme-preview-container {
   display: grid;
@@ -287,110 +220,15 @@
   color: var(--text-color);
 }
 
-.effect-preview-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.effect-preview {
-  height: 60px;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  transition: transform 0.3s;
-  position: relative;
-}
-
-.effect-preview:hover {
-  transform: translateY(-3px);
-}
-
-.effect-preview.active {
-  border: 2px solid var(--gradient-start);
-}
-
-/* 效果预览特定样式 */
-.effect-none-preview {
-  background: var(--gradient-primary);
-  opacity: 0.7;
-}
-
-.effect-overlay-preview {
-  background-image: var(--gradient-primary);
-  background-blend-mode: overlay;
-  opacity: 0.7;
-}
-
-.effect-multi-layer-preview {
-  background-image: linear-gradient(
-      45deg,
-      rgba(255, 255, 255, 0.1) 25%,
-      transparent 25%
-    ),
-    var(--gradient-primary);
-  background-size: 10px 10px, cover;
-  opacity: 0.7;
-}
-
-.effect-radial-conic-preview {
-  background-image: radial-gradient(
-      circle at top left,
-      var(--gradient-start) 0%,
-      transparent 50%
-    ),
-    conic-gradient(
-      from 90deg,
-      var(--gradient-end),
-      var(--gradient-start),
-      var(--gradient-end)
-    );
-  opacity: 0.7;
-}
-
-.effect-mixed-directions-preview {
-  background-image: linear-gradient(
-      45deg,
-      transparent 20%,
-      rgba(255, 255, 255, 0.1) 40%,
-      transparent 60%
-    ),
-    var(--gradient-primary);
-  opacity: 0.7;
-}
-
-.effect-preview-content {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.effect-preview-name {
-  font-size: 0.7rem;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--border-radius-sm);
-  color: #333;
-}
-
 /* 响应式调整 */
 @media (max-width: 768px) {
-  .theme-preview-container,
-  .effect-preview-container {
+  .theme-preview-container {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 576px) {
   .theme-preview-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .effect-preview-container {
     grid-template-columns: repeat(2, 1fr);
   }
 }
