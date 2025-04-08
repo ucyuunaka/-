@@ -380,17 +380,6 @@
 
             <div class="settings-row">
               <div class="settings-label">
-                <div class="settings-name">深色模式</div>
-                <div class="settings-description">切换深色/浅色主题</div>
-              </div>
-              <label class="theme-switch">
-                <input type="checkbox" id="theme-toggle" />
-                <span class="theme-slider"></span>
-              </label>
-            </div>
-
-            <div class="settings-row">
-              <div class="settings-label">
                 <div class="settings-name">主题颜色</div>
                 <div class="settings-description">选择您喜欢的配色主题</div>
               </div>
@@ -610,40 +599,6 @@
         initScrollAnimation(".animate-on-scroll", {
           threshold: 0.1,
           once: true,
-        });
-
-        // 初始化主题切换开关
-        const themeToggle = document.getElementById("theme-toggle");
-        const currentTheme = ThemeManager.currentTheme;
-
-        // 设置初始状态
-        if (currentTheme === "dark" || currentTheme === "dark-pastel") {
-          themeToggle.checked = true;
-        }
-
-        // 主题切换事件
-        themeToggle.addEventListener("change", function () {
-          // 根据开关状态切换深色/浅色主题
-          if (this.checked) {
-            // 如果当前是浅色主题组，切换到对应的深色主题
-            if (ThemeManager.currentTheme === "light") {
-              ThemeManager.setTheme("dark");
-            } else if (
-              ["pastel", "mint-purple", "peach-coral", "blue-green"].includes(
-                ThemeManager.currentTheme
-              )
-            ) {
-              ThemeManager.setTheme("dark-pastel");
-            }
-          } else {
-            // 如果是深色主题，切换到对应的浅色主题
-            if (
-              ThemeManager.currentTheme === "dark" ||
-              ThemeManager.currentTheme === "dark-pastel"
-            ) {
-              ThemeManager.setTheme("light");
-            }
-          }
         });
 
         // 字体大小控制

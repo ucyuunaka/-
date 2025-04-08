@@ -87,26 +87,20 @@ const ThemeManager = {
     // 应用主题
     this.applyTheme(themeId);
     
-    // 修改主题开关状态（仅限设置页面）
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-      themeToggle.checked = themeId === 'dark';
-    }
-    
     // 显示通知
     if (window.showNotification) {
       showNotification(`已切换到${this.getThemeName(themeId)}`, 'success');
     }
-    
-    // 触发主题改变事件
-    window.dispatchEvent(
-      new CustomEvent('themeChanged', { detail: { theme: themeId } })
-    );
   },
   
   // 应用主题到DOM
   applyTheme: function(themeId) {
     document.body.setAttribute('data-theme', themeId);
+    
+    // 触发主题改变事件
+    window.dispatchEvent(
+      new CustomEvent('themeChanged', { detail: { theme: themeId } })
+    );
   },
   
   // 获取主题名称
