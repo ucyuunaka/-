@@ -1,0 +1,303 @@
+/**
+ * 课堂助手 - 扩展主题系统
+ * 基于测试色彩搭配文件中的色彩方案扩展主题选项
+ */
+
+/* 默认主题变量（浅色模式）保持不变 */
+
+/* 扩展主题颜色方案 */
+
+/* 1. 柔和粉彩主题 */
+[data-theme="pastel"] {
+  --primary-color: #91defe;
+  --primary-light: #e1f1ff;
+  --primary-dark: #59b8e6;
+  
+  --secondary-color: #f9bccc;
+  --secondary-light: #ffd7e8;
+  
+  --success-color: #a0e8e0;
+  --warning-color: #fff2d7;
+  --danger-color: #ffb7c5;
+  
+  --background-color: #f7d6ff;
+  --background-secondary: #faf0ff;
+  
+  --text-color: #5a3d7a;
+  --text-secondary: #8e6bab;
+  
+  --border-color: #e6c6ff;
+  
+  /* 阴影保持不变 */
+}
+
+/* 2. 薄荷紫主题 */
+[data-theme="mint-purple"] {
+  --primary-color: #a0e8e0;
+  --primary-light: #d8f7f3;
+  --primary-dark: #4cccc0;
+  
+  --secondary-color: #d4bbfc;
+  --secondary-light: #e6d6ff;
+  
+  --success-color: #d2e8c8;
+  --warning-color: #fff2d7;
+  --danger-color: #ffb7c5;
+  
+  --background-color: #ffffff;
+  --background-secondary: #f8fcfb;
+  
+  --text-color: #4a5568;
+  --text-secondary: #718096;
+  
+  --border-color: #d4bbfc;
+}
+
+/* 3. 蜜桃珊瑚主题 */
+[data-theme="peach-coral"] {
+  --primary-color: #ffd7e8;
+  --primary-light: #fff0f7;
+  --primary-dark: #ffb7c5;
+  
+  --secondary-color: #ffb7c5;
+  --secondary-light: #ffe8ed;
+  
+  --success-color: #a0e8e0;
+  --warning-color: #fff2d7;
+  --danger-color: #ff8fa3;
+  
+  --background-color: #fff8f8;
+  --background-secondary: #fffafb;
+  
+  --text-color: #754b4b;
+  --text-secondary: #a87e7e;
+  
+  --border-color: #ffdeeb;
+}
+
+/* 4. 蓝绿主题 */
+[data-theme="blue-green"] {
+  --primary-color: #b5d8ff;
+  --primary-light: #e5f0ff;
+  --primary-dark: #7fb5f5;
+  
+  --secondary-color: #d2e8c8;
+  --secondary-light: #eaf6e6;
+  
+  --success-color: #a0e8e0;
+  --warning-color: #ffd7a0;
+  --danger-color: #ffb7c5;
+  
+  --background-color: #f0f7ff;
+  --background-secondary: #f7fbff;
+  
+  --text-color: #2c5282;
+  --text-secondary: #4a69a5;
+  
+  --border-color: #c7e2ff;
+}
+
+/* 5. 深色粉彩主题 */
+[data-theme="dark-pastel"] {
+  --primary-color: #91defe;
+  --primary-light: #2c4c63;
+  --primary-dark: #59b8e6;
+  
+  --secondary-color: #f9bccc;
+  --secondary-light: #5c3a48;
+  
+  --success-color: #a0e8e0;
+  --warning-color: #f6d365;
+  --danger-color: #ffb7c5;
+  
+  --background-color: #2d2a3d;
+  --background-secondary: #242230;
+  
+  --text-color: #f1e6ff;
+  --text-secondary: #c6b8e0;
+  
+  --border-color: #3f3655;
+  
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* 背景视觉效果 */
+
+/* 1. 无效果（默认） */
+.effect-none {
+  background-color: var(--background-secondary);
+}
+
+/* 2. 叠加效果 */
+.effect-overlay {
+  background-color: var(--background-secondary);
+  background-image: linear-gradient(
+    to right,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  background-blend-mode: overlay;
+  background-attachment: fixed;
+  opacity: 0.15;
+}
+
+/* 3. 多层渐变效果 */
+.effect-multi-layer {
+  background-color: var(--background-secondary);
+  background-image: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.1) 25%,
+      transparent 25%
+    ),
+    linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  background-size: 20px 20px, cover;
+  opacity: 0.1;
+}
+
+/* 4. 径向与圆锥渐变 */
+.effect-radial-conic {
+  background-color: var(--background-secondary);
+  background-image: radial-gradient(
+      circle at top left,
+      var(--primary-color) 0%,
+      transparent 50%
+    ),
+    conic-gradient(
+      from 90deg,
+      var(--secondary-color),
+      var(--primary-color),
+      var(--secondary-color)
+    );
+  opacity: 0.1;
+}
+
+/* 5. 混合方向渐变 */
+.effect-mixed-directions {
+  background-color: var(--background-secondary);
+  background-image: linear-gradient(
+      45deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.1) 40%,
+      transparent 60%
+    ),
+    linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  opacity: 0.1;
+}
+
+/* 效果容器 */
+.background-effect {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  transition: all 0.5s ease;
+  pointer-events: none;
+}
+
+/* 主题预览样式 */
+.theme-preview-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.theme-preview {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+}
+
+.theme-preview:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.theme-preview.active {
+  border: 2px solid var(--primary-color);
+}
+
+.theme-preview-top {
+  height: 50px;
+  background-color: var(--primary-color);
+}
+
+.theme-preview-bottom {
+  height: 30px;
+  background-color: var(--secondary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-preview-name {
+  font-size: 0.75rem;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.effect-preview-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.effect-preview {
+  height: 60px;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.3s;
+  position: relative;
+}
+
+.effect-preview:hover {
+  transform: translateY(-3px);
+}
+
+.effect-preview.active {
+  border: 2px solid var(--primary-color);
+}
+
+.effect-preview-content {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.effect-preview-name {
+  font-size: 0.7rem;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  color: #333;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .theme-preview-container,
+  .effect-preview-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .theme-preview-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .effect-preview-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
