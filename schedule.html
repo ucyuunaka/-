@@ -55,10 +55,9 @@
             <button class="active" id="week-view">周视图</button>
             <button id="list-view">列表视图</button>
           </div>
-
           <div class="schedule-actions">
-            <button class="btn" id="add-course-btn">
-              <i class="fas fa-plus"></i> 添加课程
+            <button class="btn" id="edit-schedule-btn">
+              <i class="fas fa-edit"></i> 编辑课表
             </button>
 
             <div class="import-export">
@@ -308,10 +307,11 @@
         initScrollAnimation(".animate-on-scroll", {
           threshold: 0.1,
           once: true,
-        });
+        }); // 编辑模式切换
+        const editScheduleBtn = document.getElementById("edit-schedule-btn");
+        let isEditMode = false;
 
-        // 添加课程弹窗
-        const addCourseBtn = document.getElementById("add-course-btn");
+        // 保留模态框引用用于其他功能
         const addCourseModal = document.getElementById("add-course-modal");
         const closeCourseModal = document.getElementById("close-course-modal");
         const cancelCourse = document.getElementById("cancel-course");
@@ -330,6 +330,27 @@
         // 颜色选择功能
         const colorOptions = document.querySelectorAll(".color-option");
         const courseColorInput = document.getElementById("course-color"); // 使用从js/data/schedule_data.js导入的课表数据
+
+        // 编辑模式切换逻辑
+        editScheduleBtn.addEventListener("click", function () {
+          // 切换编辑模式状态
+          isEditMode = !isEditMode;
+
+          // 更新按钮文本和图标
+          if (isEditMode) {
+            editScheduleBtn.innerHTML = '<i class="fas fa-check"></i> 完成编辑';
+            editScheduleBtn.classList.add("btn-success");
+            // 添加编辑模式类到容器
+            weekViewContainer.classList.add("edit-mode");
+            listViewContainer.classList.add("edit-mode");
+          } else {
+            editScheduleBtn.innerHTML = '<i class="fas fa-edit"></i> 编辑课表';
+            editScheduleBtn.classList.remove("btn-success");
+            // 移除编辑模式类
+            weekViewContainer.classList.remove("edit-mode");
+            listViewContainer.classList.remove("edit-mode");
+          }
+        });
 
         // 初始化课表数据
         function loadScheduleData() {
@@ -425,13 +446,40 @@
           card.className = `course-card ${course.color}`;
           card.setAttribute("data-course-id", course.id);
 
-          card.innerHTML = `
-          <div class="course-title">${course.title}</div>
-          <div class="course-info">${course.teacher}</div>
-          <div class="course-location">
-            <i class="fas fa-map-marker-alt"></i> ${course.location}
-          </div>
-        `;
+          // 添加删除图标（初始隐藏）
+          const deleteIcon = document.createElement("div");
+          deleteIcon.className = "course-delete-icon";
+          deleteIcon.innerHTML = '<i class="fas fa-times"></i>';
+
+          // 创建课程标题元素
+          const titleElement = document.createElement("div");
+          titleElement.className = "course-title";
+          titleElement.textContent = course.title;
+
+          // 创建教师信息元素
+          const teacherElement = document.createElement("div");
+          teacherElement.className = "course-info";
+          teacherElement.textContent = course.teacher;
+
+          // 创建位置信息元素
+          const locationElement = document.createElement("div");
+          locationElement.className = "course-location";
+
+          // 添加位置图标
+          const locationIcon = document.createElement("i");
+          locationIcon.className = "fas fa-map-marker-alt";
+          locationElement.appendChild(locationIcon);
+
+          // 添加位置文本
+          locationElement.appendChild(
+            document.createTextNode(" " + course.location)
+          );
+
+          // 按顺序将所有元素添加到卡片中
+          card.appendChild(deleteIcon);
+          card.appendChild(titleElement);
+          card.appendChild(teacherElement);
+          card.appendChild(locationElement);
 
           if (course.weeks) {
             const weeksInfo = document.createElement("div");
@@ -559,12 +607,17 @@
                 courseWrapper.className = "mb-3";
 
                 const timeRange = getTimeRangeText(course);
-
                 const courseCard = document.createElement("div");
                 courseCard.className = `course-card ${course.color}`;
                 courseCard.setAttribute("data-course-id", course.id);
 
-                courseCard.innerHTML = `
+                // 添加删除图标（初始隐藏）
+                const deleteIcon = document.createElement("div");
+                deleteIcon.className = "course-delete-icon";
+                deleteIcon.innerHTML = '<i class="fas fa-times"></i>';
+                courseCard.appendChild(deleteIcon);
+
+                courseCard.innerHTML += `
                 <div class="course-title">${course.title}</div>
                 <div class="course-info">${course.teacher}</div>
                 <div class="course-info">${timeRange}</div>
@@ -625,42 +678,12 @@
               }
             }
           });
-        }
-
-        // 显示课程详情
+        } // 显示课程详情
         function showCourseDetails(course) {
           // 可以在这里实现课程详情查看功能
           // 例如：弹出模态框显示课程详细信息
           console.log("查看课程详情:", course);
-        }
-
-        // 打开添加课程弹窗
-        addCourseBtn.addEventListener("click", function () {
-          addCourseModal.style.display = "flex";
-        });
-
-        // 关闭添加课程弹窗
-        function closeModal() {
-          addCourseModal.style.display = "none";
-          addCourseForm.reset();
-          // 重置颜色选择
-          colorOptions.forEach((option) => option.classList.remove("selected"));
-          colorOptions[0].classList.add("selected");
-          courseColorInput.value = "course-math";
-        }
-
-        // 关闭按钮事件
-        closeCourseModal.addEventListener("click", closeModal);
-        cancelCourse.addEventListener("click", closeModal);
-
-        // 点击外部关闭弹窗
-        window.addEventListener("click", function (event) {
-          if (event.target === addCourseModal) {
-            closeModal();
-          }
-        });
-
-        // 切换课表视图
+        } // 切换课表视图
         weekViewBtn.addEventListener("click", function () {
           weekViewBtn.classList.add("active");
           listViewBtn.classList.remove("active");
@@ -673,76 +696,6 @@
           weekViewBtn.classList.remove("active");
           listViewContainer.style.display = "block";
           weekViewContainer.style.display = "none";
-        });
-
-        // 颜色选择逻辑
-        colorOptions.forEach((option) => {
-          option.addEventListener("click", function () {
-            // 移除其他选中状态
-            colorOptions.forEach((opt) => opt.classList.remove("selected"));
-            // 添加当前选中状态
-            this.classList.add("selected");
-            // 更新隐藏字段的值
-            courseColorInput.value = this.getAttribute("data-class");
-          });
-        });
-
-        // 添加课程表单提交
-        addCourseForm.addEventListener("submit", async function (e) {
-          e.preventDefault();
-
-          // 获取表单数据
-          const courseName = document.getElementById("course-name").value;
-          const courseTeacher = document.getElementById("course-teacher").value;
-          const courseLocation =
-            document.getElementById("course-location").value;
-          const courseDay = parseInt(
-            document.getElementById("course-day").value,
-            10
-          );
-          const courseTime = parseInt(
-            document.getElementById("course-time").value,
-            10
-          );
-          const courseColor = document.getElementById("course-color").value;
-          const courseWeeks =
-            document.getElementById("course-weeks").value || "1-16周";
-
-          // 创建新课程对象
-          const newCourse = {
-            id:
-              scheduleData.courses.length > 0
-                ? Math.max(...scheduleData.courses.map((c) => c.id)) + 1
-                : 1,
-            title: courseName,
-            teacher: courseTeacher,
-            location: courseLocation,
-            color: courseColor,
-            day: courseDay,
-            startTime: courseTime,
-            endTime: courseTime,
-            weeks: courseWeeks,
-          };
-
-          // 添加到课程数据中
-          scheduleData.courses.push(newCourse);
-
-          // 更新视图
-          renderTimetable();
-          renderListView();
-
-          // 保存数据到服务器/本地
-          try {
-            // 这里可以添加保存到服务器的代码
-            // 模拟保存成功
-            showNotification("课程添加成功！", "success");
-          } catch (error) {
-            console.error("保存课程失败:", error);
-            showNotification("保存课程失败，请重试", "error");
-          }
-
-          // 关闭弹窗
-          closeModal();
         });
 
         // 导出和清空事件
