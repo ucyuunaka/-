@@ -40,7 +40,7 @@
   grid-template-columns: 80px repeat(7, 1fr);
   min-width: 800px;
   /* 明确设置行高和网格结构 */
-  grid-auto-rows: 110px; /* 统一所有行的高度 */
+  grid-auto-rows: 110px; /* 保持行高为110px以确保内容完全显示 */
 }
 
 .timetable-header {
@@ -52,7 +52,7 @@
   display: flex; /* 使用flex布局确保内容居中 */
   align-items: center;
   justify-content: center;
-  height: 60px; /* 固定表头高度 */
+  height: 110px; /* 调整为与grid-auto-rows相同的高度 */
 }
 
 .timetable-time {
