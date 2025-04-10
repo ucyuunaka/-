@@ -444,7 +444,7 @@
           adjustFontSize(card);
 
           return card;
-        }        // 根据内容自动调整字体大小的函数
+        } // 根据内容自动调整字体大小的函数
         function adjustFontSize(card) {
           const titleElement = card.querySelector(".course-title");
           const infoElements = card.querySelectorAll(".course-info");
@@ -459,15 +459,18 @@
             // 调整课程名称字体大小 - 始终应用自适应缩放
             if (titleElement) {
               const titleLength = titleElement.textContent.length;
-              
+
               // 课程名称自适应算法 - 根据字符数更积极地缩放
               let scaleFactor = 1;
               if (titleLength > 4) {
                 // 字符越多，缩放越明显
                 scaleFactor = Math.min(1, 4 / titleLength + 0.1);
               }
-              
-              const newSize = Math.max(minFontSize, baseTitleSize * scaleFactor);
+
+              const newSize = Math.max(
+                minFontSize,
+                baseTitleSize * scaleFactor
+              );
               titleElement.style.fontSize = `${newSize}rem`;
             }
 
@@ -476,12 +479,15 @@
               if (element) {
                 const textLength = element.textContent.length;
                 let scaleFactor = 1;
-                
+
                 if (textLength > 6) {
                   scaleFactor = Math.min(1, 6 / textLength + 0.15);
                 }
-                
-                const newSize = Math.max(minFontSize, baseInfoSize * scaleFactor);
+
+                const newSize = Math.max(
+                  minFontSize,
+                  baseInfoSize * scaleFactor
+                );
                 element.style.fontSize = `${newSize}rem`;
               }
             });
@@ -491,14 +497,14 @@
               const locationText = locationElement.textContent.trim();
               const textLength = locationText.length;
               let scaleFactor = 1;
-              
+
               if (textLength > 6) {
                 scaleFactor = Math.min(1, 6 / textLength + 0.15);
               }
-              
+
               const newSize = Math.max(minFontSize, baseInfoSize * scaleFactor);
               locationElement.style.fontSize = `${newSize}rem`;
-              
+
               // 确保图标与文字对齐且大小协调
               const icon = locationElement.querySelector("i");
               if (icon) {
