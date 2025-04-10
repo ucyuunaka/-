@@ -39,34 +39,47 @@
   display: grid;
   grid-template-columns: 80px repeat(7, 1fr);
   min-width: 800px;
+  /* 明确设置行高和网格结构 */
+  grid-auto-rows: 110px; /* 统一所有行的高度 */
 }
 
 .timetable-header {
   background-color: var(--primary-light);
   font-weight: 600;
   text-align: center;
-  padding: 1rem 0.5rem;
+  padding: 0.5rem;
   border-bottom: 1px solid var(--border-color);
+  display: flex; /* 使用flex布局确保内容居中 */
+  align-items: center;
+  justify-content: center;
+  height: 60px; /* 固定表头高度 */
 }
 
 .timetable-time {
   grid-column: 1;
-  padding: 1rem 0.5rem;
+  padding: 0.5rem;
   text-align: center;
   border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
   font-weight: 500;
   background-color: var(--background-secondary);
+  display: flex; /* 使用flex布局确保内容居中 */
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* 填满整个单元格 */
 }
 
 .timetable-cell {
   border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
   padding: 0.4rem;
-  min-height: 80px;
+  height: 100%; /* 确保所有单元格高度一致 */
   position: relative;
-  overflow: visible; /* 改为visible允许内容显示完整 */
+  overflow: visible; /* 允许内容显示完整 */
   box-sizing: border-box;
+  display: flex; /* 使用flex布局更好地控制内容定位 */
+  flex-direction: column;
+  justify-content: center;
 }
 
 .timetable-cell:last-child {
@@ -87,6 +100,8 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  justify-content: space-between; /* 优化内容分布 */
+  overflow: hidden; /* 防止内容溢出 */
 }
 
 .course-card:hover {
