@@ -65,6 +65,7 @@
   padding: 0.5rem;
   min-height: 80px;
   position: relative;
+  overflow: hidden;
 }
 
 .timetable-cell:last-child {
@@ -94,11 +95,17 @@
   font-weight: 600;
   font-size: 0.95rem;
   margin-bottom: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .course-info {
   color: var(--text-secondary);
   font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .course-location {
@@ -107,6 +114,9 @@
   gap: 0.25rem;
   margin-top: 0.25rem;
   font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* 课程颜色变量 */

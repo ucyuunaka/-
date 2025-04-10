@@ -419,9 +419,7 @@
           });
 
           return headerFragment;
-        }
-
-        // 创建课程卡片
+        } // 创建课程卡片
         function createCourseCard(course) {
           const card = document.createElement("div");
           card.className = `course-card ${course.color}`;
@@ -442,7 +440,67 @@
             card.appendChild(weeksInfo);
           }
 
+          // 添加字体自适应逻辑
+          adjustFontSize(card);
+
           return card;
+        }
+        // 根据内容自动调整字体大小的函数
+        function adjustFontSize(card) {
+          const titleElement = card.querySelector(".course-title");
+          const infoElements = card.querySelectorAll(".course-info");
+          const locationElement = card.querySelector(".course-location");
+
+          // 设置最小字体大小和基准字体大小
+          const minFontSize = 0.7; // rem - 提高最小字体大小以确保可读性
+          const baseTitleSize = 0.95; // rem
+          const baseInfoSize = 0.8; // rem
+
+          try {
+            // 调整标题字体大小 - 只对特别长的标题进行缩放
+            if (titleElement && titleElement.textContent.length > 12) {
+              const scaleFactor = Math.min(
+                1,
+                12 / titleElement.textContent.length
+              );
+              const newSize = Math.max(
+                minFontSize,
+                baseTitleSize * scaleFactor
+              );
+              titleElement.style.fontSize = `${newSize}rem`;
+            }
+
+            // 调整其他信息字体大小 - 只对特别长的内容进行缩放
+            infoElements.forEach((element) => {
+              if (element && element.textContent.length > 18) {
+                const scaleFactor = Math.min(
+                  1,
+                  18 / element.textContent.length
+                );
+                const newSize = Math.max(
+                  minFontSize,
+                  baseInfoSize * scaleFactor
+                );
+                element.style.fontSize = `${newSize}rem`;
+              }
+            });
+
+            // 调整位置信息字体大小 - 只对特别长的内容进行缩放
+            if (
+              locationElement &&
+              locationElement.textContent.trim().length > 18
+            ) {
+              const scaleFactor = Math.min(
+                1,
+                18 / locationElement.textContent.trim().length
+              );
+              const newSize = Math.max(minFontSize, baseInfoSize * scaleFactor);
+              locationElement.style.fontSize = `${newSize}rem`;
+            }
+          } catch (e) {
+            console.error("调整字体大小发生错误:", e);
+            // 错误恢复 - 不要让字体调整影响整个卡片的显示
+          }
         }
 
         // 渲染列表视图

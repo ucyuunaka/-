@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 初始化通知容器
   initNotificationContainer();
+  
+  // 渲染课表
+  renderSchedule();
 });
 
 /**
@@ -433,3 +436,58 @@ const Translator = {
     });
   }
 };
+
+/**
+ * 渲染课表内容
+ */
+function renderSchedule() {
+  const timetableGrid = document.getElementById('timetable-grid');
+  if (!timetableGrid) return;
+
+  // 清空现有内容
+  timetableGrid.innerHTML = '';
+
+  // 创建表头
+  const headerRow = document.createElement('div');
+  headerRow.className = 'timetable-header';
+  headerRow.innerHTML = '<div>时间</div>' +
+    ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+      .map(day => `<div>${day}</div>`).join('');
+  timetableGrid.appendChild(headerRow);
+
+  // 创建课程单元格
+  for (let i = 1; i <= 12; i++) { // 假设一天有12节课
+    const row = document.createElement('div');
+    row.className = 'timetable-row';
+
+    // 时间列
+    const timeCell = document.createElement('div');
+    timeCell.className = 'timetable-time';
+    timeCell.textContent = `第${i}节`;
+    row.appendChild(timeCell);
+
+    // 每天的课程
+    for (let j = 1; j <= 7; j++) {
+      const cell = document.createElement('div');
+      cell.className = 'timetable-cell';
+
+      // 查找对应的课程
+      const course = scheduleData.courses.find(c => c.day === j && c.startTime <= i && c.endTime >= i);
+      if (course) {
+        const courseCard = document.createElement('div');
+        courseCard.className = `course-card ${course.color}`;
+        courseCard.innerHTML = `
+          <div class="course-title">${course.title}</div>
+          <div class="course-info">${course.teacher}</div>
+          <div class="course-location">${course.location}</div>
+          <div class="course-weeks">${course.weeks}</div>
+        `;
+        cell.appendChild(courseCard);
+      }
+
+      row.appendChild(cell);
+    }
+
+    timetableGrid.appendChild(row);
+  }
+}
