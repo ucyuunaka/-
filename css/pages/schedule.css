@@ -516,3 +516,15 @@
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
+
+/* 添加提示样式 */
+.edit-mode-hint {
+  background-color: var(--warning-light);
+  color: var(--warning-dark);
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius-sm);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

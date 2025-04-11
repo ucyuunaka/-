@@ -412,6 +412,12 @@
 
         // 编辑模式切换逻辑
         editScheduleBtn.addEventListener("click", function () {
+          // 检查当前是否是列表视图
+          if (listViewContainer.style.display === "block") {
+            showNotification("请在周视图下编辑课表", "info");
+            return;
+          }
+
           // 切换编辑模式状态
           isEditMode = !isEditMode;
 
@@ -421,13 +427,11 @@
             editScheduleBtn.classList.add("btn-success");
             // 添加编辑模式类到容器
             weekViewContainer.classList.add("edit-mode");
-            listViewContainer.classList.add("edit-mode");
           } else {
             editScheduleBtn.innerHTML = '<i class="fas fa-edit"></i> 编辑课表';
             editScheduleBtn.classList.remove("btn-success");
             // 移除编辑模式类
             weekViewContainer.classList.remove("edit-mode");
-            listViewContainer.classList.remove("edit-mode");
           }
         });
 
@@ -799,6 +803,12 @@
           console.log("查看课程详情:", course);
         } // 切换课表视图
         weekViewBtn.addEventListener("click", function () {
+          // 退出编辑模式
+          isEditMode = false;
+          editScheduleBtn.innerHTML = '<i class="fas fa-edit"></i> 编辑课表';
+          editScheduleBtn.classList.remove("btn-success");
+          weekViewContainer.classList.remove("edit-mode");
+
           weekViewBtn.classList.add("active");
           listViewBtn.classList.remove("active");
           weekViewContainer.style.display = "block";
@@ -806,6 +816,12 @@
         });
 
         listViewBtn.addEventListener("click", function () {
+          // 退出编辑模式
+          isEditMode = false;
+          editScheduleBtn.innerHTML = '<i class="fas fa-edit"></i> 编辑课表';
+          editScheduleBtn.classList.remove("btn-success");
+          weekViewContainer.classList.remove("edit-mode");
+
           listViewBtn.classList.add("active");
           weekViewBtn.classList.remove("active");
           listViewContainer.style.display = "block";
