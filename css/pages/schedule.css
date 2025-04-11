@@ -477,3 +477,42 @@
     min-height: 0;
     overflow: hidden;
 }
+
+/* 编辑模式下的单元格高亮效果 */
+.edit-mode .timetable-cell {
+  background-color: rgba(0, 123, 255, 0.05);
+  transition: background-color 0.3s ease;
+}
+
+.edit-mode .timetable-cell:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+  cursor: pointer;
+}
+
+.edit-mode .timetable-cell:has(.course-card) {
+  background-color: rgba(255, 193, 7, 0.1);
+}
+
+.edit-mode .timetable-cell:has(.course-card):hover {
+  background-color: rgba(255, 193, 7, 0.15);
+}
+
+/* 添加成功/失败的动画反馈 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.course-card.added {
+  animation: fadeIn 0.5s ease;
+}
+
+.course-card.updated {
+  animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}

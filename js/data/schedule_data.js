@@ -357,9 +357,11 @@ export function updateCourse(courseId, updatedData) {
   
   if (courseIndex === -1) return false;
   
+  // 保留原有ID和其他必要字段
   scheduleData.courses[courseIndex] = {
     ...scheduleData.courses[courseIndex],
-    ...updatedData
+    ...updatedData,
+    id: courseId // 确保ID不会被覆盖
   };
   
   return true;
