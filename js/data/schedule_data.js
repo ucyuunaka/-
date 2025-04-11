@@ -16,7 +16,6 @@ export const scheduleData = {
       day: 1,
       startTime: 1,
       endTime: 2,
-      weeks: "1-16周",
     },
     {
       id: 2,
@@ -27,7 +26,6 @@ export const scheduleData = {
       day: 3,
       startTime: 1,
       endTime: 2,
-      weeks: "1-16周",
     },
     {
       id: 3,
@@ -38,7 +36,6 @@ export const scheduleData = {
       day: 4,
       startTime: 1,
       endTime: 2,
-      weeks: "1-16周",
     },
     {
       id: 4,
@@ -49,7 +46,6 @@ export const scheduleData = {
       day: 5,
       startTime: 1,
       endTime: 2,
-      weeks: "1-16周",
     },
     {
       id: 5,
@@ -60,7 +56,6 @@ export const scheduleData = {
       day: 2,
       startTime: 3,
       endTime: 4,
-      weeks: "1-16周",
     },
     {
       id: 6,
@@ -71,7 +66,6 @@ export const scheduleData = {
       day: 4,
       startTime: 3,
       endTime: 4,
-      weeks: "1-16周",
     },
     {
       id: 7,
@@ -82,7 +76,6 @@ export const scheduleData = {
       day: 5,
       startTime: 3,
       endTime: 4,
-      weeks: "1-16周",
     },
     {
       id: 8,
@@ -93,7 +86,6 @@ export const scheduleData = {
       day: 1,
       startTime: 5,
       endTime: 6,
-      weeks: "1-16周",
     },
     {
       id: 9,
@@ -104,7 +96,6 @@ export const scheduleData = {
       day: 2,
       startTime: 5,
       endTime: 6,
-      weeks: "1-16周",
     },
     {
       id: 10,
@@ -115,7 +106,6 @@ export const scheduleData = {
       day: 3,
       startTime: 5,
       endTime: 6,
-      weeks: "1-16周",
     },
     {
       id: 11,
@@ -126,7 +116,6 @@ export const scheduleData = {
       day: 5,
       startTime: 5,
       endTime: 6,
-      weeks: "1-16周",
     },
     {
       id: 12,
@@ -137,7 +126,6 @@ export const scheduleData = {
       day: 6,
       startTime: 3,
       endTime: 4,
-      weeks: "1-16周",
     },
     {
       id: 13,
@@ -148,7 +136,6 @@ export const scheduleData = {
       day: 3,
       startTime: 7,
       endTime: 8,
-      weeks: "1-16周",
     },
     {
       id: 14,
@@ -159,7 +146,6 @@ export const scheduleData = {
       day: 4,
       startTime: 7,
       endTime: 8,
-      weeks: "1-16周",
     },
     {
       id: 15,
@@ -170,7 +156,6 @@ export const scheduleData = {
       day: 5,
       startTime: 7,
       endTime: 8,
-      weeks: "1-16周",
     },
     {
       id: 16,
@@ -181,7 +166,6 @@ export const scheduleData = {
       day: 1,
       startTime: 3,
       endTime: 4,
-      weeks: "1-16周",
     },
     {
       id: 17,
@@ -192,7 +176,6 @@ export const scheduleData = {
       day: 2,
       startTime: 1,
       endTime: 2,
-      weeks: "1-16周",
     },
     {
       id: 18,
@@ -203,7 +186,6 @@ export const scheduleData = {
       day: 1,
       startTime: 9,
       endTime: 10,
-      weeks: "1-16周",
     },
     {
       id: 19,
@@ -214,7 +196,6 @@ export const scheduleData = {
       day: 2,
       startTime: 9,
       endTime: 10,
-      weeks: "1-16周",
     },
     {
       id: 20,
@@ -225,7 +206,6 @@ export const scheduleData = {
       day: 3,
       startTime: 9,
       endTime: 10,
-      weeks: "1-16周",
     },
     {
       id: 21,
@@ -236,7 +216,6 @@ export const scheduleData = {
       day: 4,
       startTime: 9,
       endTime: 10,
-      weeks: "1-16周",
     },
     {
       id: 22,
@@ -247,7 +226,6 @@ export const scheduleData = {
       day: 5,
       startTime: 9,
       endTime: 10,
-      weeks: "1-16周",
     },
     {
       id: 23,
@@ -258,7 +236,6 @@ export const scheduleData = {
       day: 7,
       startTime: 5,
       endTime: 6,
-      weeks: "1-16周",
     },
     {
       id: 24,
@@ -269,7 +246,6 @@ export const scheduleData = {
       day: 2,
       startTime: 7,
       endTime: 8,
-      weeks: "1-16周",
     },
     {
       id: 25,
@@ -280,7 +256,6 @@ export const scheduleData = {
       day: 4,
       startTime: 5,
       endTime: 6,
-      weeks: "1-16周",
     },
     {
       id: 26,
@@ -291,7 +266,6 @@ export const scheduleData = {
       day: 6,
       startTime: 5,
       endTime: 6,
-      weeks: "1-16周",
     },
   ],
   timePeriods: [
@@ -377,19 +351,39 @@ export function addCourse(courseData) {
   return newCourse;
 }
 
-// 提供删除课程的方法
+// 提供删除课程的方法 - 增强版
 export function deleteCourse(courseId) {
-  const initialLength = scheduleData.courses.length;
-  scheduleData.courses = scheduleData.courses.filter(course => course.id !== courseId);
-  
-  // 如果删除成功，保存到本地存储
-  const success = scheduleData.courses.length < initialLength;
-  if (success) {
-    saveScheduleToStorage();
+  try {
+    // 确保courseId是数字
+    const idToDelete = parseInt(courseId);
+    if (isNaN(idToDelete)) {
+      console.error('无效的课程ID:', courseId);
+      return false;
+    }
+
+    const initialLength = scheduleData.courses.length;
+    
+    // 使用严格比较
+    scheduleData.courses = scheduleData.courses.filter(course => {
+      return course.id !== idToDelete;
+    });
+    
+    // 检查是否真的删除了课程
+    const success = scheduleData.courses.length < initialLength;
+    if (success) {
+      // 保存前再次验证
+      const stillExists = scheduleData.courses.some(c => c.id === idToDelete);
+      if (!stillExists) {
+        saveScheduleToStorage();
+        return true;
+      }
+    }
+    
+    return false;
+  } catch (error) {
+    console.error('删除课程失败:', error);
+    return false;
   }
-  
-  // 返回是否删除成功
-  return success;
 }
 
 // 提供清空课程的方法

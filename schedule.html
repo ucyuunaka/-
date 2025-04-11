@@ -183,16 +183,6 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="course-weeks">上课周数</label>
-            <input
-              type="text"
-              class="form-control"
-              id="course-weeks"
-              placeholder="例如：1-16周 或 1,3,5,7,9,11,13,15周"
-            />
-          </div>
-
-          <div class="form-group">
             <label class="form-label">课程颜色</label>
             <div class="color-options">
               <div
@@ -374,26 +364,49 @@
           currentCourseToDelete = null;
         }
 
-        // 实际删除课程函数（完整版）
+        // 实际删除课程函数 - 增强错误处理
         function performDeleteCourse(courseId) {
-          const courseCard = document.querySelector(
-            `.course-card[data-course-id="${courseId}"]`
-          );
-          if (courseCard) {
+          try {
+            const courseCard = document.querySelector(
+              `.course-card[data-course-id="${courseId}"]`
+            );
+            if (!courseCard) {
+              showNotification("找不到要删除的课程", "error");
+              return;
+            }
+
             courseCard.classList.add("deleting");
 
             setTimeout(() => {
-              // 使用deleteCourse函数而不是直接操作数组
-              const success = deleteCourse(courseId);
+              try {
+                const success = deleteCourse(parseInt(courseId));
 
-              if (success) {
-                renderTimetable();
-                renderListView();
-                showNotification("课程已删除", "success");
-              } else {
-                showNotification("删除课程失败", "error");
+                if (success) {
+                  // 重新渲染前检查课程是否还存在
+                  const courseStillExists = scheduleData.courses.some(
+                    (c) => c.id == courseId
+                  );
+                  if (!courseStillExists) {
+                    renderTimetable();
+                    renderListView();
+                    showNotification("课程已删除", "success");
+                  } else {
+                    courseCard.classList.remove("deleting");
+                    showNotification("删除课程失败: 课程仍存在", "error");
+                  }
+                } else {
+                  courseCard.classList.remove("deleting");
+                  showNotification("删除课程失败", "error");
+                }
+              } catch (error) {
+                courseCard.classList.remove("deleting");
+                console.error("删除课程时出错:", error);
+                showNotification("删除课程时出错: " + error.message, "error");
               }
             }, 300);
+          } catch (error) {
+            console.error("删除课程初始化时出错:", error);
+            showNotification("删除课程初始化失败", "error");
           }
         }
 
@@ -570,13 +583,6 @@
           card.appendChild(teacherElement);
           card.appendChild(locationElement);
 
-          if (course.weeks) {
-            const weeksInfo = document.createElement("div");
-            weeksInfo.className = "course-info";
-            weeksInfo.textContent = course.weeks;
-            card.appendChild(weeksInfo);
-          }
-
           // 添加字体自适应逻辑
           adjustFontSize(card);
 
@@ -719,13 +725,6 @@
                 </div>
               `;
 
-                if (course.weeks) {
-                  const weeksInfo = document.createElement("div");
-                  weeksInfo.className = "course-info";
-                  weeksInfo.textContent = course.weeks;
-                  courseCard.appendChild(weeksInfo);
-                }
-
                 courseWrapper.appendChild(courseCard);
                 dayCard.appendChild(courseWrapper);
               });
@@ -761,8 +760,27 @@
         function setupCourseCardEvents() {
           // 动态绑定所有课程卡片点击事件
           document.addEventListener("click", function (e) {
+            // 检查是否点击了删除图标
+            if (
+              e.target.closest(".course-delete-icon") ||
+              e.target.classList.contains("fa-times")
+            ) {
+              if (isEditMode) {
+                e.preventDefault();
+                e.stopImmediatePropagation(); // 使用更严格的事件阻止
+
+                const deleteIcon = e.target.closest(".course-delete-icon");
+                const courseCard = deleteIcon.closest(".course-card");
+                const courseId = courseCard.getAttribute("data-course-id");
+
+                showDeleteConfirm(courseId);
+              }
+              return; // 确保不会继续处理其他事件
+            }
+
+            // 原有的课程卡片点击事件
             const courseCard = e.target.closest(".course-card");
-            if (courseCard) {
+            if (courseCard && !isEditMode) {
               const courseId = courseCard.getAttribute("data-course-id");
               if (courseId) {
                 const course = scheduleData.courses.find(
@@ -855,17 +873,6 @@
           }
         });
 
-        // 点击删除图标事件
-        document.addEventListener("click", function (e) {
-          const deleteIcon = e.target.closest(".course-delete-icon");
-          if (deleteIcon && isEditMode) {
-            e.stopPropagation();
-            const courseCard = deleteIcon.closest(".course-card");
-            const courseId = courseCard.getAttribute("data-course-id");
-            showDeleteConfirm(courseId);
-          }
-        });
-
         // 新增：设置单元格点击事件
         function setupCellClickEvents() {
           document.addEventListener("click", function (e) {
@@ -931,8 +938,6 @@
             document.getElementById("course-day").value = course.day || "";
             document.getElementById("course-time").value =
               course.startTime || "";
-            document.getElementById("course-weeks").value = course.weeks || "";
-            document.getElementById("course-notes").value = course.notes || "";
 
             // 设置课程颜色
             document
@@ -982,7 +987,6 @@
             day: parseInt(document.getElementById("course-day").value),
             startTime: parseInt(document.getElementById("course-time").value),
             endTime: parseInt(document.getElementById("course-time").value), // 默认单节课
-            weeks: document.getElementById("course-weeks").value.trim(),
             notes: document.getElementById("course-notes").value.trim(),
           };
 
@@ -1062,7 +1066,6 @@
           document.getElementById("course-name").value = "";
           document.getElementById("course-teacher").value = "";
           document.getElementById("course-location").value = "";
-          document.getElementById("course-weeks").value = "";
           document.getElementById("course-notes").value = "";
 
           // 设置默认颜色
