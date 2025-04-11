@@ -317,6 +317,8 @@
         deleteCourse,
         clearCourses,
         updateCourse,
+        loadScheduleFromStorage,
+        saveScheduleToStorage,
       } from "./js/data/schedule_data.js";
 
       document.addEventListener("DOMContentLoaded", function () {
@@ -378,18 +380,15 @@
             courseCard.classList.add("deleting");
 
             setTimeout(() => {
-              const index = scheduleData.courses.findIndex(
-                (c) => c.id == courseId
-              );
-              if (index !== -1) {
-                scheduleData.courses.splice(index, 1);
+              // 使用deleteCourse函数而不是直接操作数组
+              const success = deleteCourse(courseId);
 
-                // 这里可以添加数据持久化逻辑
-                // saveScheduleData();
-
+              if (success) {
                 renderTimetable();
                 renderListView();
                 showNotification("课程已删除", "success");
+              } else {
+                showNotification("删除课程失败", "error");
               }
             }, 300);
           }
@@ -420,7 +419,14 @@
         function loadScheduleData() {
           try {
             console.log("正在初始化课表数据...");
-            // 直接使用已经内联的scheduleData
+            // 尝试从本地存储加载数据
+            const loadedFromStorage = loadScheduleFromStorage();
+            if (loadedFromStorage) {
+              console.log("从本地存储成功加载课表数据");
+            } else {
+              console.log("使用默认课表数据");
+            }
+
             renderTimetable();
             renderListView();
             setupCourseCardEvents();
@@ -701,6 +707,7 @@
                 courseCard.appendChild(deleteIcon);
 
                 courseCard.innerHTML += `
+
                 <div class="course-title">${course.title}</div>
                 <div class="course-info">${course.teacher}</div>
                 <div class="course-info">${timeRange}</div>
@@ -818,14 +825,12 @@
           .addEventListener("click", function (e) {
             e.preventDefault();
             if (confirm("确定要清空所有课程吗？此操作无法撤销。")) {
-              // 清空课程数据
-              scheduleData.courses = [];
+              // 使用clearCourses函数清空课程数据
+              clearCourses();
 
               // 更新视图
               renderTimetable();
               renderListView();
-
-              // 这里可以添加将清空数据同步到服务器的代码
 
               showNotification("课表已清空", "success");
             }
@@ -961,7 +966,7 @@
           }
         }
 
-        // 修改表单提交处理逻辑，确保数据正确更新
+        // 修改表单提交处理逻辑，确保数据正确更新并持久化
         addCourseForm.addEventListener("submit", function (e) {
           e.preventDefault();
 
@@ -996,8 +1001,6 @@
             const success = updateCourse(parseInt(editingCourseId), courseData);
             if (success) {
               showNotification(`课程"${courseData.title}"更新成功`, "success");
-              // 这里可以添加数据持久化逻辑
-              // saveScheduleData();
             } else {
               showNotification("更新课程失败: 找不到对应课程", "error");
             }
@@ -1006,8 +1009,6 @@
             try {
               const newCourse = addCourse(courseData);
               showNotification(`课程"${newCourse.title}"添加成功`, "success");
-              // 这里可以添加数据持久化逻辑
-              // saveScheduleData();
             } catch (error) {
               showNotification("添加课程失败: " + error.message, "error");
               return;

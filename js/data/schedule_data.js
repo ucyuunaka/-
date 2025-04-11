@@ -318,6 +318,43 @@ export const scheduleData = {
   ],
 };
 
+// 本地存储的键名
+const STORAGE_KEY = 'classroom-assistant-schedule';
+
+// 从本地存储加载数据
+export function loadScheduleFromStorage() {
+  try {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      
+      // 更新课程数据
+      if (parsedData.courses && Array.isArray(parsedData.courses)) {
+        scheduleData.courses = parsedData.courses;
+      }
+      
+      return true;
+    }
+  } catch (error) {
+    console.error('从本地存储加载课表数据失败:', error);
+  }
+  
+  return false;
+}
+
+// 保存数据到本地存储
+export function saveScheduleToStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      courses: scheduleData.courses
+    }));
+    return true;
+  } catch (error) {
+    console.error('保存课表数据到本地存储失败:', error);
+    return false;
+  }
+}
+
 // 提供添加课程的方法
 export function addCourse(courseData) {
   // 生成新的课程ID
@@ -334,6 +371,9 @@ export function addCourse(courseData) {
   // 添加到课程列表
   scheduleData.courses.push(newCourse);
   
+  // 保存到本地存储
+  saveScheduleToStorage();
+  
   return newCourse;
 }
 
@@ -342,13 +382,22 @@ export function deleteCourse(courseId) {
   const initialLength = scheduleData.courses.length;
   scheduleData.courses = scheduleData.courses.filter(course => course.id !== courseId);
   
+  // 如果删除成功，保存到本地存储
+  const success = scheduleData.courses.length < initialLength;
+  if (success) {
+    saveScheduleToStorage();
+  }
+  
   // 返回是否删除成功
-  return scheduleData.courses.length < initialLength;
+  return success;
 }
 
 // 提供清空课程的方法
 export function clearCourses() {
   scheduleData.courses = [];
+  
+  // 保存到本地存储
+  saveScheduleToStorage();
 }
 
 // 提供更新课程的方法
@@ -363,6 +412,9 @@ export function updateCourse(courseId, updatedData) {
     ...updatedData,
     id: courseId // 确保ID不会被覆盖
   };
+  
+  // 保存到本地存储
+  saveScheduleToStorage();
   
   return true;
 }
