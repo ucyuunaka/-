@@ -80,10 +80,16 @@
   display: flex; /* 使用flex布局更好地控制内容定位 */
   flex-direction: column;
   justify-content: center;
+  transition: min-height 0.3s ease;
 }
 
 .timetable-cell:last-child {
   border-right: none;
+}
+
+.timetable-cell:has(.course-card.deleting) {
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* 课程卡片样式 */
@@ -413,4 +419,61 @@
   .form-group.col-6 {
     flex: 0 0 100%;
   }
+}
+
+/* 删除确认弹窗样式 */
+#delete-confirm-modal .modal-content {
+  max-width: 400px;
+}
+
+#delete-confirm-modal p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: white;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: var(--danger-dark);
+}
+
+/* 删除动画增强 */
+.course-card.deleting {
+    animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+    pointer-events: none;
+}
+
+@keyframes fadeOut {
+    0% { 
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        max-height: 200px;
+        margin: 4px 0;
+    }
+    100% { 
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+        max-height: 0;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+/* 确保列表视图中的卡片动画效果 */
+#list-view-container .course-card.deleting {
+    animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+/* 防止动画过程中布局跳动 */
+.timetable-cell {
+    transition: min-height 0.3s ease;
+}
+
+.timetable-cell:has(.course-card.deleting) {
+    min-height: 0;
+    overflow: hidden;
 }

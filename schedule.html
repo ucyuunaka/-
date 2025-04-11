@@ -281,6 +281,23 @@
       </div>
     </div>
 
+    <!-- 新增删除确认弹窗 -->
+    <div class="modal" id="delete-confirm-modal">
+      <div class="modal-content">
+        <div class="modal-close" id="close-delete-modal">×</div>
+        <h2 class="mb-3">确认删除课程</h2>
+        <p>确定要删除此课程吗？此操作无法撤销。</p>
+        <div class="text-center mt-4">
+          <button type="button" class="btn btn-danger" id="confirm-delete">
+            确认删除
+          </button>
+          <button type="button" class="btn btn-outline" id="cancel-delete">
+            取消
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- 页脚 - 简化为只保留容器 -->
     <footer class="footer"></footer>
     <script src="js/main.js"></script>
@@ -331,6 +348,53 @@
         const colorOptions = document.querySelectorAll(".color-option");
         const courseColorInput = document.getElementById("course-color"); // 使用从js/data/schedule_data.js导入的课表数据
 
+        // 删除确认相关元素
+        const deleteConfirmModal = document.getElementById(
+          "delete-confirm-modal"
+        );
+        const closeDeleteModal = document.getElementById("close-delete-modal");
+        const cancelDelete = document.getElementById("cancel-delete");
+        const confirmDelete = document.getElementById("confirm-delete");
+        let currentCourseToDelete = null;
+
+        // 显示删除确认对话框
+        function showDeleteConfirm(courseId) {
+          currentCourseToDelete = courseId;
+          deleteConfirmModal.style.display = "flex";
+        }
+
+        // 隐藏删除确认对话框
+        function hideDeleteConfirm() {
+          deleteConfirmModal.style.display = "none";
+          currentCourseToDelete = null;
+        }
+
+        // 实际删除课程函数（完整版）
+        function performDeleteCourse(courseId) {
+          const courseCard = document.querySelector(
+            `.course-card[data-course-id="${courseId}"]`
+          );
+          if (courseCard) {
+            courseCard.classList.add("deleting");
+
+            setTimeout(() => {
+              const index = scheduleData.courses.findIndex(
+                (c) => c.id == courseId
+              );
+              if (index !== -1) {
+                scheduleData.courses.splice(index, 1);
+
+                // 这里可以添加数据持久化逻辑
+                // saveScheduleData();
+
+                renderTimetable();
+                renderListView();
+                showNotification("课程已删除", "success");
+              }
+            }, 300);
+          }
+        }
+
         // 编辑模式切换逻辑
         editScheduleBtn.addEventListener("click", function () {
           // 切换编辑模式状态
@@ -374,10 +438,14 @@
           }
         }
 
-        // 渲染周视图课表
+        // 渲染周视图课表（增强稳定性）
         function renderTimetable() {
           const timetableGrid = document.getElementById("timetable-grid");
           if (!timetableGrid) return;
+
+          // 保存当前滚动位置
+          const scrollTop = timetableGrid.scrollTop;
+          const scrollLeft = timetableGrid.scrollLeft;
 
           // 清空现有内容
           timetableGrid.innerHTML = "";
@@ -419,6 +487,10 @@
               }
             }
           });
+
+          // 恢复滚动位置
+          timetableGrid.scrollTop = scrollTop;
+          timetableGrid.scrollLeft = scrollLeft;
         }
 
         // 创建表头
@@ -564,10 +636,13 @@
           }
         }
 
-        // 渲染列表视图
+        // 渲染列表视图（增强稳定性）
         function renderListView() {
           const listContainer = document.getElementById("list-view-container");
           if (!listContainer) return;
+
+          // 保存当前滚动位置
+          const scrollTop = listContainer.scrollTop;
 
           // 清空现有内容
           listContainer.innerHTML = "";
@@ -639,6 +714,9 @@
 
             listContainer.appendChild(dayCard);
           });
+
+          // 恢复滚动位置
+          listContainer.scrollTop = scrollTop;
         }
 
         // 获取课程时间范围文本
@@ -750,6 +828,27 @@
           // 简单的通知实现，可以替换为更复杂的通知系统
           alert(message);
         }
+
+        // 删除确认对话框事件
+        closeDeleteModal.addEventListener("click", hideDeleteConfirm);
+        cancelDelete.addEventListener("click", hideDeleteConfirm);
+        confirmDelete.addEventListener("click", function () {
+          if (currentCourseToDelete) {
+            performDeleteCourse(currentCourseToDelete);
+            hideDeleteConfirm();
+          }
+        });
+
+        // 点击删除图标事件
+        document.addEventListener("click", function (e) {
+          const deleteIcon = e.target.closest(".course-delete-icon");
+          if (deleteIcon && isEditMode) {
+            e.stopPropagation();
+            const courseCard = deleteIcon.closest(".course-card");
+            const courseId = courseCard.getAttribute("data-course-id");
+            showDeleteConfirm(courseId);
+          }
+        });
 
         // 加载课表数据
         loadScheduleData();
